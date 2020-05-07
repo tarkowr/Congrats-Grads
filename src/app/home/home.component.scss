@@ -5,7 +5,6 @@
     background-repeat: no-repeat;
     position: sticky;
     top: 0;
-    border-right: 1px solid #0E425F;
     z-index: 10;
 }
 .landing-pic-mini{
@@ -18,6 +17,9 @@
 }
 .shadow-effect{
     background-color: rgba($color: #282828, $alpha: .70);
+}
+.library-btn {
+    border-radius: 50px;
 }
 .logo{
     background: url('../../assets/logos/icon.png');

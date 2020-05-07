@@ -11,7 +11,7 @@ export class HomeComponent implements OnInit {
   breakPoint: Number = 576;
   mobile: Boolean = false;
   ref: string = '#typed';
-  typed = {
+  typedConfig = {
     strings: ['Honor your Senior', 'Represent your Class', 'Show your School Spirit'],
     typeSpeed: 15,
     startDelay: 0,
@@ -20,15 +20,30 @@ export class HomeComponent implements OnInit {
     backDelay: 3500,
     loop: true
   }
+  typed: Typed;
 
   constructor() { }
 
+  // Handle screen resize
   attachResizeListener(){
-    window.addEventListener('resize', () => {
-      this.handleScreenSize();
+    window.addEventListener('resize', async () => {
+      await this.handleScreenSize();
+
+      let resetTyped = () => {
+        this.typed.destroy();
+        this.typed = new Typed(this.ref, this.typedConfig);
+      }
+
+      try { 
+        resetTyped(); 
+      }
+      catch(e) {
+        setTimeout(() => { resetTyped(); }, 200);
+      }
     });
   }
 
+  // Check if screen is mobile
   handleScreenSize(){
     if (window.innerWidth >= this.breakPoint) {
       this.mobile = false;
@@ -44,7 +59,7 @@ export class HomeComponent implements OnInit {
     await this.handleScreenSize();
     this.attachResizeListener();
 
-    new Typed(this.ref, this.typed);
+    this.typed = new Typed(this.ref, this.typedConfig);
   }
 
 }
