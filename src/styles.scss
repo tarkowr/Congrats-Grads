@@ -1,0 +1,89 @@
+$font: 'Muli', sans-serif;
+$breakpoint: 992px;
+
+/*Variable Overrides*/
+$theme-colors: (
+  "primary": #26B1FF,
+  "secondary":#0E425F,
+  "secondary-light": #186fa0,
+  "light":#96B7C9,
+  "lighter":#F1F8FC,
+  "lightest": #fafdff,
+  "light-gray": #DAE6ED,
+  "info": #FF247F,
+  "success": #00f437
+);
+
+@import '../node_modules/bootstrap/scss/bootstrap.scss';
+
+html, body {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0;
+    font-family: $font; 
+    font-weight: 200;
+    scroll-behavior: smooth;
+    font-size: 1em;
+    padding: 0;
+}
+
+.typed-cursor{
+    color: #f4425f;
+}
+@media(max-width: 992px) {
+    .typed-cursor{
+        font-size: 0.75em;
+    }
+}
+@media(max-width: 576px) {
+    .typed-cursor{
+        font-size: 0.5em;
+    }
+}
+
+.not-selectable{
+    user-select: none;
+}
+
+.inc-font {
+    font-size: 1.2em;
+}
+.f6{
+    font-weight: 600 !important;
+}
+.f4{
+    font-weight: 400 !important;
+}
+.f3 {
+    font-weight: 300 !important;
+}
+.f2 {
+    font-weight: 200 !important;
+}
+.f1 {
+    font-weight: 100 !important;
+}
+
+.default-font {
+    font-family: sans-serif;
+    font-weight: 600;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    font-weight: 300;
+}
+
+@media (max-width: $breakpoint){
+    .h1{
+        font-size: 1.5rem;
+    }
+    .h2{
+        font-size: 1.25rem;
+    }
+    .h3{
+        font-size: 1.1rem;
+    }
+    .h4{
+        font-size: 1rem;
+    }
+}
