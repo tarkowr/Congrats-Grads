@@ -20,7 +20,6 @@ admin.initializeApp({
 let db = admin.firestore()
 let storage = admin.storage().bucket()
 
-//let multerStorage = multer.memoryStorage()
 let multerStorage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/')
@@ -31,7 +30,6 @@ let multerStorage = multer.diskStorage({
 })
 
 let upload = multer({ storage: multerStorage })
-// let upload = multer({ dest: 'uploads/' })
 
 const seniorsCollection = 'seniors'
 
@@ -138,12 +136,4 @@ app.get('/seniors/get/all', (req, res) => {
 const PORT = process.env.PORT || 3200
 app.listen(PORT, function(){
     console.log(`Listening on port ${PORT}`)
-    /*storage.getFiles().then((response) => {
-        let ref = response[0]
-        ref.forEach((file) => {
-            console.log(file.metadata)
-        })
-    }).catch(err => {
-        console.log(err)
-    })*/
 })

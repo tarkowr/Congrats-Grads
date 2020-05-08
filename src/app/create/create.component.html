@@ -58,8 +58,14 @@
                     <!--Image Upload-->
                     <div class="form-group mb-3">
                         <label for="profileImg">Upload Image <span class="text-danger">*</span></label>
-                        <input type="file" name="profileImg" accept="image/x-png,image/jpeg" required formControlName="profileImg"
-                         class="form-control primary-border" (change)="selectImage($event)">
+                        <br>
+                        <label class="btn btn-secondary-light">
+                            Browse <input type="file" hidden name="profileImg" accept="image/x-png,image/jpeg" required formControlName="profileImg"
+                            (change)="selectImage($event)">
+                        </label>
+                        <span class="ml-2 f4">
+                            {{ fileMessage }}
+                        </span>
                     </div>
 
                     <!--Comments-->

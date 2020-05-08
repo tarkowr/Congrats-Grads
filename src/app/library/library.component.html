@@ -1,6 +1,6 @@
 <app-navbar></app-navbar>
 
-<div class="container-fluid bg-lightest h-100">
+<div class="container-fluid bg-lightest pb-4" style="min-height: 100%;">
     <div class="row">
         <div class="col-12">
             <div class="header w-100 text-center">
@@ -8,7 +8,7 @@
                 <h3 class="mb-4 f1"> &mdash; Senior Library &mdash; </h3>
             </div>
 
-            <div class="my-3 ml-4">
+            <div class="my-3 ml-4 create-profile-wrapper">
                 <a [routerLink]="['/create']">
                     <button class="btn btn-primary inc-font py-2 px-4">
                         <span>Create Senior Profile &nbsp;<i class="fa fa-arrow-circle-right"></i></span>
@@ -16,13 +16,16 @@
                 </a>
             </div>
 
-            <div *ngIf="seniors" class="row mx-2">
-                <div *ngFor="let senior of seniors" class="col-12 col-md-6 col-lg-4 col-xl-3 mb-3">
-                    <div class="border bg-white rounded p-3">
-                        <div>
+            <div *ngIf="seniors" class="row equal mx-2">
+                <div *ngFor="let senior of seniors" class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+                    <div class="bg-white border border-light-gray rounded p-3 h-100 overflow-hidden">
+                        <div *ngIf="senior.url" class="w-100 text-center">
+                            <img src="{{senior.url}}"  class="profile-pic">
+                        </div>
+                        <div class="w-100 text-center mt-2 f4 inc-font">
                             {{ senior.fname }} {{ senior.lname }}
                         </div>
-                        <div>
+                        <div class="w-100 text-center mb-2 f3 text-secondary">
                             {{ senior.school }}
                         </div>
                     </div>
@@ -37,3 +40,9 @@
         </div>
     </div>
 </div>  
+
+<div class="text-center border-top border-lighter">
+    <div class="bg-white py-3">
+        CongratsGrads 2020 &nbsp; <span class="conditional-ln">|</span> <br class="conditional-br"> &nbsp; Created by <a href="https://richietarkowski.com" target="_blank" class="text-primary">Richie Tarkowski</a>
+    </div>
+</div>

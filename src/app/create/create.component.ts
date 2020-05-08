@@ -18,6 +18,7 @@ export class CreateComponent implements OnInit {
   error:Boolean = false;
   localStorage: LocalStorage;
   image: any;
+  fileMessage: string = "No file chosen";
 
   constructor(
     private formBuilder: FormBuilder,
@@ -52,6 +53,7 @@ export class CreateComponent implements OnInit {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       this.image = file;
+      this.fileMessage = file.name;
     }
   }
 
