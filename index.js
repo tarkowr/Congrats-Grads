@@ -1,6 +1,7 @@
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const express = require('express')
+const multer = require('multer')
 let app = express()
 const cookieParser = require('cookie-parser')
 const _ = require('underscore')
@@ -18,6 +19,8 @@ admin.initializeApp({
 let db = admin.firestore()
 let storage = admin.storage().bucket()
 
+let upload = multer({ dest: 'uploads/' })
+
 const seniorsCollection = 'seniors'
 
 app.use(bodyParser.urlencoded({  
@@ -32,7 +35,7 @@ app.use(express.static(__dirname + '/dist'))
 app.use(cors())
 
 // Create new senior profile
-app.post('/create', (req, res) => {
+app.post('/create', upload.single('profile'), (req, res) => {
     let fname = req.body.fname
     let lname = req.body.lname
     let school = req.body.highSchool
@@ -59,6 +62,8 @@ app.post('/create', (req, res) => {
         id: id,
         uploaded: uploaded
     }
+
+    console.log(req.file)
 
     // Add senior to firebase
     db.collection(seniorsCollection).doc(id).set(senior)

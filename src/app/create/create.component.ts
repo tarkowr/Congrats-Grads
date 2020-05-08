@@ -17,6 +17,7 @@ export class CreateComponent implements OnInit {
   message:String;
   error:Boolean = false;
   localStorage: LocalStorage;
+  image: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -39,10 +40,19 @@ export class CreateComponent implements OnInit {
       school: ['',  Validators.compose([
         Validators.required, Validators.pattern(/^[a-zA-Z0-9 ]{1,40}$/)
       ])],
+      profileImg: ['', Validators.required],
       comments: ['',  Validators.compose([
         Validators.required, Validators.pattern(/^.{1,500}$/)
       ])]
     })
+  }
+
+  // Handle selected image
+  selectImage(event) {
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.image = file;
+    }
   }
 
   // Create form on submit
@@ -55,7 +65,7 @@ export class CreateComponent implements OnInit {
 
     this.loading = true;
 
-    this.userService.create(this.f.firstname.value, this.f.lastname.value, this.f.school.value, this.f.comments.value)
+    this.userService.create(this.f.firstname.value, this.f.lastname.value, this.f.school.value, this.f.comments.value, this.image)
       .then(data => {
         this.submitted = false;
         this.createForm.reset();
