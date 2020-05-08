@@ -10,6 +10,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { CreateComponent } from './create/create.component';
 import { SnackbarComponent } from './snackbar/snackbar.component';
 import { LibraryComponent } from './library/library.component';
+import { NavbarComponent } from './navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { LibraryComponent } from './library/library.component';
     PageNotFoundComponent,
     CreateComponent,
     SnackbarComponent,
-    LibraryComponent
+    LibraryComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,

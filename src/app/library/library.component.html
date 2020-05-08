@@ -1,8 +1,38 @@
-<div class="container-fluid">
+<app-navbar></app-navbar>
+
+<div class="container-fluid bg-lightest h-100">
     <div class="row">
         <div class="col-12">
             <div class="header w-100 text-center">
-                <h1 class="mt-4 f1">Senior Library</h1>
+                <h1 class="mt-4 display-4 library-title">Class of 2020</h1>
+                <h3 class="mb-4 f1"> &mdash; Senior Library &mdash; </h3>
+            </div>
+
+            <div class="my-3 ml-4">
+                <a [routerLink]="['/create']">
+                    <button class="btn btn-primary inc-font py-2 px-4">
+                        <span>Create Senior Profile &nbsp;<i class="fa fa-arrow-circle-right"></i></span>
+                    </button>
+                </a>
+            </div>
+
+            <div *ngIf="seniors" class="row mx-2">
+                <div *ngFor="let senior of seniors" class="col-12 col-md-6 col-lg-4 col-xl-3 mb-3">
+                    <div class="border bg-white rounded p-3">
+                        <div>
+                            {{ senior.fname }} {{ senior.lname }}
+                        </div>
+                        <div>
+                            {{ senior.school }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="!seniors" class="row text-center mt-5 justify-content-center">
+                <div class="spinner-border text-primary text-center" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
             </div>
         </div>
     </div>

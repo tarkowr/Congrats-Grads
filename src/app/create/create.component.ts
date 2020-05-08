@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router'
+import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
+import { LocalStorage } from '../services/localStorage.service';
 
 @Component({
   selector: 'app-create',
@@ -15,11 +16,14 @@ export class CreateComponent implements OnInit {
   showSnackbar:Boolean = false;
   message:String;
   error:Boolean = false;
+  localStorage: LocalStorage;
 
   constructor(
     private formBuilder: FormBuilder,
     private userService: UserService,
-    private router: Router,) { }
+    private router: Router) { 
+      this.localStorage = new LocalStorage();
+    }
 
   get f() { return this.createForm.controls }
 
@@ -41,6 +45,7 @@ export class CreateComponent implements OnInit {
     })
   }
 
+  // Create form on submit
   onSubmit() {
     this.submitted = true;
 
@@ -55,12 +60,13 @@ export class CreateComponent implements OnInit {
         this.submitted = false;
         this.createForm.reset();
 
-        this.message = 'Successfully Uploaded!'
+        this.message = 'Successfully Uploaded!';
         this.showSnackbar = true;
         this.error = false;
+        this.localStorage.SetUploaded(data['id']);
       })
       .catch(err => {
-        this.message = 'Unable to Upload'
+        this.message = 'Unable to Create Profile';
         this.showSnackbar = true;
         this.error = true;
       })
@@ -72,7 +78,7 @@ export class CreateComponent implements OnInit {
           if (!this.error) {
             this.router.navigate(['library']);
           }
-        }, 3000);
+        }, (this.error) ? 3000 : 2000);
       });
   }
 

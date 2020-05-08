@@ -60,7 +60,6 @@ app.post('/create', (req, res) => {
         uploaded: uploaded
     }
 
-
     // Add senior to firebase
     db.collection(seniorsCollection).doc(id).set(senior)
         .then(() => {
@@ -68,6 +67,23 @@ app.post('/create', (req, res) => {
         }).catch(err => {
             res.status(500).send(err)
         })
+})
+
+// Get user from firebase by ID
+app.get('/seniors/get/all', (req, res) => {
+    db.collection(seniorsCollection).get()
+        .then((snapshot) => {
+            let seniors = []
+
+            snapshot.forEach(doc => {
+                seniors.push(doc.data())
+            })
+
+            res.status(200).json(seniors)
+        })
+        .catch((err) => {
+            res.status(500).send(err)
+    })
 })
 
 const PORT = process.env.PORT || 3200

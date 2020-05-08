@@ -12,4 +12,9 @@ export class UserService {
     create(fname:String, lname:String, highSchool:String, comments:String) {
         return this.http.post(`${environment.apiUrl}/create`, { fname:fname, lname:lname, highSchool:highSchool, comments:comments}).toPromise();
     }
+
+    // Retrieve all senior profiles
+    getAll(){
+        return this.http.get(`${environment.apiUrl}/seniors/get/all`).toPromise();
+    }
 }
