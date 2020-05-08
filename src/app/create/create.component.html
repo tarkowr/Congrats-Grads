@@ -1,0 +1,95 @@
+<div class="container-fluid">
+
+    <div *ngIf="showSnackbar">
+        <app-snackbar [message]="message"></app-snackbar>
+    </div>
+
+    <div class="row">
+
+        <div class="col col-12 col-lg-7 col-xl-8 justify-content-center text-center">
+            <div class="mt-5">
+                <h1 class="f6 text-secondary"><img class="logo" src="../../assets/logos/icon.png">&nbsp;Upload Profile</h1>
+
+                <!--Create Profile Form-->
+                <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="text-left mt-5 offset-override">
+
+                    <div class="row">
+                        <div class="col-12 col-sm-6 col-md-6">
+            
+                        <!--First Name-->
+                        <div class="form-group mb-3">
+                            <label for="firstname" class="text-secondary">First Name <span class="text-danger">*</span></label>
+                            <input type="text" required class="form-control primary-border" id="firstname" name="firstname" 
+                            formControlName="firstname" maxlength="30"
+                            [ngClass]="{ 'is-invalid': submitted && f.firstname.errors, 'danger-border': submitted && f.firstname.errors }">
+
+                            <div *ngIf="submitted && f.firstname.errors" class="invalid-feedback">
+                                <div *ngIf="f.firstname.errors.required">Please provide your first name.</div>
+                            </div>
+                            </div>
+                        </div>
+            
+                        <!--Last Name-->
+                        <div class="col-12 col-sm-6 col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="lastname" class="text-secondary">Last Name <span class="text-danger">*</span></label>
+                                <input type="text" required class="form-control primary-border" id="lastname" name="lastname" 
+                                formControlName="lastname" maxlength="30"
+                                [ngClass]="{ 'is-invalid': submitted && f.lastname.errors, 'danger-border': submitted && f.lastname.errors }">
+
+                                <div *ngIf="submitted && f.lastname.errors" class="invalid-feedback">
+                                    <div *ngIf="f.lastname.errors.required">Please provide your last name.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--School-->
+                    <div class="form-group mb-3">
+                        <label for="school" class="text-secondary">High School <span class="text-danger">*</span></label>
+                        <input type="text" name="school" required formControlName="school" class="form-control primary-border"
+                            [ngClass]="{ 'is-invalid': submitted && f.school.errors, 'danger-border': submitted && f.school.errors }">
+
+                        <div *ngIf="submitted && f.school.errors" class="invalid-feedback">
+                            <div *ngIf="f.school.errors.required">Please provide your university.</div>
+                        </div>
+                    </div>
+
+                    <!--Comments-->
+                    <div class="form-group mb-3">
+                        <label for="comments" class="text-secondary">Tell us about Yourself <span class="text-danger">*</span></label>
+                        <textarea name="comments" rows="3" required formControlName="comments" class="form-control primary-border"
+                            [ngClass]="{ 'is-invalid': submitted && f.comments.errors, 'danger-border': submitted && f.comments.errors }"></textarea>
+
+                        <div *ngIf="submitted && f.comments.errors" class="invalid-feedback">
+                            <div *ngIf="f.comments.errors.required">Please tell us about yourself.</div>
+                        </div>
+                    </div>
+
+                    <!--SUBMIT-->
+                    <div class="form-group">
+                        <button [disabled]="loading" class="btn btn-login btn-primary btn-block mt-4 py-3"><span *ngIf="!loading">UPLOAD PROFILE</span>
+                        <div *ngIf="loading" class="spinner-border text-white" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                        </button>
+                    </div>
+
+                    <div class="text-secondary text-center my-4">
+                        <span class="f6">Already uploaded a profile? &nbsp; <a [routerLink]="['/library']" class="text-primary"><span class="f4">View Library</span></a></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!--IMAGE-->
+        <div class="col col-0 col-lg-5 col-xl-4 col-override p-0" style="min-height: 100vh;">
+            <div class="landing-pic d-none d-lg-block d-xl-block">
+                <!--<div class="w-100 h-75 d-flex justify-content-center align-items-center text-white pb-5">
+                    <h1 class="f3">Honor your Senior</h1>
+                </div>-->
+            </div> 
+        </div>
+    </div>
+</div>
+

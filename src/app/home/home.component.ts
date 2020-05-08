@@ -30,14 +30,17 @@ export class HomeComponent implements OnInit {
       await this.handleScreenSize();
 
       let resetTyped = () => {
-        this.typed.destroy();
-        this.typed = new Typed(this.ref, this.typedConfig);
+        if (this.typed !== null) {
+          this.typed.destroy();
+          this.typed = new Typed(this.ref, this.typedConfig);
+        }
       }
 
       try { 
         resetTyped(); 
       }
       catch(e) {
+        console.log(e)
         setTimeout(() => { resetTyped(); }, 200);
       }
     });
@@ -53,6 +56,12 @@ export class HomeComponent implements OnInit {
       this.mobile = true;
       this.ref = '#mobile-typed';
     }
+  }
+
+  // Cancel the typed event
+  cancel() {
+    this.typed.destroy();
+    this.typed = null;
   }
 
   async ngOnInit() {
