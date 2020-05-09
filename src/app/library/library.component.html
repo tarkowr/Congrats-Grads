@@ -1,7 +1,7 @@
-<app-navbar></app-navbar>
+<app-navbar (click)="cancelSelected($event)"></app-navbar>
 
-<div class="container-fluid bg-lightest pb-4" style="min-height: 100%;">
-    <div class="row" *ngIf="!selected">
+<div class="container-fluid bg-lightest pb-4" style="min-height: 100%;" *ngIf="!selected">
+    <div class="row">
         <div class="col-12">
             <div class="header w-100 text-center">
                 <h1 class="mt-4 display-4 library-title">Class of 2020</h1>
@@ -39,13 +39,13 @@
             </div>
         </div>
     </div>
-
-    <div *ngIf="selected">
-        <app-profile [senior]="selected"></app-profile>
-    </div>
 </div>  
 
-<div class="text-center border-top border-lighter">
+<div *ngIf="selected" style="min-height: calc(100%-75px);">
+    <app-profile [senior]="selected"></app-profile>
+</div>
+
+<div *ngIf="!selected" class="text-center border-top border-lighter">
     <div class="bg-white py-3">
         CongratsGrads 2020 &nbsp; <span class="conditional-ln">|</span> <br class="conditional-br"> &nbsp; Created by <a href="https://richietarkowski.com" target="_blank" class="text-primary">Richie Tarkowski</a>
     </div>

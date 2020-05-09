@@ -1,16 +1,20 @@
-<div>
-    <div id="background"></div>
-    
-    <div id="profile">
-        <div id="left" *ngIf="senior.url">
-            <img src="{{senior.url}}" id="profilepic">
-        </div>
-        <div id="right">
-            <h4 id="classof2020">── CLASS OF 2020 ──</h4>
-            <h1 id="firstname">{{ senior.fname | uppercase }}</h1>
-            <h1 id="lastname">{{ senior.lname | uppercase }}</h1>
-            <h4 id ="highschool">{{ senior.school | uppercase }}</h4>
-            <p id="information">{{ senior.comments }}</p>
+<div class="w-100 h-100" class="wrapper">
+    <div id="background" class="text-center w-100">
+        <div class="w-100 row m-0" [ngClass]="(mobile==false)?'pt-5':'pt-4'">
+            <div id="profile" class="col-10 offset-1 col-lg-8 offset-lg-2 bg-white mb-5">
+                <div class="row px-3 content-container overflow-hidden" [ngClass]="(mobile==false)?'py-5':'py-4'">
+                    <div *ngIf="senior.url" class=" col-12 col-md-6 overflow-hidden">
+                        <img src="{{senior.url}}" class="rounded profile-pic">
+                    </div>
+                    <div class="col-12 col-md-6 text-left overflow-hidden px-0" [ngClass]="(mobile==false)?'pt-0':'pt-2'">
+                        <h6 class="py-0 mb-2 jost" [ngClass]="(mobile==false)?'text-left':'text-center'"><strong>── CLASS OF 2020 ──</strong></h6>
+                        <h2 class="text-left jost text-dark my-0 f6" [ngClass]="{'display-4': mobile==false}">{{ senior.fname | uppercase }}</h2>
+                        <h2 class="text-left jost text-dark my-0 f6" [ngClass]="{'display-4': mobile==false}">{{ senior.lname | uppercase }}</h2>
+                        <div class="mb-0 mt-2 oswald inc-font f6 text-gray">{{ senior.school | uppercase }}</div>
+                        <div class="mt-2">{{ senior.comments }}</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

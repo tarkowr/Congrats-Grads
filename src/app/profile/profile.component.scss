@@ -1,0 +1,33 @@
+$background: linear-gradient(to right, #00b7ff, #aeecff);
+
+#background {
+    background-image: $background;
+    height: 65vh;
+    overflow-y: visible;
+}
+#profile{
+    border-radius: 10px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+}
+.profile-pic{
+    width: 100%;
+    min-width: 250px;
+    max-width: 325px;
+    height: auto;
+    max-height: 433px;
+}
+.hide-overflow {
+    overflow: hidden;
+}
+@media(max-width: 768px) {
+    .profile-pic{
+        min-width: 200px;
+    }
+    #background{
+        background-image: none;
+    }
+    .wrapper {
+        min-height: 100vh !important;
+        background-image: $background;
+    }
+}

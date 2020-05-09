@@ -10,6 +10,7 @@ $theme-colors: (
   "lighter":#F1F8FC,
   "lightest": #fafdff,
   "light-gray": #DAE6ED,
+  "gray": rgb(138, 138, 138),
   "info": #FF247F,
   "success": #00f437
 );
@@ -43,6 +44,13 @@ html, body {
 
 .not-selectable{
     user-select: none;
+}
+
+.jost{
+    font-family: 'Jost', sans-serif;
+}
+.oswald{
+    font-family: 'Oswald', sans-serif;
 }
 
 .inc-font {

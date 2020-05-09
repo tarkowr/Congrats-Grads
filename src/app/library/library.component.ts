@@ -33,6 +33,15 @@ export class LibraryComponent implements OnInit {
     this.selected = senior;
   }
 
+  // Determine whether to exit profile view based on navbar click
+  cancelSelected(event){
+    let target: string = event.target.innerText;
+
+    if (target.toLowerCase() === 'library'){
+      this.selected = undefined;
+    }
+  }
+
   async ngOnInit() {
     this.seniors = await this.getSeniors();
   }
