@@ -12,6 +12,7 @@ import { SnackbarComponent } from './snackbar/snackbar.component';
 import { LibraryComponent } from './library/library.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ProfileComponent } from './profile/profile.component';
+import { PrivacyComponent } from './privacy/privacy.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { ProfileComponent } from './profile/profile.component';
     SnackbarComponent,
     LibraryComponent,
     NavbarComponent,
-    ProfileComponent
+    ProfileComponent,
+    PrivacyComponent
   ],
   imports: [
     BrowserModule,

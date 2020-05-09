@@ -29,7 +29,7 @@ let multerStorage = multer.diskStorage({
     }
 })
 
-const maxSize = 2 * 1024 * 1024
+const maxSize = 3 * 1024 * 1024
 let upload = multer({ 
     storage: multerStorage,
     limits: { fileSize: maxSize }
