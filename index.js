@@ -29,7 +29,11 @@ let multerStorage = multer.diskStorage({
     }
 })
 
-let upload = multer({ storage: multerStorage })
+const maxSize = 2 * 1024 * 1024
+let upload = multer({ 
+    storage: multerStorage,
+    limits: { fileSize: maxSize }
+})
 
 const seniorsCollection = 'seniors'
 
@@ -59,7 +63,8 @@ app.post('/create', upload.single('profile'), async (req, res) => {
     const nameRegex = /^[a-zA-Z0-9 ]{1,20}$/
     const schoolRegex = /^[a-zA-Z0-9 ]{1,40}$/
     const commentRegex = /^.{1,500}$/
-    const fileRegex = /^(image\/)[a-z\-]{1,10}$/
+    const fileTypeRegex = /^(image\/)[a-z\-]{1,10}$/
+    const fileRegex = /^[a-zA-Z0-9\-]{30,39}[.](jpe?g|tiff|png|webp|bmp)$/
 
     // Validate input
     if (!nameRegex.test(fname) || !nameRegex.test(lname) || !schoolRegex.test(school) || !commentRegex.test(comments)) {
@@ -67,11 +72,11 @@ app.post('/create', upload.single('profile'), async (req, res) => {
         return
     }
 
-    if (!fileRegex.test(profile.mimetype)) {
+    // Validate profile image
+    if (!fileTypeRegex.test(profile.mimetype) || !fileRegex.test(profile.filename)) {
         res.status(500).send('Invalid image type')
         return
     }
-
     
     let fileName = profile.filename
     let url = `https://firebasestorage.googleapis.com/v0/b/congratsgrads.appspot.com/o/${fileName}?alt=media`
@@ -91,6 +96,7 @@ app.post('/create', upload.single('profile'), async (req, res) => {
 
     const path = req.file.path
 
+    // Upload profile image to firebase storage
     await storage.upload(path, {
         metadata: {
             cacheControl: 'public, max-age=31536000'
@@ -98,10 +104,7 @@ app.post('/create', upload.single('profile'), async (req, res) => {
     }).then(() => {
         // Delete file on server
         fs.unlink(path, (err) => {
-            if (err) {
-              console.error(err)
-              return
-            }
+            if (err) { return }
         })
     }).catch(err => {
         res.status(500).send(err)
@@ -109,11 +112,11 @@ app.post('/create', upload.single('profile'), async (req, res) => {
 
     // Add senior to firebase
     db.collection(seniorsCollection).doc(id).set(senior)
-    .then(() => {
-        res.status(200).json(senior)
-    }).catch(err => {
-        res.status(500).send(err)
-    })
+        .then(() => {
+            res.status(200).json(senior)
+        }).catch(err => {
+            res.status(500).send(err)
+        })
 })
 
 // Get user from firebase by ID

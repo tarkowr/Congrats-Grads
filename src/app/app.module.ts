@@ -11,6 +11,7 @@ import { CreateComponent } from './create/create.component';
 import { SnackbarComponent } from './snackbar/snackbar.component';
 import { LibraryComponent } from './library/library.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { NavbarComponent } from './navbar/navbar.component';
     CreateComponent,
     SnackbarComponent,
     LibraryComponent,
-    NavbarComponent
+    NavbarComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

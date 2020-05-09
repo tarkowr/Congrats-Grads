@@ -9,7 +9,8 @@ import { UserService } from '../services/user.service';
 })
 export class LibraryComponent implements OnInit {
 
-  seniors:any;
+  seniors: any;
+  selected: any = undefined;
 
   constructor(
     private userService: UserService,
@@ -25,6 +26,11 @@ export class LibraryComponent implements OnInit {
         console.log(err)
         return null;
       });
+  }
+
+  // Display senior profile
+  getProfile(senior) {
+    this.selected = senior;
   }
 
   async ngOnInit() {

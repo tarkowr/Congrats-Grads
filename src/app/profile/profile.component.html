@@ -1,0 +1,16 @@
+<div>
+    <div id="background"></div>
+    
+    <div id="profile">
+        <div id="left" *ngIf="senior.url">
+            <img src="{{senior.url}}" id="profilepic">
+        </div>
+        <div id="right">
+            <h4 id="classof2020">── CLASS OF 2020 ──</h4>
+            <h1 id="firstname">{{ senior.fname | uppercase }}</h1>
+            <h1 id="lastname">{{ senior.lname | uppercase }}</h1>
+            <h4 id ="highschool">{{ senior.school | uppercase }}</h4>
+            <p id="information">{{ senior.comments }}</p>
+        </div>
+    </div>
+</div>

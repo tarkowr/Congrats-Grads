@@ -81,6 +81,7 @@ export class CreateComponent implements OnInit {
         this.message = 'Unable to Create Profile';
         this.showSnackbar = true;
         this.error = true;
+        this.f.profileImg.setErrors( { 'sizeLimit': true } )
       })
       .finally(() => {
         this.loading = false;

@@ -11,7 +11,17 @@
                 <h1 class="f6 text-secondary"><img class="logo" src="../../assets/logos/icon.png">&nbsp;Upload Profile</h1>
 
                 <!--Create Profile Form-->
-                <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="text-left mt-5 offset-override">
+                <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="text-left mt-4 offset-override">
+
+                    <!--Form Errors-->
+                    <div *ngIf="submitted && f.profileImg.errors">
+                        <div *ngIf="f.profileImg.errors.required" class="alert alert-danger" role="alert">
+                            Please upload an image.
+                        </div>
+                        <div *ngIf="f.profileImg.errors.sizeLimit" class="alert alert-danger" role="alert">
+                            Maximum file size is 2MB.
+                        </div>
+                    </div>
 
                     <div class="row">
                         <div class="col-12 col-sm-6 col-md-6">
