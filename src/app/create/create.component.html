@@ -61,7 +61,7 @@
                             [ngClass]="{ 'is-invalid': submitted && f.school.errors, 'danger-border': submitted && f.school.errors }">
 
                         <div *ngIf="submitted && f.school.errors" class="invalid-feedback">
-                            <div *ngIf="f.school.errors.required">Please provide your university.</div>
+                            <div *ngIf="f.school.errors.required">Please provide your high school.</div>
                         </div>
                     </div>
 
@@ -76,6 +76,9 @@
                         <span class="ml-2 f4">
                             {{ fileMessage }}
                         </span>
+                        <div class="text-primary" *ngIf="!submitted || !f.profileImg.errors">
+                            <small class="text-uppercase"><span class="text-danger">*</span> Please upload a vertical profile picture </small>
+                        </div>
                     </div>
 
                     <!--Comments-->
@@ -86,6 +89,7 @@
 
                         <div *ngIf="submitted && f.comments.errors" class="invalid-feedback">
                             <div *ngIf="f.comments.errors.required">Please tell us about yourself.</div>
+                            <div *ngIf="f.comments.errors.pattern">Max limit is 500 characters.</div>
                         </div>
                     </div>
 
@@ -107,11 +111,7 @@
 
         <!--IMAGE-->
         <div class="col col-0 col-lg-5 col-xl-4 col-override p-0" style="min-height: 100vh;">
-            <div class="landing-pic d-none d-lg-block d-xl-block">
-                <!--<div class="w-100 h-75 d-flex justify-content-center align-items-center text-white pb-5">
-                    <h1 class="f3">Honor your Senior</h1>
-                </div>-->
-            </div> 
+            <div class="landing-pic d-none d-lg-block d-xl-block"></div> 
         </div>
     </div>
 </div>
