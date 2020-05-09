@@ -21,6 +21,8 @@ export class CreateComponent implements OnInit {
   fileMessage: string = "No file chosen";
   maxUpload: Boolean = false;
   missingImage: Boolean = true;
+  wrongType: Boolean = false;
+  sizeLimit: Boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -57,6 +59,8 @@ export class CreateComponent implements OnInit {
       this.image = file;
       this.fileMessage = file.name;
       this.missingImage = false;
+      this.sizeLimit = false;
+      this.wrongType = false;
     }
   }
 
@@ -77,13 +81,13 @@ export class CreateComponent implements OnInit {
 
     switch(err.error) {
       case 1001:
-        this.f.profileImg.setErrors( { 'missing': true } );
+        this.missingImage = true;
         break;
       case 1002: 
-        this.f.profileImg.setErrors( { 'wrongType': true } );
+        this.wrongType = true;
         break;
       default:
-        this.f.profileImg.setErrors( { 'sizeLimit': true } );
+        this.sizeLimit = true;
         break;
     }
   }
@@ -126,7 +130,7 @@ export class CreateComponent implements OnInit {
       return;
     }
 
-    if (this.missingImage) {
+    if (this.missingImage || this.wrongType || this.sizeLimit) {
       return;
     }
 
