@@ -13,6 +13,8 @@ import { LibraryComponent } from './library/library.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ProfileComponent } from './profile/profile.component';
 import { PrivacyComponent } from './privacy/privacy.component';
+import { ContactComponent } from './contact/contact.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { PrivacyComponent } from './privacy/privacy.component';
     LibraryComponent,
     NavbarComponent,
     ProfileComponent,
-    PrivacyComponent
+    PrivacyComponent,
+    ContactComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,

@@ -19,11 +19,26 @@
 
                     <!--Form Errors-->
                     <div *ngIf="submitted && f.profileImg.errors">
-                        <div *ngIf="f.profileImg.errors.required" class="alert alert-danger" role="alert">
+                        <div *ngIf="f.profileImg.errors.missing" class="alert alert-danger" role="alert">
                             Please upload an image.
+                        </div>
+                        <div *ngIf="f.profileImg.errors.type" class="alert alert-danger" role="alert">
+                            Invalid image type.
                         </div>
                         <div *ngIf="f.profileImg.errors.sizeLimit" class="alert alert-danger" role="alert">
                             Maximum file size is 3MB.
+                        </div>
+                    </div>
+
+                    <div *ngIf="submitted && missingImage">
+                        <div class="alert alert-danger" role="alert">
+                            Please upload an image.
+                        </div>
+                    </div>
+
+                    <div *ngIf="submitted && maxUpload">
+                        <div class="alert alert-danger" role="alert">
+                            You've reached the maximum number of uploads!
                         </div>
                     </div>
 
@@ -74,7 +89,7 @@
                         <label for="profileImg">Upload Image <span class="text-danger">*</span></label>
                         <br>
                         <label class="btn btn-secondary-light">
-                            Browse <input type="file" hidden name="profileImg" accept="image/x-png,image/jpeg" required formControlName="profileImg"
+                            Browse <input type="file" name="profileImg" hidden accept="image/x-png,image/jpeg" formControlName="profileImg"
                             (change)="selectImage($event)">
                         </label>
                         <span class="ml-2 f4">

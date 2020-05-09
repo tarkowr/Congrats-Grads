@@ -66,15 +66,25 @@ app.post('/create', upload.single('profile'), async (req, res) => {
     const fileTypeRegex = /^(image\/)[a-z\-]{1,10}$/
     const fileRegex = /^[a-zA-Z0-9\-]{30,39}[.](jpe?g|tiff|png|webp|bmp)$/
 
-    // Validate input
+    // Image upload error codes
+    const missingImage = '1001'
+    const wrongType = '1002'
+
+    // Validate text input
     if (!nameRegex.test(fname) || !nameRegex.test(lname) || !schoolRegex.test(school) || !commentRegex.test(comments)) {
         res.status(500).send('Invalid input')
         return
     }
 
-    // Validate profile image
+    // Check if uploaded file exists
+    if (!profile) {
+        res.status(500).send(missingImage)
+        return
+    }
+
+    // Validate profile image type
     if (!fileTypeRegex.test(profile.mimetype) || !fileRegex.test(profile.filename)) {
-        res.status(500).send('Invalid image type')
+        res.status(500).send(wrongType)
         return
     }
     

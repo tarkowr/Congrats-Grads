@@ -5,16 +5,14 @@
     width: 200px !important;
     max-height: 300px;
 }
-.conditional-br {
-    display: none;
+.back-btn {
+    position: fixed;
+    top: 85px;
+    left: 10px;
+    z-index: 100;
+    opacity: .8;
 }
 @media(max-width: 992px) {
-    .conditional-br {
-        display: block;
-    }
-    .conditional-ln {
-        display: none;
-    }
     .create-profile-wrapper{
         text-align: center;
     }

@@ -42,6 +42,11 @@ export class LibraryComponent implements OnInit {
     }
   }
 
+  // Exit profile view
+  cancel() {
+    this.selected = undefined;
+  }
+
   async ngOnInit() {
     this.seniors = await this.getSeniors();
   }

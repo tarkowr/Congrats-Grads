@@ -42,12 +42,11 @@
 </div>  
 
 <div *ngIf="selected" style="min-height: calc(100%-75px);">
+    <button class="btn btn-secondary back-btn inc-font py-2 px-3"
+     (click)="cancel()"><i class="fa fa-arrow-circle-left"></i></button>
     <app-profile [senior]="selected"></app-profile>
 </div>
 
-<div *ngIf="!selected" class="text-center border-top border-lighter">
-    <div class="bg-white py-3">
-        CongratsGrads 2020 &nbsp; <span class="conditional-ln">|</span> <br class="conditional-br"> <br class="conditional-br"> &nbsp; Created by <a href="https://richietarkowski.com" target="_blank" class="text-primary">Richie Tarkowski</a>
-        <br class="conditional-br"> and <span class="text-primary">Alyssa Tarkowski</span>
-    </div>
+<div *ngIf="!selected" class="border-top border-lighter">
+    <app-footer></app-footer>
 </div>

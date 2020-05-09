@@ -4,6 +4,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { CreateComponent } from './create/create.component';
 import { LibraryComponent } from './library/library.component';
 import { PrivacyComponent } from './privacy/privacy.component';
+import { ContactComponent } from './contact/contact.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -11,5 +12,6 @@ export const routes: Routes = [
     { path: 'create', component: CreateComponent },
     { path: 'library', component: LibraryComponent },
     { path: 'privacy', component: PrivacyComponent },
+    { path: 'contact',  component: ContactComponent },
     { path: '**', component: PageNotFoundComponent }
 ];

@@ -19,6 +19,8 @@ export class CreateComponent implements OnInit {
   localStorage: LocalStorage;
   image: any;
   fileMessage: string = "No file chosen";
+  maxUpload: Boolean = false;
+  missingImage: Boolean = true;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -41,7 +43,7 @@ export class CreateComponent implements OnInit {
       school: ['',  Validators.compose([
         Validators.required, Validators.pattern(/^[a-zA-Z0-9 ]{1,40}$/)
       ])],
-      profileImg: ['', Validators.required],
+      profileImg: [''],
       comments: ['',  Validators.compose([
         Validators.required, Validators.pattern(/^.{1,500}$/)
       ])]
@@ -54,7 +56,66 @@ export class CreateComponent implements OnInit {
       const file = event.target.files[0];
       this.image = file;
       this.fileMessage = file.name;
+      this.missingImage = false;
     }
+  }
+
+  // Prevent too many uploads from single user
+  validateUploadCount(){
+    const max = 2;
+    let uploads:[] = this.localStorage.GetUploaded();
+
+    if (!uploads) return true;
+
+    if (uploads.length >= max) return false;
+    else return true;
+  }
+
+  // Display errors based on type
+  handleError(err) {
+    if (!err) return;
+
+    switch(err.error) {
+      case 1001:
+        this.f.profileImg.setErrors( { 'missing': true } );
+        break;
+      case 1002: 
+        this.f.profileImg.setErrors( { 'wrongType': true } );
+        break;
+      default:
+        this.f.profileImg.setErrors( { 'sizeLimit': true } );
+        break;
+    }
+  }
+
+  // Successful profile upload
+  onSuccess(data) {
+    this.submitted = false;
+    this.createForm.reset();
+    this.message = 'Successfully Uploaded!';
+    this.showSnackbar = true;
+    this.error = false;
+    this.localStorage.SetUploaded(data['id']);
+  }
+
+  // Error on profile upload
+  onError(err) {
+    this.message = 'Unable to Create Profile';
+    this.showSnackbar = true;
+    this.error = true;
+    this.handleError(err);
+  }
+
+  // After handling profile upload response
+  onComplete() {
+    this.loading = false;
+
+    setTimeout(() => {
+      this.showSnackbar = false;
+      if (!this.error) {
+        this.router.navigate(['library']);
+      }
+    }, (this.error) ? 3000 : 2000);
   }
 
   // Create form on submit
@@ -65,33 +126,26 @@ export class CreateComponent implements OnInit {
       return;
     }
 
+    if (this.missingImage) {
+      return;
+    }
+
+    if (!this.validateUploadCount()){
+      this.maxUpload = true;
+      return;
+    }
+
     this.loading = true;
 
     this.userService.create(this.f.firstname.value, this.f.lastname.value, this.f.school.value, this.f.comments.value, this.image)
       .then(data => {
-        this.submitted = false;
-        this.createForm.reset();
-
-        this.message = 'Successfully Uploaded!';
-        this.showSnackbar = true;
-        this.error = false;
-        this.localStorage.SetUploaded(data['id']);
+        this.onSuccess(data);
       })
       .catch(err => {
-        this.message = 'Unable to Create Profile';
-        this.showSnackbar = true;
-        this.error = true;
-        this.f.profileImg.setErrors( { 'sizeLimit': true } )
+        this.onError(err);
       })
       .finally(() => {
-        this.loading = false;
-
-        setTimeout(() => {
-          this.showSnackbar = false;
-          if (!this.error) {
-            this.router.navigate(['library']);
-          }
-        }, (this.error) ? 3000 : 2000);
+        this.onComplete();
       });
   }
 
