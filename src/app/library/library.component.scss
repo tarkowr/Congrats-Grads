@@ -12,8 +12,23 @@
     z-index: 100;
     opacity: .8;
 }
-@media(max-width: 992px) {
+.search-input {
+    border-radius: 20px;
+    max-width: 500px;
+}
+.search-input::placeholder {
+    color: gray;
+}
+.create-profile-wrapper{
+    position: static;
+}
+.create-profile-wrapper > a > button:hover{
+    background-color: #26B1FF !important;
+}
+@media(min-width: 992px) {
     .create-profile-wrapper{
-        text-align: center;
+        position: absolute;
+        top: 30px;
+        left: 40px;
     }
 }

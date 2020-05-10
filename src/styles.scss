@@ -45,6 +45,9 @@ html, body {
 .not-selectable{
     user-select: none;
 }
+.primary-border{
+    border: 1px solid rgba(38, 177, 255, .35);
+}
 
 .jost{
     font-family: 'Jost', sans-serif;

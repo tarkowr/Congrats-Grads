@@ -14,15 +14,15 @@ export class ProfileComponent implements OnInit {
 
   constructor() { }
 
-    // Check if screen is mobile
-    handleScreenSize(){
-      if (window.innerWidth >= this.breakPoint) {
-        this.mobile = false;
-      }
-      else {
-        this.mobile = true;
-      }
+  // Check if screen is mobile
+  handleScreenSize(){
+    if (window.innerWidth >= this.breakPoint) {
+      this.mobile = false;
     }
+    else {
+      this.mobile = true;
+    }
+  }
 
   // Handle screen resize
   attachResizeListener(){

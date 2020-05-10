@@ -60,8 +60,8 @@ app.post('/create', upload.single('profile'), async (req, res) => {
     let comments = req.body.comments
     let profile = req.file
 
-    const nameRegex = /^[a-zA-Z0-9 ]{1,20}$/
-    const schoolRegex = /^[a-zA-Z0-9 ]{1,40}$/
+    const nameRegex = /^[a-zA-Z0-9 \-]{1,20}$/
+    const schoolRegex = /^[a-zA-Z0-9 \-]{1,40}$/
     const commentRegex = /^.{1,500}$/
     const fileTypeRegex = /^(image\/)[a-z\-]{1,10}$/
     const fileRegex = /^[a-zA-Z0-9\-]{30,39}[.](jpe?g|tiff|png|webp|bmp)$/

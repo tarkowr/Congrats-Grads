@@ -37,13 +37,13 @@ export class CreateComponent implements OnInit {
   buildUserForm() {
     this.createForm = this.formBuilder.group({
       firstname: ['',  Validators.compose([
-        Validators.required, Validators.pattern(/^[a-zA-Z0-9 ]{1,20}$/)
+        Validators.required, Validators.pattern(/^[a-zA-Z0-9 \-]{1,20}$/)
       ])],
       lastname: ['',  Validators.compose([
-        Validators.required, Validators.pattern(/^[a-zA-Z0-9 ]{1,20}$/)
+        Validators.required, Validators.pattern(/^[a-zA-Z0-9 \-]{1,20}$/)
       ])],
       school: ['',  Validators.compose([
-        Validators.required, Validators.pattern(/^[a-zA-Z0-9 ]{1,40}$/)
+        Validators.required, Validators.pattern(/^[a-zA-Z0-9 \-]{1,40}$/)
       ])],
       profileImg: [''],
       comments: ['',  Validators.compose([
