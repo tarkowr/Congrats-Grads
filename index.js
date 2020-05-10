@@ -7,6 +7,11 @@ const cookieParser = require('cookie-parser')
 const _ = require('underscore')
 const uuid = require('uuid')
 const fs = require('fs')
+const NodeCache = require('node-cache')
+
+const cache = new NodeCache()
+const ttl = 60 * 60;
+const cacheKey = 'seniors'
 
 let admin = require('firebase-admin')
 let serviceAccount = require('./.env/congratsgrads-firebase-adminsdk-x83rw-55675f8283.json')
@@ -125,6 +130,13 @@ app.post('/create', upload.single('profile'), async (req, res) => {
     // Add senior to firebase
     db.collection(seniorsCollection).doc(id).set(senior)
         .then(() => {
+            let cachedResults = cache.get(cacheKey)
+
+            if (cachedResults){
+                cachedResults.push(senior)
+                cache.set(cacheKey, cachedResults)
+            }
+
             res.status(200).json(senior)
         }).catch(err => {
             res.status(500).send(err)
@@ -133,6 +145,13 @@ app.post('/create', upload.single('profile'), async (req, res) => {
 
 // Get user from firebase by ID
 app.get('/seniors/get/all', (req, res) => {
+    let cachedResults = cache.get(cacheKey)
+
+    if (cachedResults) {
+        res.status(200).json(cachedResults)
+        return
+    }
+
     db.collection(seniorsCollection).get()
         .then((snapshot) => {
             let seniors = []
@@ -141,11 +160,12 @@ app.get('/seniors/get/all', (req, res) => {
                 seniors.push(doc.data())
             })
 
+            cache.set(cacheKey, seniors, ttl)
             res.status(200).json(seniors)
         })
         .catch((err) => {
             res.status(500).send(err)
-    })
+        })
 })
 
 // Redirect any other requests to the site
@@ -156,4 +176,19 @@ app.get('*', function(req, res) {
 const PORT = process.env.PORT || 3200
 app.listen(PORT, function(){
     console.log(`Listening on port ${PORT}`)
+
+    db.collection(seniorsCollection).get()
+        .then((snapshot) => {
+            let seniors = []
+
+            snapshot.forEach(doc => {
+                seniors.push(doc.data())
+            })
+
+            cache.del(cacheKey)
+            cache.set(cacheKey, seniors, ttl)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
 })
