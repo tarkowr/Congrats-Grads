@@ -93,6 +93,7 @@ app.post('/create', upload.single('profile'), async (req, res) => {
 
     const id = uuid.v4()
     const uploaded = new Date()
+    const schoolYear = 2020
 
     const senior = {
         fname: fname,
@@ -101,7 +102,8 @@ app.post('/create', upload.single('profile'), async (req, res) => {
         comments: comments,
         id: id,
         uploaded: uploaded,
-        url: url
+        url: url,
+        year: schoolYear
     }
 
     const path = req.file.path
@@ -145,6 +147,11 @@ app.get('/seniors/get/all', (req, res) => {
             res.status(500).send(err)
     })
 })
+
+// Redirect any other requests to the site
+app.get('*', function(req, res) {
+    res.redirect('https://congratsgrads.web.app')
+});
 
 const PORT = process.env.PORT || 3200
 app.listen(PORT, function(){
