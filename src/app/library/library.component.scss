@@ -6,11 +6,11 @@
     max-height: 300px;
 }
 .back-btn {
-    position: fixed;
+    position: sticky;
     top: 85px;
     left: 10px;
     z-index: 100;
-    opacity: .8;
+    opacity: 1;
 }
 .search-input {
     border-radius: 20px;
