@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router'
+import { Router, ActivatedRoute, Params } from '@angular/router'
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../services/user.service';
 
@@ -20,11 +20,14 @@ export class LibraryComponent implements OnInit {
   message: string = 'No Results!';
   mobile: Boolean = false;
   breakPoint: Number = 992;
+  showSnackbar: Boolean = false;
+  snackbarMessage:string;
 
   constructor(
     private userService: UserService,
     private formBuilder: FormBuilder,
-    private router: Router) { }
+    private router: Router,
+    private activatedRoute: ActivatedRoute) { }
 
   get f() { return this.searchForm.controls }
 
@@ -126,6 +129,34 @@ export class LibraryComponent implements OnInit {
     }
   }
 
+  // Get senior by ID
+  lookupSenior(id:string) {
+    let found = undefined;
+
+    this.seniors.forEach(s => {
+      if (s.id === id){
+        found = s;
+      }
+    });
+
+    return found;
+  }
+
+  // Get senior profile by query string ID
+  handleProfileLink(id:string) {
+    let senior = this.lookupSenior(id);
+
+    if (!senior){
+      this.showSnackbar = true;
+      this.snackbarMessage = 'Unable to find profile!';
+      setTimeout(() => this.showSnackbar = false, 3000);
+
+      return;
+    }
+
+    this.selected = senior;
+  }
+
   async ngOnInit() {
     this.buildSearchForm();
     this.handleScreenSize();
@@ -135,6 +166,12 @@ export class LibraryComponent implements OnInit {
 
     if (this.seniors) {
       this.backup = this.copyArrayOfObj(this.seniors);
+
+      this.activatedRoute.queryParams.subscribe(params => {
+        const id = params['profile']
+        if (!id) return;
+        this.handleProfileLink(id);
+      });
     }
   }
 

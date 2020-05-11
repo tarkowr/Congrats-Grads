@@ -1,5 +1,9 @@
 <app-navbar (click)="cancelSelected($event)"></app-navbar>
 
+<div *ngIf="showSnackbar">
+    <app-snackbar [message]="snackbarMessage"></app-snackbar>
+</div>
+
 <div class="container-fluid bg-lightest pb-4" style="min-height: 100%;" *ngIf="!selected">
     <div class="row">
         <div class="col-12">

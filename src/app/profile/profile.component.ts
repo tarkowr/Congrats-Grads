@@ -11,6 +11,7 @@ export class ProfileComponent implements OnInit {
 
   mobile: Boolean = false;
   breakPoint: Number = 768;
+  showShare: Boolean = false;
 
   constructor() { }
 
@@ -31,10 +32,15 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  toggleShare(){
+    this.showShare = !this.showShare;
+  }
+
   ngOnInit() {
     window.scrollTo(0, 0);
     this.handleScreenSize();
     this.attachResizeListener();
+    this.senior['shareUrl'] = 'https://congratsgrads.web.app/library?profile=' + this.senior.id;
   }
 
 }
