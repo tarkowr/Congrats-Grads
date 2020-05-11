@@ -104,14 +104,14 @@
                     </div>
 
                     <!--SUBMIT-->
-                    <div class="form-group">
+                    <div class="form-group mb-2">
                         <button [disabled]="loading" class="btn btn-login btn-primary btn-block mt-4 py-3"><span *ngIf="!loading">UPLOAD PROFILE</span>
                         <div *ngIf="loading" class="spinner-border text-white" role="status">
                             <span class="sr-only">Loading...</span>
                         </div>
                         </button>
                     </div>
-                    <div class="text-center">By clicking this button, you agree to our <a [routerLink]="['/privacy']" target="_blank" class="text-primary"><span class="f2">Privacy Policy</span></a></div>
+                    <div class="text-center small">By clicking this button, you agree to our <a [routerLink]="['/terms']" target="_blank" class="text-primary"><span class="f2">Terms and Conditions</span></a></div>
 
                     <div class="text-secondary text-center my-4">
                         <span class="f6">Already uploaded a profile? &nbsp; <a [routerLink]="['/library']" class="text-primary"><span class="f4">View Library</span></a></span>

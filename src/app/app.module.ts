@@ -15,6 +15,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { PrivacyComponent } from './privacy/privacy.component';
 import { ContactComponent } from './contact/contact.component';
 import { FooterComponent } from './footer/footer.component';
+import { TermsComponent } from './terms/terms.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { FooterComponent } from './footer/footer.component';
     ProfileComponent,
     PrivacyComponent,
     ContactComponent,
-    FooterComponent
+    FooterComponent,
+    TermsComponent
   ],
   imports: [
     BrowserModule,

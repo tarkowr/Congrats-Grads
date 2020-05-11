@@ -39,8 +39,18 @@
                             <span>Create Senior Profile</span>
                         </button>
                     </a>
-                    <div class="inc-font f3" [ngClass]="(mobile==false)?'mt-4':'mt-3'">
+                    <div class="inc-font f3 mt-3">
                         <span *ngIf="!mobile">Already Uploaded? &nbsp; <br class="conditional-br"></span> <a (click)="cancel()" [routerLink]="['/library']" class="text-primary">View Library</a>
+                    </div>
+                    <div class="text-center mt-4">
+                        <h1>
+                            <a target="_blank" href="https://www.instagram.com/congratsgrads2020/">
+                                <i class="fa fa-instagram text-gray social"></i>
+                            </a> &nbsp;
+                            <a target="_blank" href="https://www.facebook.com/congratsGrads2020/">
+                                <i class="fa fa-facebook-square text-gray social"></i>
+                            </a>
+                        </h1>
                     </div>
                 </div>
             </div>

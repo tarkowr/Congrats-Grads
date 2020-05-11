@@ -17,7 +17,7 @@
                 <h3 class="mb-4 f1"> &mdash; Senior Library &mdash; </h3>
             </div>
 
-            <div class="my-3 mx-4">
+            <div class="my-3" [ngClass]="(mobile==false)?'mx-4':'mx-2'">
                 <div class="create-profile-wrapper w-100 text-center" *ngIf="mobile">
                     <a [routerLink]="['/create']">
                         <button class="btn btn-primary inc-font py-2 px-4">
@@ -35,7 +35,7 @@
                 </form>
             </div>
 
-            <div *ngIf="seniors" class="row equal mx-2">
+            <div *ngIf="seniors" class="row equal" [ngClass]="(mobile==false)?'mx-2':'mx-0'">
                 <div *ngFor="let senior of seniors" class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                     <div class="bg-white border border-light-gray rounded py-3 h-100 w-100 text-center mx-auto d-flex overflow-hidden" (click)="getProfile(senior)">
                         <div class="align-self-center justify-content-center w-100">
