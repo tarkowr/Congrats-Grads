@@ -37,7 +37,8 @@
 
             <div *ngIf="seniors" class="row equal" [ngClass]="(mobile==false)?'mx-2':'mx-0'">
                 <div *ngFor="let senior of seniors" class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
-                    <div class="bg-white border border-light-gray rounded py-3 h-100 w-100 text-center mx-auto d-flex overflow-hidden" (click)="getProfile(senior)">
+                    <div class="bg-white border border-light-gray rounded py-3 h-100 w-100 text-center mx-auto d-flex overflow-hidden"
+                     (click)="getProfile(senior)" id="{{senior.id}}">
                         <div class="align-self-center justify-content-center w-100">
                             <div *ngIf="senior.url" class="w-100 text-center">
                                 <img src="{{senior.url}}" class="profile-pic rounded">
@@ -63,6 +64,10 @@
                 <div class="ml-4 inc-font text-gray f4">
                   {{ message }}
                 </div>
+            </div>
+
+            <div class="text-center mt-2">
+                Experiencing an issue? <a [routerLink]="['/contact']" class="text-primary">Let us know!</a>
             </div>
         </div>
     </div>

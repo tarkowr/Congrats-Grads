@@ -76,7 +76,11 @@ export class LibraryComponent implements OnInit {
 
   // Exit profile view
   cancel() {
+    let id = this.selected.id;
     this.selected = undefined;
+    setTimeout(() => {
+      document.getElementById(id).scrollIntoView({ behavior: 'auto'});
+    }, 0);
   }
 
   // Initialize the search form

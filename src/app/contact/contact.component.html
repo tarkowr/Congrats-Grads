@@ -4,12 +4,16 @@
     <app-snackbar [message]="message"></app-snackbar>
 </div>
 
-<div class="container-fluid pt-3 pb-4 px-4 w-100 bg-lightest">
+<div class="container-fluid pt-3 pb-4 px-4 w-100 mx-auto text-center bg-lightest">
     <h2>Contact Us</h2>
+
+    <div class="mb-3 mt-3 f4">
+        Have any questions or comments? Found an error? Send us a message!
+    </div>
 
     <div class="row">
         <!--Send Message Form-->
-        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="text-left mt-3 col-12 col-md-6 col-lg-4">
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="text-left mt-3 col-12 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
 
             <!--Sender Email-->
             <div class="form-group mb-3">
@@ -46,7 +50,7 @@
         </form>
     </div>
 
-    <div class="my-3">You can reach us at <a class="text-primary" href="mailto:congratsgrads2020@gmail.com">congratsgrads2020@gmail.com</a></div>
+    <div class="mt-3 mb-5">You can also reach us at <a class="text-primary" href="mailto:congratsgrads2020@gmail.com">congratsgrads2020@gmail.com</a></div>
 </div>
 
 <div class="border-top border-lighter">

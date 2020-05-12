@@ -37,7 +37,7 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit() {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'auto' });
     this.handleScreenSize();
     this.attachResizeListener();
     this.senior['shareUrl'] = 'https://congratsgrads.web.app/library?profile=' + this.senior.id;
