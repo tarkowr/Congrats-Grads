@@ -8,9 +8,11 @@ const _ = require('underscore')
 const uuid = require('uuid')
 const fs = require('fs')
 const NodeCache = require('node-cache')
+const config = require('./.env/config.json')
+const nodemailer = require('nodemailer')
 
 const cache = new NodeCache()
-const ttl = 60 * 60;
+const ttl = 24 * 60 * 60; // 24 hour cache
 const cacheKey = 'seniors'
 
 let admin = require('firebase-admin')
@@ -166,6 +168,46 @@ app.get('/seniors/get/all', (req, res) => {
         .catch((err) => {
             res.status(500).send(err)
         })
+})
+
+// Send emails to congratsgrads from contact form
+app.post('/contact/send', (req, res) => {
+    let sender = req.body.sender
+    let message = req.body.message
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}/
+    const messageRegex = /^.{1,1000}$/
+
+    if (!emailRegex.test(sender) || !messageRegex.test(message)){
+        res.status(500).send()
+        return;
+    }
+
+    let client = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        requireTLS: false,
+        auth: {
+            user: config.email,
+            pass: config.password
+        }
+    })
+
+    const mailOptions = {
+        from: sender + ' <' + config.email + '>',
+        to: 'congratsgrads2020@gmail.com',
+        subject: 'Contact Form',
+        text: message
+    }
+
+    client.sendMail(mailOptions, (error, info) => {
+        if (error){
+            res.status(500).send(error)
+        } else {
+            res.status(200).send()
+        }
+    })
 })
 
 // Redirect any other requests to the site

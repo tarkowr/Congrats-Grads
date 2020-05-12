@@ -1,8 +1,52 @@
 <app-navbar></app-navbar>
 
+<div *ngIf="showSnackbar">
+    <app-snackbar [message]="message"></app-snackbar>
+</div>
+
 <div class="container-fluid pt-3 pb-4 px-4 w-100 bg-lightest">
     <h2>Contact Us</h2>
-    <div class="mb-3">You can reach us at <a class="text-primary" href="mailto:congratsgrads2020@gmail.com">congratsgrads2020@gmail.com</a></div>
+
+    <div class="row">
+        <!--Send Message Form-->
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="text-left mt-3 col-12 col-md-6 col-lg-4">
+
+            <!--Sender Email-->
+            <div class="form-group mb-3">
+                <label for="sender" class="text-secondary">Email <span class="text-danger">*</span></label>
+                <input type="text" name="sender" required formControlName="sender" class="form-control primary-border"
+                    [ngClass]="{ 'is-invalid': submitted && f.sender.errors, 'danger-border': submitted && f.sender.errors }">
+
+                <div *ngIf="submitted && f.sender.errors" class="invalid-feedback">
+                    <div *ngIf="f.sender.errors.required">Please provide your email.</div>
+                    <div *ngIf="f.sender.errors.pattern">Invalid email address.</div>
+                </div>
+            </div>
+
+            <!--Message-->
+            <div class="form-group mb-3">
+                <label for="message" class="text-secondary">Message <span class="text-danger">*</span></label>
+                <textarea name="message" rows="3" required formControlName="message" class="form-control primary-border"
+                    [ngClass]="{ 'is-invalid': submitted && f.message.errors, 'danger-border': submitted && f.message.errors }"></textarea>
+
+                <div *ngIf="submitted && f.message.errors" class="invalid-feedback">
+                    <div *ngIf="f.message.errors.required">Please enter a message.</div>
+                    <div *ngIf="f.message.errors.pattern">Max limit is 1000 characters.</div>
+                </div>
+            </div>
+
+            <!--SUBMIT-->
+            <div class="form-group mb-2">
+                <button [disabled]="loading" class="btn btn-login btn-primary btn-block mt-4 py-3"><span *ngIf="!loading">SEND MESSAGE</span>
+                    <div *ngIf="loading" class="spinner-border text-white" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="my-3">You can reach us at <a class="text-primary" href="mailto:congratsgrads2020@gmail.com">congratsgrads2020@gmail.com</a></div>
 </div>
 
 <div class="border-top border-lighter">
