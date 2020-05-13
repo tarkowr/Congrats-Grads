@@ -14,6 +14,7 @@ export class LibraryComponent implements OnInit {
   backup: any[];
   selected: any = undefined;
   searchForm: any;
+  orderForm: any;
   submitted: Boolean = false;
   loading: Boolean = false;
   noResults: Boolean = false;
@@ -22,6 +23,23 @@ export class LibraryComponent implements OnInit {
   breakPoint: Number = 992;
   showSnackbar: Boolean = false;
   snackbarMessage:string;
+  selectOptions = [
+    {
+      key: 1,
+      value: 'Alphabetical',
+      selected: true
+    },
+    {
+      key: 2,
+      value: 'Newest',
+      selected: false
+    },
+    {
+      key: 3,
+      value: 'Oldest',
+      selected: false
+    }
+  ];
 
   constructor(
     private userService: UserService,
@@ -30,6 +48,8 @@ export class LibraryComponent implements OnInit {
     private activatedRoute: ActivatedRoute) { }
 
   get f() { return this.searchForm.controls }
+
+  get o() { return this.orderForm.controls }
 
   // Check if screen is mobile
   handleScreenSize(){
@@ -95,6 +115,15 @@ export class LibraryComponent implements OnInit {
     })
   }
 
+  // Initialize the search form
+  buildOrderForm() {
+    this.orderForm = this.formBuilder.group({
+      order: [this.selectOptions[0].key,  Validators.compose([
+        Validators.required
+      ])]
+    })
+  }
+
   // Restore seniors array from backup
   restoreBackup() {
     this.seniors = this.copyArrayOfObj(this.backup);
@@ -113,6 +142,30 @@ export class LibraryComponent implements OnInit {
 
       if(aFullName < bFullName) { return -1; }
       if(aFullName > bFullName) { return 1; }
+      return 0;
+    });
+  }
+
+  // Sort Seniors by Oldest Date Uploaded
+  sortByDateOld(obj:any[]) {
+    return obj.sort((a, b) => {
+      let aDate = a.uploaded._seconds;
+      let bDate = b.uploaded._seconds;
+
+      if(aDate < bDate) { return -1; }
+      if(aDate > bDate) { return 1; }
+      return 0;
+    });
+  }
+
+  // Sort Seniors by Newest Date Uploaded
+  sortByDateNew(obj:any[]) {
+    return obj.sort((a, b) => {
+      let aDate = a.uploaded._seconds;
+      let bDate = b.uploaded._seconds;
+
+      if(aDate < bDate) { return 1; }
+      if(aDate > bDate) { return -1; }
       return 0;
     });
   }
@@ -148,6 +201,23 @@ export class LibraryComponent implements OnInit {
     }
   }
 
+  // Order seniors by option
+  order() {
+    switch(this.o.order.value) {
+      case '2':
+        this.seniors = this.sortByDateNew(this.backup);
+        break;
+      case '3':
+        this.seniors = this.sortByDateOld(this.backup);
+        break;
+      default:
+        this.seniors = this.sortByName(this.backup);
+        break;
+    }
+
+    this.onSearch();
+  }
+
   // Get senior by ID
   lookupSenior(id:string) {
     let found = undefined;
@@ -180,6 +250,8 @@ export class LibraryComponent implements OnInit {
 
   async ngOnInit() {
     this.buildSearchForm();
+    this.buildOrderForm();
+
     this.handleScreenSize();
     this.attachResizeListener();
 

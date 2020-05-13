@@ -25,14 +25,26 @@
                         </button>
                     </a>
                 </div>
-    
-                <!--Search Seniors-->
-                <form [formGroup]="searchForm" class="mt-3">
-                    <div class="form-group">
-                        <input type="search" required class="form-control primary-border px-3 search-input" id="search" name="search" placeholder="Search" 
-                        formControlName="search" (input)="onSearch()" maxlength="100">
-                    </div>
-                </form>
+
+                <div class="row mt-3">
+                    <!--Search-->
+                    <form [formGroup]="searchForm" class="col-12 col-md-8">
+                        <div class="form-group mb-2">
+                            <input type="search" required class="form-control primary-border px-3 search-input" id="search" name="search" placeholder="Search" 
+                            formControlName="search" (input)="onSearch()" maxlength="100">
+                        </div>
+                    </form>
+
+                    <!--Order By-->
+                    <form [formGroup]="orderForm" class="col-12 col-md-4">
+                        <div class="form-group select-form-group mb-0">
+                            <select required class="form-control primary-border px-3 order-select" id="order" name="order" 
+                            formControlName="order" (change)="order()">
+                                <option *ngFor="let opt of selectOptions" [value]="opt.key" [selected]="opt.selected == true">{{ opt.value }}</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
             </div>
 
             <div *ngIf="seniors" class="row equal" [ngClass]="(mobile==false)?'mx-2':'mx-0'">
