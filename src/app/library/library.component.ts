@@ -78,9 +78,12 @@ export class LibraryComponent implements OnInit {
   cancel() {
     let id = this.selected.id;
     this.selected = undefined;
-    setTimeout(() => {
-      document.getElementById(id).scrollIntoView({ behavior: 'auto'});
-    }, 0);
+
+    if (this.mobile){
+      setTimeout(() => {
+        document.getElementById(id).scrollIntoView({ behavior: 'auto'});
+      }, 0);
+    }
   }
 
   // Initialize the search form
@@ -100,6 +103,18 @@ export class LibraryComponent implements OnInit {
   // Copy arrow of objects w/o reference to properties
   copyArrayOfObj(arr:any[]){
     return arr.map(obj => ({ ...obj }));
+  }
+
+  // Sort Seniors by Full Name
+  sortByName(obj:any[]){
+    return obj.sort((a, b) => {
+      let aFullName = (a.fname + ' ' + a.lname).trim().toLowerCase().replace('  ', ' ');
+      let bFullName = (b.fname + ' ' + b.fname).trim().toLowerCase().replace('  ', ' ');
+
+      if(aFullName < bFullName) { return -1; }
+      if(aFullName > bFullName) { return 1; }
+      return 0;
+    });
   }
 
   // Determine whether a search matches a senior
@@ -151,9 +166,11 @@ export class LibraryComponent implements OnInit {
     let senior = this.lookupSenior(id);
 
     if (!senior){
-      this.showSnackbar = true;
-      this.snackbarMessage = 'Unable to find profile!';
-      setTimeout(() => this.showSnackbar = false, 3000);
+      setTimeout(() => {
+        this.showSnackbar = true;
+        this.snackbarMessage = 'Unable to find profile!';
+        setTimeout(() => this.showSnackbar = false, 3000);
+      }, 1000);
 
       return;
     }
@@ -169,6 +186,7 @@ export class LibraryComponent implements OnInit {
     this.seniors = await this.getSeniors();
 
     if (this.seniors) {
+      this.seniors = this.sortByName(this.seniors);
       this.backup = this.copyArrayOfObj(this.seniors);
 
       this.activatedRoute.queryParams.subscribe(params => {
