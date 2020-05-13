@@ -10,6 +10,8 @@ const fs = require('fs')
 const NodeCache = require('node-cache')
 const config = require('./.env/config.json')
 const nodemailer = require('nodemailer')
+const Filter = require('bad-words')
+let filter = new Filter()
 
 const cache = new NodeCache()
 const ttl = 24 * 60 * 60; // 24 hour cache
@@ -81,6 +83,7 @@ app.post('/create', upload.single('profile'), async (req, res) => {
     // Image upload error codes
     const missingImage = '1001'
     const wrongType = '1002'
+    const curseWords = '1003'
 
     // Validate text input
     if (!nameRegex.test(fname) || !nameRegex.test(lname) || !schoolRegex.test(school) || !commentRegex.test(comments)) {
@@ -99,12 +102,28 @@ app.post('/create', upload.single('profile'), async (req, res) => {
         res.status(500).send(wrongType)
         return
     }
+
+    let fnameBackup = fname
+    let lnameBackup = lname
+    let schoolBackup = school
+    let commentsBackup = comments
+
+    fname = filter.clean(fname)
+    lname = filter.clean(lname)
+    school = filter.clean(school)
+    comments = filter.clean(comments)
+
+    if (fname != fnameBackup || lname != lnameBackup || school != schoolBackup || comments != commentsBackup) {
+        res.status(500).send(curseWords)
+        return
+    }
     
     let fileName = profile.filename
     let url = `https://firebasestorage.googleapis.com/v0/b/congratsgrads.appspot.com/o/${fileName}?alt=media`
 
     const id = uuid.v4()
     const uploaded = new Date()
+    const timestamp = uploaded.getTime()
     const schoolYear = 2020
 
     const senior = {
@@ -141,6 +160,7 @@ app.post('/create', upload.single('profile'), async (req, res) => {
             let cachedResults = cache.get(cacheKey)
 
             if (cachedResults){
+                senior['uploaded'] = { _seconds: Math.floor(timestamp/1000), _nanoseconds:0 }
                 cachedResults.push(senior)
                 cache.set(cacheKey, cachedResults)
             }
@@ -156,6 +176,7 @@ app.get('/seniors/get/all', (req, res) => {
     let cachedResults = cache.get(cacheKey)
 
     if (cachedResults) {
+        console.log('Retrieving from the cache')
         res.status(200).json(cachedResults)
         return
     }

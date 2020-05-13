@@ -23,6 +23,7 @@ export class CreateComponent implements OnInit {
   missingImage: Boolean = true;
   wrongType: Boolean = false;
   sizeLimit: Boolean = false;
+  curse: Boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -85,6 +86,9 @@ export class CreateComponent implements OnInit {
         break;
       case 1002: 
         this.wrongType = true;
+        break;
+      case 1003:
+        this.curse = true;
         break;
       default:
         this.sizeLimit = true;

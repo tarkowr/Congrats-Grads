@@ -137,8 +137,8 @@ export class LibraryComponent implements OnInit {
   // Sort Seniors by Full Name
   sortByName(obj:any[]){
     return obj.sort((a, b) => {
-      let aFullName = (a.fname + ' ' + a.lname).trim().toLowerCase().replace('  ', ' ');
-      let bFullName = (b.fname + ' ' + b.fname).trim().toLowerCase().replace('  ', ' ');
+      let aFullName = (a.lname + ' ' + a.fname).trim().toLowerCase().replace('  ', ' ');
+      let bFullName = (b.lname + ' ' + b.fname).trim().toLowerCase().replace('  ', ' ');
 
       if(aFullName < bFullName) { return -1; }
       if(aFullName > bFullName) { return 1; }
