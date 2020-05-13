@@ -67,6 +67,11 @@ app.post('/create', upload.single('profile'), async (req, res) => {
     let comments = req.body.comments
     let profile = req.file
 
+    const ip = req.headers['x-forwarded-for'] || 
+    req.connection.remoteAddress || 
+    req.socket.remoteAddress ||
+    (req.connection.socket ? req.connection.socket.remoteAddress : null)
+
     const nameRegex = /^[a-zA-Z0-9 \-]{1,20}$/
     const schoolRegex = /^[a-zA-Z0-9 \-]{1,40}$/
     const commentRegex = /^.{1,500}$/
@@ -110,7 +115,8 @@ app.post('/create', upload.single('profile'), async (req, res) => {
         id: id,
         uploaded: uploaded,
         url: url,
-        year: schoolYear
+        year: schoolYear,
+        ip: ip
     }
 
     const path = req.file.path
@@ -159,7 +165,9 @@ app.get('/seniors/get/all', (req, res) => {
             let seniors = []
 
             snapshot.forEach(doc => {
-                seniors.push(doc.data())
+                let s = doc.data()
+                s.ip = undefined
+                seniors.push(s)
             })
 
             cache.set(cacheKey, seniors, ttl)
@@ -224,7 +232,9 @@ app.listen(PORT, function(){
             let seniors = []
 
             snapshot.forEach(doc => {
-                seniors.push(doc.data())
+                let s = doc.data()
+                s.ip = undefined
+                seniors.push(s)
             })
 
             cache.del(cacheKey)
