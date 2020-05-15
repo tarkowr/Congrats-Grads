@@ -18,12 +18,13 @@ export class CreateComponent implements OnInit {
   error:Boolean = false;
   localStorage: LocalStorage;
   image: any;
+  btnWait: Boolean = false;
   fileMessage: string = "No file chosen";
   maxUpload: Boolean = false;
   missingImage: Boolean = true;
   wrongType: Boolean = false;
   sizeLimit: Boolean = false;
-  curse: Boolean = false;
+  otherErr: Boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -88,7 +89,7 @@ export class CreateComponent implements OnInit {
         this.wrongType = true;
         break;
       case 1003:
-        this.curse = true;
+        this.otherErr = true;
         break;
       default:
         this.sizeLimit = true;
@@ -112,6 +113,7 @@ export class CreateComponent implements OnInit {
     this.showSnackbar = true;
     this.error = true;
     this.handleError(err);
+    this.btnWait = true;
   }
 
   // After handling profile upload response
@@ -120,15 +122,25 @@ export class CreateComponent implements OnInit {
 
     setTimeout(() => {
       this.showSnackbar = false;
+      this.btnWait = false;
       if (!this.error) {
         this.router.navigate(['library']);
       }
     }, (this.error) ? 3000 : 2000);
   }
 
+  resetErrors() {
+    this.maxUpload = false;
+    this.wrongType = false;
+    this.sizeLimit = false;
+    this.otherErr = false;
+  }
+
   // Create form on submit
   onSubmit() {
     this.submitted = true;
+
+    this.resetErrors();
 
     if (this.createForm.invalid) {
       return;

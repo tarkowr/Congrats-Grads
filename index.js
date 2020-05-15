@@ -2,33 +2,20 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const express = require('express')
 const multer = require('multer')
-let app = express()
 const cookieParser = require('cookie-parser')
 const _ = require('underscore')
 const uuid = require('uuid')
-const fs = require('fs')
-const NodeCache = require('node-cache')
-const config = require('./.env/config.json')
-const nodemailer = require('nodemailer')
-const Filter = require('bad-words')
-let filter = new Filter()
+const Validation = require('./server/validation')
+const Controller = require('./server/controller')
+const constants = require('./server/constants')
 
-const cache = new NodeCache()
-const ttl = 24 * 60 * 60; // 24 hour cache
-const cacheKey = 'seniors'
+let app = express()
 
-let admin = require('firebase-admin')
-let serviceAccount = require('./.env/congratsgrads-firebase-adminsdk-x83rw-55675f8283.json')
+// Instantiate custom services
+let validation = new Validation()
+let controller = new Controller()
 
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: 'https://congratsgrads.firebaseio.com',
-    storageBucket: 'congratsgrads.appspot.com'
-});
-
-let db = admin.firestore()
-let storage = admin.storage().bucket()
-
+// Multer image upload middleware
 let multerStorage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/')
@@ -38,18 +25,19 @@ let multerStorage = multer.diskStorage({
     }
 })
 
+// Helper function for multer middleware to extract a file extension
+function extractExtension(filename) {
+    return filename.substr(filename.lastIndexOf('.'))
+}
+
+// Set Multer properties
 const maxSize = 3 * 1024 * 1024
 let upload = multer({ 
     storage: multerStorage,
     limits: { fileSize: maxSize }
 })
 
-const seniorsCollection = 'seniors'
-
-function extractExtension(filename) {
-    return filename.substr(filename.lastIndexOf('.'));
-}
-
+// Use middleware
 app.use(bodyParser.urlencoded({  
     extended: true,
     keepExtensions: true  
@@ -68,53 +56,26 @@ app.post('/create', upload.single('profile'), async (req, res) => {
     let school = req.body.highSchool
     let comments = req.body.comments
     let profile = req.file
+    const path = req.file.path
 
-    const ip = req.headers['x-forwarded-for'] || 
-    req.connection.remoteAddress || 
-    req.socket.remoteAddress ||
-    (req.connection.socket ? req.connection.socket.remoteAddress : null)
+    const ip = req.connection.remoteAddress || 
+        req.headers['x-forwarded-for'] || 
+        req.socket.remoteAddress ||
+        (req.connection.socket ? req.connection.socket.remoteAddress : null)
 
-    const nameRegex = /^[a-zA-Z0-9 \-]{1,20}$/
-    const schoolRegex = /^[a-zA-Z0-9 \-]{1,40}$/
-    const commentRegex = /^.{1,500}$/
-    const fileTypeRegex = /^(image\/)[a-z\-]{1,10}$/
-    const fileRegex = /^[a-zA-Z0-9\-]{30,39}[.](jpe?g|tiff|png|webp|bmp)$/
-
-    // Image upload error codes
-    const missingImage = '1001'
-    const wrongType = '1002'
-    const curseWords = '1003'
-
-    // Validate text input
-    if (!nameRegex.test(fname) || !nameRegex.test(lname) || !schoolRegex.test(school) || !commentRegex.test(comments)) {
-        res.status(500).send('Invalid input')
-        return
+    let onError = (err) => {
+        console.log(`Error ${err}`)
+        controller.removeUpload(path)
+        res.status(500).send(err)
     }
 
-    // Check if uploaded file exists
-    if (!profile) {
-        res.status(500).send(missingImage)
-        return
-    }
+    // Input validation
+    const err = validation.validateProfile(fname, lname, school, comments, profile)
+    const ipErr = validation.checkIP(ip, controller.cacheGet(constants.cache.blacklistKey))
+    const errors = err || ipErr
 
-    // Validate profile image type
-    if (!fileTypeRegex.test(profile.mimetype) || !fileRegex.test(profile.filename)) {
-        res.status(500).send(wrongType)
-        return
-    }
-
-    let fnameBackup = fname
-    let lnameBackup = lname
-    let schoolBackup = school
-    let commentsBackup = comments
-
-    fname = filter.clean(fname)
-    lname = filter.clean(lname)
-    school = filter.clean(school)
-    comments = filter.clean(comments)
-
-    if (fname != fnameBackup || lname != lnameBackup || school != schoolBackup || comments != commentsBackup) {
-        res.status(500).send(curseWords)
+    if (errors) {
+        onError(errors)
         return
     }
     
@@ -123,7 +84,6 @@ app.post('/create', upload.single('profile'), async (req, res) => {
 
     const id = uuid.v4()
     const uploaded = new Date()
-    const timestamp = uploaded.getTime()
     const schoolYear = 2020
 
     const senior = {
@@ -138,130 +98,88 @@ app.post('/create', upload.single('profile'), async (req, res) => {
         ip: ip
     }
 
-    const path = req.file.path
-
-    // Upload profile image to firebase storage
-    await storage.upload(path, {
-        metadata: {
-            cacheControl: 'public, max-age=31536000'
-          }
-    }).then(() => {
-        // Delete file on server
-        fs.unlink(path, (err) => {
-            if (err) { return }
-        })
-    }).catch(err => {
-        res.status(500).send(err)
-    })
-
-    // Add senior to firebase
-    db.collection(seniorsCollection).doc(id).set(senior)
+    // Upload image and profile
+    controller.uploadProfileImage(path)
         .then(() => {
-            let cachedResults = cache.get(cacheKey)
-
-            if (cachedResults){
-                senior['uploaded'] = { _seconds: Math.floor(timestamp/1000), _nanoseconds:0 }
-                cachedResults.push(senior)
-                cache.set(cacheKey, cachedResults)
-            }
-
-            res.status(200).json(senior)
+            controller.insertSenior(id, senior)
+            .then(() => {
+                res.status(200).json(senior)
+            })
         }).catch(err => {
             res.status(500).send(err)
         })
 })
 
-// Get user from firebase by ID
+// Get users from firebase
 app.get('/seniors/get/all', (req, res) => {
-    let cachedResults = cache.get(cacheKey)
+    let cachedResults = controller.cacheGet(constants.cache.cacheKey)
 
+    // Return cached results if available
     if (cachedResults) {
-        console.log('Retrieving from the cache')
         res.status(200).json(cachedResults)
         return
     }
 
-    db.collection(seniorsCollection).get()
-        .then((snapshot) => {
-            let seniors = []
-
-            snapshot.forEach(doc => {
-                let s = doc.data()
-                s.ip = undefined
-                seniors.push(s)
-            })
-
-            cache.set(cacheKey, seniors, ttl)
+    // Retrieve seniors from firebase
+    controller.fetchAllSeniors(true)
+        .then(seniors => {
             res.status(200).json(seniors)
         })
-        .catch((err) => {
+        .catch(err => {
             res.status(500).send(err)
         })
 })
 
 // Send emails to congratsgrads from contact form
-app.post('/contact/send', (req, res) => {
+app.post('/contact/send', async (req, res) => {
     let sender = req.body.sender
     let message = req.body.message
+    const receiver = 'congratsgrads2020@gmail.com'
+    const subject = 'Contact Form'
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}/
-    const messageRegex = /^.{1,1000}$/
-
-    if (!emailRegex.test(sender) || !messageRegex.test(message)){
+    // Validate email message and sender
+    if (!validation.validateEmail(sender, message)){
         res.status(500).send()
-        return;
+        return
     }
 
-    let client = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        requireTLS: false,
-        auth: {
-            user: config.email,
-            pass: config.password
-        }
-    })
-
-    const mailOptions = {
-        from: sender + ' <' + config.email + '>',
-        to: 'congratsgrads2020@gmail.com',
-        subject: 'Contact Form',
-        text: message
+    let onSuccess = () => {
+        res.status(200).send()
     }
 
-    client.sendMail(mailOptions, (error, info) => {
-        if (error){
-            res.status(500).send(error)
-        } else {
-            res.status(200).send()
-        }
-    })
+    let onError = (err) => {
+        res.status(500).send(err)
+    }
+
+    controller.sendEmail(sender, receiver, subject, message, onSuccess, onError)
 })
 
 // Redirect any other requests to the site
 app.get('*', function(req, res) {
     res.redirect('https://congratsgrads.web.app')
-});
+})
 
 const PORT = process.env.PORT || 3200
 app.listen(PORT, function(){
     console.log(`Listening on port ${PORT}`)
 
-    db.collection(seniorsCollection).get()
-        .then((snapshot) => {
-            let seniors = []
+    controller.removeUploads()
 
-            snapshot.forEach(doc => {
-                let s = doc.data()
-                s.ip = undefined
-                seniors.push(s)
-            })
-
-            cache.del(cacheKey)
-            cache.set(cacheKey, seniors, ttl)
+    // Store senior profiles in cache
+    controller.fetchAllSeniors(true)
+        .then(seniors => {
+            console.log('Fetched Seniors')
         })
-        .catch((err) => {
+        .catch(err => {
+            console.log(err)
+        })
+
+    // Store blacklist in cache
+    controller.fetchBlacklist()
+        .then(ips => {
+            console.log('Fetched Blacklist')
+        })
+        .catch(err => {
             console.log(err)
         })
 })
