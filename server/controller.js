@@ -76,16 +76,16 @@ module.exports = class Controller{
     }
 
     // Retrieve all senior profiles from firebase
-    fetchAllSeniors(removeIp) {
+    fetchAllSeniors(isAdmin) {
         return db.collection(constants.firebaseConn.seniorsCollection).get()
         .then((snapshot) => {
             let seniors = []
 
-            snapshot.forEach(doc => {
-                let senior = doc.data()
-                if (removeIp) senior.ip = undefined
-                seniors.push(senior)
-            })
+            snapshot.forEach(doc => seniors.push(doc.data()))
+
+            if (!isAdmin) {
+                seniors.forEach(senior => this.hideIP(senior))
+            }
 
             this.cacheSet(cacheKey, seniors, ttl)
             return seniors

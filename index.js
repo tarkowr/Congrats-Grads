@@ -121,7 +121,7 @@ app.get('/seniors/get/all', (req, res) => {
     }
 
     // Retrieve seniors from firebase
-    controller.fetchAllSeniors(true)
+    controller.fetchAllSeniors(false)
         .then(seniors => {
             res.status(200).json(seniors)
         })
@@ -163,10 +163,11 @@ const PORT = process.env.PORT || 3200
 app.listen(PORT, function(){
     console.log(`Listening on port ${PORT}`)
 
+    // Empty uploads folder
     controller.removeUploads()
 
     // Store senior profiles in cache
-    controller.fetchAllSeniors(true)
+    controller.fetchAllSeniors(false)
         .then(seniors => {
             console.log('Fetched Seniors')
         })
