@@ -117,9 +117,15 @@ module.exports = class Controller{
 
         if (cachedResults){
             senior['uploaded'] = { _seconds: this.calcTimestamp(senior['uploaded']), _nanoseconds:0 }
+			this.hideIP(senior)
             cachedResults.push(senior)
             this.cacheSet(cacheKey, cachedResults)
         }
+    }
+	
+	// Remove IP from senior obj
+    hideIP(senior) {
+        delete senior['ip']
     }
 
     // Get timestamp from a date

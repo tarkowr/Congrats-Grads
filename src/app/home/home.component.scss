@@ -42,6 +42,7 @@
     z-index: 2;
     position: absolute;
     bottom: 0;
+    width: 100% !important;
 }
 .landing-image-text{
     padding-top: 20%;
@@ -67,5 +68,6 @@
     }
     .landing-footer{
         position: static;
+        width: auto !important;
     }
 }

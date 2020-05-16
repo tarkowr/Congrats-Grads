@@ -58,8 +58,8 @@ app.post('/create', upload.single('profile'), async (req, res) => {
     let profile = req.file
     const path = req.file.path
 
-    const ip = req.connection.remoteAddress || 
-        req.headers['x-forwarded-for'] || 
+    const ip = req.headers['x-forwarded-for'] || 
+        req.connection.remoteAddress || 
         req.socket.remoteAddress ||
         (req.connection.socket ? req.connection.socket.remoteAddress : null)
 
