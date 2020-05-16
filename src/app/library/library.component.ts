@@ -13,8 +13,8 @@ export class LibraryComponent implements OnInit {
   seniors: any[];
   backup: any[];
   selected: any = undefined;
-  searchForm: any;
-  orderForm: any;
+  searchForm: FormGroup;
+  orderForm: FormGroup;
   submitted: Boolean = false;
   loading: Boolean = false;
   noResults: Boolean = false;
@@ -182,6 +182,13 @@ export class LibraryComponent implements OnInit {
       return true;
     }
     return false;
+  }
+
+  // Clear search if no results found
+  clearSearch() {
+    this.noResults = false;
+    this.searchForm.reset();
+    this.restoreBackup();
   }
 
   // Handle profile search

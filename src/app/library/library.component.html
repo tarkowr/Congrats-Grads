@@ -72,9 +72,14 @@
                 </div>
             </div>
 
-            <div *ngIf="noResults" class="text-left mt-2 ml-3">
-                <div class="ml-4 inc-font text-gray f4">
+            <div *ngIf="noResults" class="text-center my-3">
+                <div class="inc-font text-gray f3">
                   {{ message }}
+                </div>
+                <div>
+                    <button class="btn btn-primary my-3 px-4 py-2" (click)="clearSearch()">
+                        Clear Search
+                    </button>
                 </div>
             </div>
 
