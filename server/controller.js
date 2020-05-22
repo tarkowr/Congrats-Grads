@@ -77,7 +77,8 @@ module.exports = class Controller{
 
     // Retrieve all senior profiles from firebase
     fetchAllSeniors(isAdmin) {
-        return db.collection(constants.firebaseConn.seniorsCollection).get()
+        const orderField = 'uploaded'
+        return db.collection(constants.firebaseConn.seniorsCollection).orderBy(orderField, 'desc').get()
         .then((snapshot) => {
             let seniors = []
 

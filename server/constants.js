@@ -17,4 +17,4 @@ const cache = {
     blacklistKey: 'blacklist'
 }
 
-module.exports = Object.assign({ firebaseConn, errCodes, cache })
+module.exports = { firebaseConn: firebaseConn, errCodes: errCodes, cache: cache }

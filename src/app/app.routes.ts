@@ -6,6 +6,8 @@ import { LibraryComponent } from './library/library.component';
 import { PrivacyComponent } from './privacy/privacy.component';
 import { ContactComponent } from './contact/contact.component';
 import { TermsComponent } from './terms/terms.component';
+import { LoginComponent } from './login/login.component';
+import { AdminComponent } from './admin/admin.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -15,5 +17,7 @@ export const routes: Routes = [
     { path: 'privacy', component: PrivacyComponent },
     { path: 'contact',  component: ContactComponent },
     { path: 'terms', component: TermsComponent },
+    { path: 'admin', component: AdminComponent },
+    { path: 'login', component: LoginComponent },
     { path: '**', component: PageNotFoundComponent }
 ];

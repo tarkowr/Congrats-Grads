@@ -118,7 +118,7 @@ export class LibraryComponent implements OnInit {
   // Initialize the search form
   buildOrderForm() {
     this.orderForm = this.formBuilder.group({
-      order: [this.selectOptions[0].key,  Validators.compose([
+      order: [this.selectOptions[1].key,  Validators.compose([
         Validators.required
       ])]
     })
@@ -265,7 +265,7 @@ export class LibraryComponent implements OnInit {
     this.seniors = await this.getSeniors();
 
     if (this.seniors) {
-      this.seniors = this.sortByName(this.seniors);
+      this.seniors = this.sortByDateNew(this.seniors);
       this.backup = this.copyArrayOfObj(this.seniors);
 
       this.activatedRoute.queryParams.subscribe(params => {
