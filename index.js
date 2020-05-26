@@ -154,27 +154,6 @@ app.post('/contact/send', async (req, res) => {
     controller.sendEmail(sender, receiver, subject, message, onSuccess, onError)
 })
 
-// Get users from firebase
-app.get('/admin/seniors/get/all', async (req, res) => {
-    let seniors = []
-    let cachedResults = controller.cacheGet(constants.cache.cacheKey)
-
-    // Return cached results if available
-    if (cachedResults) {
-        seniors = cachedResults
-    }
-    else {
-        seniors = await controller.fetchAllSeniors(false)
-            .catch(err => {
-                res.status(500).send(err)
-            })
-    }
-
-    // TODO: Implement "new" status
-
-    res.status(200).json(seniors)
-})
-
 // Redirect any other requests to the site
 app.get('*', function(req, res) {
     res.redirect('https://congratsgrads.web.app')

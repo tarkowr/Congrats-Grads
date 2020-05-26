@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../services/user.service';
+import { Utilities } from '../utilities/utilities';
 
 @Component({
   selector: 'app-library',
@@ -37,34 +38,39 @@ export class LibraryComponent implements OnInit {
       key: 1,
       value: 'Alphabetical',
       selected: true,
-      action: this.sortByName
+      action: this.userService.sortByName
     },
     {
       key: 2,
       value: 'Newest',
       selected: false,
-      action: this.sortByDateNew
+      action: this.userService.sortByDateNew
     },
     {
       key: 3,
       value: 'Oldest',
       selected: false,
-      action: this.sortByDateOld
+      action: this.userService.sortByDateOld
     }
   ];
   selectedOption = this.selectOptions[1];
 
-
   constructor(
     private userService: UserService,
     private formBuilder: FormBuilder,
-    private activatedRoute: ActivatedRoute) { }
+    private activatedRoute: ActivatedRoute,
+    private utilities: Utilities) { }
 
   get f() { return this.searchForm.controls }
 
   get o() { return this.orderForm.controls }
 
-  // Check if screen is mobile
+  // UI: Display clicked senior profile
+  getProfile(senior) {
+    this.selected = senior;
+  }
+
+  // Handle a change in the user's viewport
   handleScreenSize(){
     let comparisonMobile = this.mobile;
 
@@ -80,12 +86,12 @@ export class LibraryComponent implements OnInit {
       this.paginationMaxPerPage = this.mobile ? this.paginationLimits.mobile : this.paginationLimits.desktop;
 
       if (this.backup) {
-        this.restoreBackupWithPagination();
+        this.clearSearch();
       }
     }
   }
 
-  // Handle screen resize
+  // Attach screen resize event
   attachResizeListener(){
     window.addEventListener('resize', () => {
       this.handleScreenSize();
@@ -102,11 +108,6 @@ export class LibraryComponent implements OnInit {
         console.log(err)
         return null;
       });
-  }
-
-  // Display senior profile
-  getProfile(senior) {
-    this.selected = senior;
   }
 
   // Determine whether to exit profile view based on navbar click
@@ -155,7 +156,7 @@ export class LibraryComponent implements OnInit {
 
   // Split list of seniors into current page
   paginationWrapper(seniorsList: any[]) {
-    return this.copyArrayOfObj(seniorsList).splice(this.paginationStartIndex, this.paginationMaxPerPage);
+    return this.utilities.copyArrayOfObj(seniorsList).splice(this.paginationStartIndex, this.paginationMaxPerPage);
   }
 
   // Reset pagination to the first page
@@ -191,7 +192,7 @@ export class LibraryComponent implements OnInit {
     if (this.paginationStartIndex != 0) {
       this.paginationStartIndex -= this.paginationMaxPerPage;
       this.pof();
-      this.scrollTop();
+      this.utilities.scrollTop(window);
     }
   }
  
@@ -202,54 +203,8 @@ export class LibraryComponent implements OnInit {
     if (this.paginationStartIndex + this.paginationMaxPerPage < activeSeniors) {
       this.paginationStartIndex += this.paginationMaxPerPage;
       this.pof();
-      this.scrollTop();
+      this.utilities.scrollTop(window);
     }
-  }
-
-  // Scroll to top of page
-  scrollTop() {
-    window.scrollTo(0, 0);
-  }
- 
-  // Copy arrow of objects w/o reference to properties
-  copyArrayOfObj(arr:any[]){
-    return arr.map(obj => ({ ...obj }));
-  }
-
-  // Sort Seniors by Full Name
-  sortByName(obj:any[]){
-    return obj.sort((a, b) => {
-      let aFullName = (a.lname + ' ' + a.fname).trim().toLowerCase().replace('  ', ' ');
-      let bFullName = (b.lname + ' ' + b.fname).trim().toLowerCase().replace('  ', ' ');
-
-      if(aFullName < bFullName) { return -1; }
-      if(aFullName > bFullName) { return 1; }
-      return 0;
-    });
-  }
-
-  // Sort Seniors by Oldest Date Uploaded
-  sortByDateOld(obj:any[]) {
-    return obj.sort((a, b) => {
-      let aDate = a.uploaded._seconds;
-      let bDate = b.uploaded._seconds;
-
-      if(aDate < bDate) { return -1; }
-      if(aDate > bDate) { return 1; }
-      return 0;
-    });
-  }
-
-  // Sort Seniors by Newest Date Uploaded
-  sortByDateNew(obj:any[]) {
-    return obj.sort((a, b) => {
-      let aDate = a.uploaded._seconds;
-      let bDate = b.uploaded._seconds;
-
-      if(aDate < bDate) { return 1; }
-      if(aDate > bDate) { return -1; }
-      return 0;
-    });
   }
 
   // Return a sort option by the user's selected option
@@ -257,23 +212,9 @@ export class LibraryComponent implements OnInit {
     return this.selectOptions.find(s => s.key == this.o.order.value);
   }
 
-  // Determine whether a search matches a senior
-  matchSearch(fname: string, lname: string, query: string) {
-    let length = query.length;
-    query = query.toLowerCase();
-    fname = fname.substring(0, length).toLowerCase();
-    lname = lname.substring(0, length).toLowerCase();
-    let name = (fname + ' ' + lname).substring(0, length);
-
-    if (fname === query || lname === query || query === name){
-      return true;
-    }
-    return false;
-  }
-
   // Return all seniors that match a search query
   findMatchingSeniors(query: string) {
-    return this.backup.filter(s => this.matchSearch(s.fname, s.lname, query));
+    return this.backup.filter(s => this.userService.matchSearch(s.fname, s.lname, query));
   }
 
   // Clear search if no results found
@@ -327,7 +268,7 @@ export class LibraryComponent implements OnInit {
   lookupSenior(id:string) {
     let found = undefined;
 
-    this.seniors.forEach(s => {
+    this.backup.forEach(s => {
       if (s.id === id){
         found = s;
       }
@@ -363,7 +304,7 @@ export class LibraryComponent implements OnInit {
     this.seniors = await this.getSeniors();
 
     if (this.seniors) {
-      this.backup = this.copyArrayOfObj(this.sortByDateNew(this.seniors));
+      this.backup = this.utilities.copyArrayOfObj(this.userService.sortByDateNew(this.seniors));
       this.restoreBackupWithPagination();
       this.totalSeniors = this.backup.length;
 
@@ -374,5 +315,5 @@ export class LibraryComponent implements OnInit {
       });
     }
   }
-
+  
 }
