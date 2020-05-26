@@ -13,13 +13,18 @@ export class CreateComponent implements OnInit {
   createForm: FormGroup;
   submitted: Boolean = false;
   loading: Boolean = false;
+
+  image: any;
+  fileMessage: string = "No file chosen";
+  
+  localStorage: LocalStorage;
+
+  btnWait: Boolean = false;
+
   showSnackbar:Boolean = false;
   message:String;
+  
   error:Boolean = false;
-  localStorage: LocalStorage;
-  image: any;
-  btnWait: Boolean = false;
-  fileMessage: string = "No file chosen";
   maxUpload: Boolean = false;
   missingImage: Boolean = true;
   wrongType: Boolean = false;
@@ -37,12 +42,14 @@ export class CreateComponent implements OnInit {
 
   // Initialize the create user form
   buildUserForm() {
+    const nameRegex = /^[.a-zA-Z0-9 \-]{1,20}$/;
+
     this.createForm = this.formBuilder.group({
       firstname: ['',  Validators.compose([
-        Validators.required, Validators.pattern(/^[.a-zA-Z0-9 \-]{1,20}$/)
+        Validators.required, Validators.pattern(nameRegex)
       ])],
       lastname: ['',  Validators.compose([
-        Validators.required, Validators.pattern(/^[.a-zA-Z0-9 \-]{1,20}$/)
+        Validators.required, Validators.pattern(nameRegex)
       ])],
       school: ['',  Validators.compose([
         Validators.required, Validators.pattern(/^[.a-zA-Z0-9 \-]{1,40}$/)
@@ -129,6 +136,7 @@ export class CreateComponent implements OnInit {
     }, (this.error) ? 3000 : 2000);
   }
 
+  // Reset all client-side error indicators
   resetErrors() {
     this.maxUpload = false;
     this.wrongType = false;

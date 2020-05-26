@@ -1,4 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Utilities } from '../utilities/utilities';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-profile',
@@ -13,7 +15,7 @@ export class ProfileComponent implements OnInit {
   breakPoint: Number = 768;
   showShare: Boolean = false;
 
-  constructor() { }
+  constructor(private utilities:Utilities) { }
 
   // Check if screen is mobile
   handleScreenSize(){
@@ -32,15 +34,16 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  // UI: Toggle the share input field
   toggleShare(){
     this.showShare = !this.showShare;
   }
 
   ngOnInit() {
-    window.scrollTo({ top: 0, behavior: 'auto' });
+    this.utilities.scrollTop(window);
     this.handleScreenSize();
     this.attachResizeListener();
-    this.senior['shareUrl'] = 'https://congratsgrads.web.app/library?profile=' + this.senior.id;
+    this.senior['shareUrl'] = `${environment.url}/library?profile=${this.senior.id}`;
   }
 
 }

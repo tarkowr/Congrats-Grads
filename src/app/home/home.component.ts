@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
   constructor() { }
 
   // Handle screen resize
-  attachResizeListener(){
+  attachResizeListener() {
     window.addEventListener('resize', async () => {
       let reference = this.mobile;
       await this.handleScreenSize();
@@ -42,7 +42,7 @@ export class HomeComponent implements OnInit {
           resetTyped(); 
         }
         catch(e) {
-          setTimeout(() => { resetTyped(); }, 200);
+          setTimeout(() => resetTyped(), 200);
         }
       }
     });
