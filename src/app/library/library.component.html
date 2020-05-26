@@ -64,6 +64,16 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="my-3 text-center mx-auto col-12">
+                    <div class="inc-font rounded-circle border bg-white page-btn d-inline-block text-center" (click)="pageLeft()">
+                        <i class="fa fa-angle-left"></i>
+                    </div>
+                    <div class="d-inline-block mx-2 not-selectable">{{ getPageState() }}</div>
+                    <div class="inc-font rounded-circle border bg-white page-btn d-inline-block text-center" (click)="pageRight()">
+                        <i class="fa fa-angle-right"></i>
+                    </div>
+                </div>
             </div>
 
             <div *ngIf="!seniors && !noResults" class="row text-center mt-5 justify-content-center">

@@ -29,6 +29,10 @@
 .create-profile-wrapper > a > button:hover{
     background-color: #26B1FF !important;
 }
+.page-btn {
+    width: 32px;
+    height: 32px;
+}
 @media(max-width: 768px) {
     .order-select {
         float: left;

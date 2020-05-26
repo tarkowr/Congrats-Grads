@@ -19,6 +19,10 @@ export class LibraryComponent implements OnInit {
   loading: Boolean = false;
   noResults: Boolean = false;
   message: string = 'No Results!';
+  searchOn: Boolean = false;
+  searchFound: number = 0;
+  inView = { start: 0, max: 20 };
+  totalSeniors: number;
   mobile: Boolean = false;
   breakPoint: Number = 992;
   showSnackbar: Boolean = false;
@@ -102,7 +106,7 @@ export class LibraryComponent implements OnInit {
     if (this.mobile){
       setTimeout(() => {
         document.getElementById(id).scrollIntoView({ behavior: 'auto'});
-      }, 0);
+      }, 200);
     }
   }
 
@@ -124,11 +128,50 @@ export class LibraryComponent implements OnInit {
     })
   }
 
-  // Restore seniors array from backup
-  restoreBackup() {
-    this.seniors = this.copyArrayOfObj(this.backup);
+  // Restore seniors array from backup with pagination
+  restoreBackupWithPagination() {
+    this.seniors = this.paginationWrapper(this.backup);
   }
 
+  paginationWrapper(seniorsList: any[]) {
+    return this.copyArrayOfObj(seniorsList).splice(this.inView.start, this.inView.max);
+  }
+
+  resetPagination() {
+    this.inView.start = 0;
+  }
+
+  getPageState() {
+    let pageMax = this.inView.max + this.inView.start;
+    let total = this.searchOn ? this.searchFound : this.totalSeniors;
+
+    if (pageMax > this.totalSeniors) {
+      pageMax = this.totalSeniors;
+    }
+    if (this.searchOn) {
+      pageMax = this.inView.start + this.seniors.length;
+    }
+
+    return `${this.inView.start + 1}-${pageMax} of ${total}`;
+  }
+
+  pageLeft() {
+    if (this.inView.start != 0) {
+      this.inView.start -= this.inView.max;
+      this.restoreBackupWithPagination();
+      this.onSearch();
+    }
+  }
+
+  pageRight() {
+    let maxCheck = this.searchOn ? this.searchFound : this.totalSeniors;
+    if (this.inView.start + this.inView.max < maxCheck) {
+      this.inView.start += this.inView.max;
+      this.restoreBackupWithPagination();
+      this.onSearch();
+    }
+  }
+ 
   // Copy arrow of objects w/o reference to properties
   copyArrayOfObj(arr:any[]){
     return arr.map(obj => ({ ...obj }));
@@ -170,6 +213,23 @@ export class LibraryComponent implements OnInit {
     });
   }
 
+  // Order seniors by option
+  order() {
+    switch(this.o.order.value) {
+      case '2':
+        this.seniors = this.paginationWrapper(this.sortByDateNew(this.backup));
+        break;
+      case '3':
+        this.seniors = this.paginationWrapper(this.sortByDateOld(this.backup));
+        break;
+      default:
+        this.seniors = this.paginationWrapper(this.sortByName(this.backup));
+        break;
+    }
+
+    this.onSearch();
+  }
+
   // Determine whether a search matches a senior
   matchSearch(fname: string, lname: string, query: string) {
     let length = query.length;
@@ -188,7 +248,7 @@ export class LibraryComponent implements OnInit {
   clearSearch() {
     this.noResults = false;
     this.searchForm.reset();
-    this.restoreBackup();
+    this.restoreBackupWithPagination();
   }
 
   // Handle profile search
@@ -197,32 +257,28 @@ export class LibraryComponent implements OnInit {
     this.noResults = false;
 
     if (this.searchForm.invalid || !this.backup) {
-      this.restoreBackup();
+      this.searchOn = false;
+      this.searchFound = 0;
+      this.restoreBackupWithPagination();
       return;
     }
 
-    this.seniors = this.copyArrayOfObj(this.backup.filter(s => this.matchSearch(s.fname, s.lname, query)));
+    if(!this.searchOn) {
+      this.resetPagination();
+      this.searchOn = true;
+    }
+
+    let found = this.backup.filter(s => this.matchSearch(s.fname, s.lname, query));
+
+    this.searchFound = found.length;
+
+    this.seniors = this.paginationWrapper(found);
+
+    console.log(this.seniors.length, this.backup.length);
     
     if (this.seniors.length <= 0) {
       this.noResults = true;
     }
-  }
-
-  // Order seniors by option
-  order() {
-    switch(this.o.order.value) {
-      case '2':
-        this.seniors = this.sortByDateNew(this.backup);
-        break;
-      case '3':
-        this.seniors = this.sortByDateOld(this.backup);
-        break;
-      default:
-        this.seniors = this.sortByName(this.backup);
-        break;
-    }
-
-    this.onSearch();
   }
 
   // Get senior by ID
@@ -265,8 +321,9 @@ export class LibraryComponent implements OnInit {
     this.seniors = await this.getSeniors();
 
     if (this.seniors) {
-      this.seniors = this.sortByDateNew(this.seniors);
-      this.backup = this.copyArrayOfObj(this.seniors);
+      this.backup = this.copyArrayOfObj(this.sortByDateNew(this.seniors));
+      this.restoreBackupWithPagination();
+      this.totalSeniors = this.backup.length;
 
       this.activatedRoute.queryParams.subscribe(params => {
         const id = params['profile']
