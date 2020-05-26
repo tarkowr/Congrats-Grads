@@ -22,7 +22,8 @@ export class LibraryComponent implements OnInit {
   snackbarMessage:string;
 
   paginationStartIndex: number = 0;
-  paginationMaxPerPage = 20;
+  paginationLimits = { desktop: 20, mobile: 12 };
+  paginationMaxPerPage = this.paginationLimits.desktop;
 
   searchForm: FormGroup;
   noSearchResults: Boolean = false;
@@ -65,11 +66,22 @@ export class LibraryComponent implements OnInit {
 
   // Check if screen is mobile
   handleScreenSize(){
+    let comparisonMobile = this.mobile;
+
     if (window.innerWidth >= this.breakPoint) {
       this.mobile = false;
     }
     else {
       this.mobile = true;
+    }
+
+    if (comparisonMobile != this.mobile) {
+      this.resetPagination();
+      this.paginationMaxPerPage = this.mobile ? this.paginationLimits.mobile : this.paginationLimits.desktop;
+
+      if (this.backup) {
+        this.restoreBackupWithPagination();
+      }
     }
   }
 
@@ -114,7 +126,7 @@ export class LibraryComponent implements OnInit {
     if (this.mobile){
       setTimeout(() => {
         document.getElementById(id).scrollIntoView({ behavior: 'auto'});
-      }, 200);
+      }, 250);
     }
   }
 

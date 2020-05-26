@@ -114,6 +114,9 @@ export class AdminComponent implements OnInit {
       hour = (hour - 12);
       period = 'PM';
     } 
+    else if (hour == 12) {
+      period = 'PM';
+    }
     else if (hour == 0) {
       hour = 12;
     }
