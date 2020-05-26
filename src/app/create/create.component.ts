@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { LocalStorage } from '../services/localStorage.service';
+import { RegexUtilities } from '../utilities/regex.utilities';
 
 @Component({
   selector: 'app-create',
@@ -34,7 +35,8 @@ export class CreateComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private userService: UserService,
-    private router: Router) { 
+    private router: Router,
+    private regexUtilities: RegexUtilities) { 
       this.localStorage = new LocalStorage();
     }
 
@@ -42,23 +44,21 @@ export class CreateComponent implements OnInit {
 
   // Initialize the create user form
   buildUserForm() {
-    const nameRegex = /^[.a-zA-Z0-9 \-]{1,20}$/;
-
     this.createForm = this.formBuilder.group({
       firstname: ['',  Validators.compose([
-        Validators.required, Validators.pattern(nameRegex)
+        Validators.required, Validators.pattern(this.regexUtilities.name)
       ])],
       lastname: ['',  Validators.compose([
-        Validators.required, Validators.pattern(nameRegex)
+        Validators.required, Validators.pattern(this.regexUtilities.name)
       ])],
       school: ['',  Validators.compose([
-        Validators.required, Validators.pattern(/^[.a-zA-Z0-9 \-]{1,40}$/)
+        Validators.required, Validators.pattern(this.regexUtilities.school)
       ])],
       profileImg: [''],
       comments: ['',  Validators.compose([
-        Validators.required, Validators.pattern(/^.{1,500}$/)
+        Validators.required, Validators.pattern(this.regexUtilities.school)
       ])]
-    })
+    });
   }
 
   // Handle selected image

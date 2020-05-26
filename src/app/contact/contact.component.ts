@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ContactService } from '../services/contact.service';
+import { RegexUtilities } from '../utilities/regex.utilities';
 
 @Component({
   selector: 'app-contact',
@@ -16,7 +17,8 @@ export class ContactComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private contactService: ContactService) { }
+    private contactService: ContactService,
+    private regexUtilities: RegexUtilities) { }
 
   get f() { return this.contactForm.controls }
 
@@ -24,12 +26,12 @@ export class ContactComponent implements OnInit {
   buildContactForm() {
     this.contactForm = this.formBuilder.group({
       sender: ['',  Validators.compose([
-        Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}/)
+        Validators.required, Validators.pattern(this.regexUtilities.email)
       ])],
       message: ['',  Validators.compose([
-        Validators.required, Validators.pattern(/^.{1,1000}$/)
+        Validators.required, Validators.pattern(this.regexUtilities.emailMessage)
       ])]
-    })
+    });
   }
 
   // Handle successful sent email

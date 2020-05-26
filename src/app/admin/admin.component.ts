@@ -4,6 +4,7 @@ import { UserService } from '../services/user.service';
 import { DateUtilities } from '../utilities/date.utilities';
 import { Utilities } from '../utilities/utilities';
 import { environment } from 'src/environments/environment';
+import { RegexUtilities } from '../utilities/regex.utilities';
 
 @Component({
   selector: 'app-admin',
@@ -23,7 +24,8 @@ export class AdminComponent implements OnInit {
     private userService: UserService,
     private formBuilder: FormBuilder,
     private utilities: Utilities,
-    private dateUtilities: DateUtilities) { }
+    private dateUtilities: DateUtilities,
+    private regexUtilities: RegexUtilities) { }
 
   get f() { return this.searchForm.controls }
 
@@ -47,7 +49,7 @@ export class AdminComponent implements OnInit {
   buildSearchForm() {
     this.searchForm = this.formBuilder.group({
       search: ['',  Validators.compose([
-        Validators.required, Validators.pattern(/^[a-zA-Z0-9 \-]{1,50}$/)
+        Validators.required, Validators.pattern(this.regexUtilities.search)
       ])]
     })
   }

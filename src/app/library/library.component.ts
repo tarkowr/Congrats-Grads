@@ -3,6 +3,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { Utilities } from '../utilities/utilities';
+import { RegexUtilities } from '../utilities/regex.utilities';
 
 @Component({
   selector: 'app-library',
@@ -59,7 +60,8 @@ export class LibraryComponent implements OnInit {
     private userService: UserService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private utilities: Utilities) { }
+    private utilities: Utilities,
+    private regexUtilities: RegexUtilities) { }
 
   get f() { return this.searchForm.controls }
 
@@ -135,9 +137,9 @@ export class LibraryComponent implements OnInit {
   buildSearchForm() {
     this.searchForm = this.formBuilder.group({
       search: ['',  Validators.compose([
-        Validators.required, Validators.pattern(/^[a-zA-Z0-9 \-]{1,50}$/)
+        Validators.required, Validators.pattern(this.regexUtilities.search)
       ])]
-    })
+    });
   }
 
   // Initialize the search form
