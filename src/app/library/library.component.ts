@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router'
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../services/user.service';
 
@@ -13,42 +13,50 @@ export class LibraryComponent implements OnInit {
   seniors: any[];
   backup: any[];
   selected: any = undefined;
-  searchForm: FormGroup;
-  orderForm: FormGroup;
-  submitted: Boolean = false;
-  loading: Boolean = false;
-  noResults: Boolean = false;
-  message: string = 'No Results!';
-  searchOn: Boolean = false;
-  searchFound: number = 0;
-  inView = { start: 0, max: 20 };
   totalSeniors: number;
+
   mobile: Boolean = false;
   breakPoint: Number = 992;
+
   showSnackbar: Boolean = false;
   snackbarMessage:string;
+
+  paginationStartIndex: number = 0;
+  paginationMaxPerPage = 20;
+
+  searchForm: FormGroup;
+  noSearchResults: Boolean = false;
+  noSearchResultsMessage: string = 'No Results!';
+  searchActive: Boolean = false;
+  searchFound: number = 0;
+
+  orderForm: FormGroup;
   selectOptions = [
     {
       key: 1,
       value: 'Alphabetical',
-      selected: true
+      selected: true,
+      action: this.sortByName
     },
     {
       key: 2,
       value: 'Newest',
-      selected: false
+      selected: false,
+      action: this.sortByDateNew
     },
     {
       key: 3,
       value: 'Oldest',
-      selected: false
+      selected: false,
+      action: this.sortByDateOld
     }
   ];
+  selectedOption = this.selectOptions[1];
+
 
   constructor(
     private userService: UserService,
     private formBuilder: FormBuilder,
-    private router: Router,
     private activatedRoute: ActivatedRoute) { }
 
   get f() { return this.searchForm.controls }
@@ -122,7 +130,7 @@ export class LibraryComponent implements OnInit {
   // Initialize the search form
   buildOrderForm() {
     this.orderForm = this.formBuilder.group({
-      order: [this.selectOptions[1].key,  Validators.compose([
+      order: [this.selectedOption.key,  Validators.compose([
         Validators.required
       ])]
     })
@@ -133,43 +141,62 @@ export class LibraryComponent implements OnInit {
     this.seniors = this.paginationWrapper(this.backup);
   }
 
+  // Split list of seniors into current page
   paginationWrapper(seniorsList: any[]) {
-    return this.copyArrayOfObj(seniorsList).splice(this.inView.start, this.inView.max);
+    return this.copyArrayOfObj(seniorsList).splice(this.paginationStartIndex, this.paginationMaxPerPage);
   }
 
+  // Reset pagination to the first page
   resetPagination() {
-    this.inView.start = 0;
+    this.paginationStartIndex = 0;
   }
 
+  // Return pagination state
   getPageState() {
-    let pageMax = this.inView.max + this.inView.start;
-    let total = this.searchOn ? this.searchFound : this.totalSeniors;
+    let pageMax = this.paginationMaxPerPage + this.paginationStartIndex;
+    let activeSeniors = this.searchActive ? this.searchFound : this.totalSeniors;
+    let pageDisplay: string;
 
     if (pageMax > this.totalSeniors) {
       pageMax = this.totalSeniors;
     }
-    if (this.searchOn) {
-      pageMax = this.inView.start + this.seniors.length;
+    if (this.searchActive) {
+      pageMax = this.paginationStartIndex + this.seniors.length;
     }
 
-    return `${this.inView.start + 1}-${pageMax} of ${total}`;
+    if ((this.paginationStartIndex + 1) == pageMax) {
+      pageDisplay = pageMax.toString();
+    }
+    else{
+      pageDisplay = `${this.paginationStartIndex + 1}-${pageMax}`;
+    }
+
+    return `${pageDisplay} of ${activeSeniors}`;
   }
 
+  // Handle page left
   pageLeft() {
-    if (this.inView.start != 0) {
-      this.inView.start -= this.inView.max;
-      this.restoreBackupWithPagination();
-      this.onSearch();
+    if (this.paginationStartIndex != 0) {
+      this.paginationStartIndex -= this.paginationMaxPerPage;
+      this.pof();
+      this.scrollTop();
+    }
+  }
+ 
+  // Handle page right
+  pageRight() {
+    let activeSeniors = this.searchActive ? this.searchFound : this.totalSeniors;
+
+    if (this.paginationStartIndex + this.paginationMaxPerPage < activeSeniors) {
+      this.paginationStartIndex += this.paginationMaxPerPage;
+      this.pof();
+      this.scrollTop();
     }
   }
 
-  pageRight() {
-    let maxCheck = this.searchOn ? this.searchFound : this.totalSeniors;
-    if (this.inView.start + this.inView.max < maxCheck) {
-      this.inView.start += this.inView.max;
-      this.restoreBackupWithPagination();
-      this.onSearch();
-    }
+  // Scroll to top of page
+  scrollTop() {
+    window.scrollTo(0, 0);
   }
  
   // Copy arrow of objects w/o reference to properties
@@ -213,21 +240,9 @@ export class LibraryComponent implements OnInit {
     });
   }
 
-  // Order seniors by option
-  order() {
-    switch(this.o.order.value) {
-      case '2':
-        this.seniors = this.paginationWrapper(this.sortByDateNew(this.backup));
-        break;
-      case '3':
-        this.seniors = this.paginationWrapper(this.sortByDateOld(this.backup));
-        break;
-      default:
-        this.seniors = this.paginationWrapper(this.sortByName(this.backup));
-        break;
-    }
-
-    this.onSearch();
+  // Return a sort option by the user's selected option
+  getSelectedOption() {
+    return this.selectOptions.find(s => s.key == this.o.order.value);
   }
 
   // Determine whether a search matches a senior
@@ -244,41 +259,56 @@ export class LibraryComponent implements OnInit {
     return false;
   }
 
+  // Return all seniors that match a search query
+  findMatchingSeniors(query: string) {
+    return this.backup.filter(s => this.matchSearch(s.fname, s.lname, query));
+  }
+
   // Clear search if no results found
   clearSearch() {
-    this.noResults = false;
+    this.noSearchResults = false;
+    this.searchActive = false;
     this.searchForm.reset();
     this.restoreBackupWithPagination();
   }
 
-  // Handle profile search
-  onSearch() {
-    let query:string = this.f.search.value.toLowerCase();
-    this.noResults = false;
+  // Pagination, Order, Filter
+  pof() {
+    let selected = this.getSelectedOption();
 
-    if (this.searchForm.invalid || !this.backup) {
-      this.searchOn = false;
+    // Order seniors if selected order has changed
+    if (this.selectedOption.key != selected.key) {
+      this.selectedOption = selected;
+      this.resetPagination();
+      selected.action(this.backup);
+    }
+
+    // Handle search
+    let query:string = this.f.search.value ? this.f.search.value.toLowerCase() : '';
+    this.noSearchResults = false;
+
+    if (this.searchForm.invalid) {
+      this.searchActive = false;
       this.searchFound = 0;
       this.restoreBackupWithPagination();
       return;
     }
 
-    if(!this.searchOn) {
+    // Reset pagination on new search
+    if(!this.searchActive) {
       this.resetPagination();
-      this.searchOn = true;
+      this.searchActive = true;
     }
 
-    let found = this.backup.filter(s => this.matchSearch(s.fname, s.lname, query));
-
-    this.searchFound = found.length;
-
-    this.seniors = this.paginationWrapper(found);
-
-    console.log(this.seniors.length, this.backup.length);
-    
-    if (this.seniors.length <= 0) {
-      this.noResults = true;
+    let foundSeniors: any[] = this.findMatchingSeniors(query);
+    this.searchFound = foundSeniors.length;
+ 
+    if (this.searchFound <= 0) {
+      this.noSearchResults = true;
     }
+
+    // Handle pagination
+    this.seniors = this.paginationWrapper(foundSeniors);
   }
 
   // Get senior by ID

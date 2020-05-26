@@ -5,6 +5,9 @@
     width: 200px !important;
     max-height: 333px;
 }
+.senior-card:hover {
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.15);
+}
 .back-btn {
     position: fixed;
     top: 85px;
@@ -32,6 +35,15 @@
 .page-btn {
     width: 32px;
     height: 32px;
+}
+.page-btn:hover {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+}
+.page-btn-right {
+    margin-left: 2px;
+}
+.page-btn-left {
+    margin-right: 2px;
 }
 @media(max-width: 768px) {
     .order-select {
