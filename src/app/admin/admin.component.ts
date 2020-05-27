@@ -20,6 +20,10 @@ export class AdminComponent implements OnInit {
   showSnackbar: Boolean = false;
   message: string;
 
+  seniorsTab = { name: 'pills-seniors-tab', current: true }
+  metricsTab = { name: 'pills-metrics-tab', current: false }
+  tabs = [this.seniorsTab, this.metricsTab];
+
   constructor(
     private userService: UserService,
     private formBuilder: FormBuilder,
@@ -28,6 +32,17 @@ export class AdminComponent implements OnInit {
     private regexUtilities: RegexUtilities) { }
 
   get f() { return this.searchForm.controls }
+
+  // UI: Switch between nav pills
+  setActivePill(event) {
+    let tabId = event.target.id;
+    let selectedTab = this.tabs.find(t => t.name == tabId);
+
+    if (!selectedTab.current) {
+      this.tabs.forEach(t => t.current = false);
+      selectedTab.current = true;
+    }
+  }
 
   // UI: Determine whether profile is new
   isNew(uploaded) {
