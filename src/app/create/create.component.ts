@@ -56,7 +56,7 @@ export class CreateComponent implements OnInit {
       ])],
       profileImg: [''],
       comments: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexUtilities.school)
+        Validators.required, Validators.pattern(this.regexUtilities.about)
       ])]
     });
   }
