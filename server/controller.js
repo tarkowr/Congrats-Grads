@@ -166,7 +166,7 @@ module.exports = class Controller{
         // Send email
         client.sendMail(mailOptions, (error, info) => {
             if (error){
-                onError(err)
+                onError(error)
             } else {
                 onSuccess()
             }
