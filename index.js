@@ -8,6 +8,7 @@ const uuid = require('uuid')
 const Validation = require('./server/validation')
 const Controller = require('./server/controller')
 const constants = require('./server/constants')
+const logger = require('./server/logger')
 
 let app = express()
 
@@ -64,7 +65,7 @@ app.post('/create', upload.single('profile'), async (req, res) => {
         (req.connection.socket ? req.connection.socket.remoteAddress : null)
 
     let onError = (err) => {
-        console.log(`Error ${err}`)
+        logger.logWarning('Invalid uploaded profile!', `Error ${err}`)
         controller.removeUpload(path)
         res.status(500).send(err)
     }
@@ -99,19 +100,25 @@ app.post('/create', upload.single('profile'), async (req, res) => {
     }
 
     // Upload image and profile
-    controller.uploadProfileImage(path)
-        .then(() => {
-            controller.insertSenior(id, senior)
-            .then(() => {
-                res.status(200).json(senior)
-            })
-        }).catch(err => {
+    await controller.uploadProfileImage(path)
+        .catch(err => {
+            logger.logError('Unable to upload profile image!', err)
             res.status(500).send(err)
+            return
         })
+
+    await controller.insertSenior(id, senior)
+        .catch(err => {
+            logger.logError('Unable to insert senior into firebase!', err)
+            res.status(500).send(err)
+            return
+        })
+
+    res.status(200).json(senior)
 })
 
 // Get users from firebase
-app.get('/seniors/get/all', (req, res) => {
+app.get('/seniors/get/all', async (req, res) => {
     let cachedResults = controller.cacheGet(constants.cache.cacheKey)
 
     // Return cached results if available
@@ -121,13 +128,14 @@ app.get('/seniors/get/all', (req, res) => {
     }
 
     // Retrieve seniors from firebase
-    controller.fetchAllSeniors(false)
-        .then(seniors => {
-            res.status(200).json(seniors)
-        })
+    let seniors = await controller.fetchAllSeniors()
         .catch(err => {
+            logger.logError('Unable to fetch senior library!', err);
             res.status(500).send(err)
+            return
         })
+
+    res.status(200).json(seniors)
 })
 
 // Send emails to congratsgrads from contact form
@@ -148,6 +156,7 @@ app.post('/contact/send', async (req, res) => {
     }
 
     let onError = (err) => {
+        logger.logError('Unable to send email!', err);
         res.status(500).send(err)
     }
 
@@ -167,20 +176,20 @@ app.listen(PORT, function(){
     controller.removeUploads()
 
     // Store senior profiles in cache
-    controller.fetchAllSeniors(false)
+    controller.fetchAllSeniors()
         .then(seniors => {
-            console.log('Fetched Seniors')
+            logger.logMessage(`Fetched ${seniors.length} seniors`)
         })
         .catch(err => {
-            console.log(err)
+            logger.logError('Unable to fetch senior library!', err);
         })
 
     // Store blacklist in cache
     controller.fetchBlacklist()
         .then(ips => {
-            console.log('Fetched Blacklist')
+            logger.logMessage('Fetched IP blacklist', ips)
         })
         .catch(err => {
-            console.log(err)
+            logger.logError('Unable to fetch IP blacklist', err)
         })
 })

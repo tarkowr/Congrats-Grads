@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { LocalStorage } from '../services/localStorage.service';
@@ -76,7 +76,7 @@ export class CreateComponent implements OnInit {
   // Prevent too many uploads from single user
   validateUploadCount(){
     const max = 2;
-    let uploads:[] = this.localStorage.GetUploaded();
+    let uploads:[] = this.localStorage.getUploaded();
 
     if (!uploads) return true;
 
@@ -111,7 +111,7 @@ export class CreateComponent implements OnInit {
     this.message = 'Successfully Uploaded!';
     this.showSnackbar = true;
     this.error = false;
-    this.localStorage.SetUploaded(data['id']);
+    this.localStorage.setUploaded(data['id']);
   }
 
   // Error on profile upload
@@ -166,7 +166,8 @@ export class CreateComponent implements OnInit {
     this.loading = true;
 
     this.userService.create(this.f.firstname.value, this.f.lastname.value, this.f.school.value, this.f.comments.value, this.image)
-      .then(data => {
+      .then(async (data) => {
+        await this.userService.fetchLibrary();
         this.onSuccess(data);
       })
       .catch(err => {

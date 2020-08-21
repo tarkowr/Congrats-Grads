@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ContactService } from '../services/contact.service';
 import { RegexUtilities } from '../utilities/regex.utilities';
 

@@ -5,8 +5,8 @@ export class LocalStorage {
     constructor() {}
 
     // Add upload ID to local storage
-    SetUploaded(id) {
-        let uploaded = this.GetUploaded();
+    setUploaded(id) {
+        let uploaded = this.getUploaded();
 
         if (!uploaded) {
             uploaded = [];
@@ -17,7 +17,7 @@ export class LocalStorage {
     }
 
     // Retrieve upload IDs from local storage
-    GetUploaded() {
+    getUploaded() {
         return JSON.parse(localStorage.getItem(this.uploadProfileKey));
     }
 }

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
-import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { Utilities } from '../utilities/utilities';
 import { RegexUtilities } from '../utilities/regex.utilities';
+import { WindowService } from '../services/window.service';
 
 @Component({
   selector: 'app-library',
@@ -17,8 +18,7 @@ export class LibraryComponent implements OnInit {
   selected: any = undefined;
   totalSeniors: number;
 
-  mobile: Boolean = false;
-  breakPoint: Number = 992;
+  mobile: Boolean = true;
 
   showSnackbar: Boolean = false;
   snackbarMessage:string;
@@ -58,6 +58,7 @@ export class LibraryComponent implements OnInit {
 
   constructor(
     private userService: UserService,
+    private windowService: WindowService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private utilities: Utilities,
@@ -73,43 +74,17 @@ export class LibraryComponent implements OnInit {
   }
 
   // Handle a change in the user's viewport
-  handleScreenSize(){
-    let comparisonMobile = this.mobile;
+  handleScreenResize(){
+    this.windowService.large.subscribe(isMobile => {
+      this.mobile = isMobile;
 
-    if (window.innerWidth >= this.breakPoint) {
-      this.mobile = false;
-    }
-    else {
-      this.mobile = true;
-    }
-
-    if (comparisonMobile != this.mobile) {
       this.resetPagination();
       this.paginationMaxPerPage = this.mobile ? this.paginationLimits.mobile : this.paginationLimits.desktop;
 
       if (this.backup) {
         this.clearSearch();
       }
-    }
-  }
-
-  // Attach screen resize event
-  attachResizeListener(){
-    window.addEventListener('resize', () => {
-      this.handleScreenSize();
     });
-  }
-
-  // Retrieve all seniors from firebase
-  getSeniors() {
-    return this.userService.getAll()
-      .then((data:[]) => {
-        return data.length > 0 ? data : null;
-      })
-      .catch(err => {
-        console.log(err)
-        return null;
-      });
   }
 
   // Determine whether to exit profile view based on navbar click
@@ -122,15 +97,9 @@ export class LibraryComponent implements OnInit {
   }
 
   // Exit profile view
+  // TODO: Find a way to save user's scroll position when switching between profile and library
   cancel() {
-    let id = this.selected.id;
     this.selected = undefined;
-
-    if (this.mobile){
-      setTimeout(() => {
-        document.getElementById(id).scrollIntoView({ behavior: 'auto'});
-      }, 250);
-    }
   }
 
   // Initialize the search form
@@ -166,20 +135,31 @@ export class LibraryComponent implements OnInit {
     this.paginationStartIndex = 0;
   }
 
-  // Return pagination state
+  // Determine current pagination state
   getPageState() {
+    // Index of the last senior on the current page
+    // Example: 20-X of 120
     let pageMax = this.paginationMaxPerPage + this.paginationStartIndex;
+
+    // Number of total seniors displayed in the library
+    // Example: 20-40 of X
     let activeSeniors = this.searchActive ? this.searchFound : this.totalSeniors;
+
+    // Contains pagination state in the format of X-X of X
     let pageDisplay: string;
 
+    // Set total page count to number of seniors or max per page (whichever is smaller)
     if (pageMax > this.totalSeniors) {
       pageMax = this.totalSeniors;
     }
+
     if (this.searchActive) {
       pageMax = this.paginationStartIndex + this.seniors.length;
     }
 
-    if ((this.paginationStartIndex + 1) == pageMax) {
+    // Condense if start index and max on page are the same
+    // Example: 40-40 of 40 -> 40 of 40
+    if ((this.paginationStartIndex + 1) == pageMax || pageMax == 0) {
       pageDisplay = pageMax.toString();
     }
     else{
@@ -279,7 +259,7 @@ export class LibraryComponent implements OnInit {
     return found;
   }
 
-  // Get senior profile by query string ID
+  // Get senior profile by url query string ID
   handleProfileLink(id:string) {
     let senior = this.lookupSenior(id);
 
@@ -296,26 +276,27 @@ export class LibraryComponent implements OnInit {
     this.selected = senior;
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.buildSearchForm();
     this.buildOrderForm();
 
-    this.handleScreenSize();
-    this.attachResizeListener();
+    this.handleScreenResize();
 
-    this.seniors = await this.getSeniors();
+    this.userService.library.subscribe((library: any[]) => {
+      if (this.seniors) return;
 
-    if (this.seniors) {
+      this.seniors = library;
+
       this.backup = this.utilities.copyArrayOfObj(this.userService.sortByDateNew(this.seniors));
       this.restoreBackupWithPagination();
       this.totalSeniors = this.backup.length;
 
       this.activatedRoute.queryParams.subscribe(params => {
-        const id = params['profile']
+        const id = params['profile'];
         if (!id) return;
         this.handleProfileLink(id);
       });
-    }
+    })
   }
   
 }

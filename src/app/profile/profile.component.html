@@ -1,19 +1,19 @@
 <div class="w-100 h-100" class="wrapper">
     <div id="background" class="text-center w-100">
-        <div class="w-100 row m-0" [ngClass]="(mobile==false)?'pt-5':'pt-4'">
+        <div class="w-100 row m-0" [ngClass]="mobile ? 'pt-4':'pt-5'">
             <div id="profile" class="col-10 offset-1 col-lg-8 offset-lg-2 bg-white mb-5">
-                <div class="row px-3 content-container overflow-hidden" [ngClass]="(mobile==false)?'py-5':'py-4'">
+                <div class="row px-3 content-container overflow-hidden" [ngClass]="mobile ? 'py-4':'py-5'">
                     <div *ngIf="senior.url" class=" col-12 col-md-6 overflow-hidden d-flex text-center w-100">
                         <img src="{{senior.url}}" class="rounded profile-pic align-self-center mx-auto justify-content-center">
                     </div>
-                    <div class="col-12 col-md-6 text-left overflow-hidden px-0" [ngClass]="(mobile==false)?'pt-0':'pt-2'">
-                        <h6 class="py-0 mb-2 jost" [ngClass]="(mobile==false)?'text-left':'text-center'"><strong>── CLASS OF {{ senior.year }} ──</strong></h6>
-                        <h2 class="text-left jost text-dark my-0 f6" [ngClass]="{'display-5': mobile==false}">{{ senior.fname | uppercase }}</h2>
-                        <h2 class="text-left jost text-dark my-0 f6" [ngClass]="{'display-5': mobile==false}">{{ senior.lname | uppercase }}</h2>
+                    <div class="col-12 col-md-6 text-left overflow-hidden px-0" [ngClass]="mobile ? 'pt-2':'pt-0'">
+                        <h6 class="py-0 mb-2 jost f4" [ngClass]="mobile ? 'text-center':'text-left'"><strong>── CLASS OF {{ senior.year }} ──</strong></h6>
+                        <h2 class="text-left jost text-dark my-0 f6" [ngClass]="{'display-5': !mobile}">{{ senior.fname | uppercase }}</h2>
+                        <h2 class="text-left jost text-dark my-0 f6" [ngClass]="{'display-5': !mobile}">{{ senior.lname | uppercase }}</h2>
                         <div class="mb-0 mt-2 oswald inc-font f6 text-gray">{{ senior.school | uppercase }}</div>
                         <div class="mt-2">{{ senior.comments }}</div>
                         <button type="button" class="btn btn-primary mt-3" (click)="toggleShare()">Share Profile</button>
-                        <form [ngClass]="(showShare)?'visible':'invisible'" class="mt-1 mb-0">
+                        <form [ngClass]="showShare ? 'visible':'invisible'" class="mt-1 mb-0">
                             <div class="form-group mb-0">
                                 <input class="form-control bg-white primary-border" readonly name="share" value="{{senior.shareUrl}}">
                             </div>

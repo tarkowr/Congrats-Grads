@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Utilities } from '../utilities/utilities';
 import { environment } from 'src/environments/environment';
+import { WindowService } from '../services/window.service';
 
 @Component({
   selector: 'app-profile',
@@ -11,26 +12,16 @@ export class ProfileComponent implements OnInit {
 
   @Input() senior: any;
 
-  mobile: Boolean = false;
-  breakPoint: Number = 768;
+  mobile: Boolean = true;
   showShare: Boolean = false;
 
-  constructor(private utilities:Utilities) { }
+  constructor(private utilities: Utilities,
+    private windowService: WindowService) { }
 
   // Check if screen is mobile
   handleScreenSize(){
-    if (window.innerWidth >= this.breakPoint) {
-      this.mobile = false;
-    }
-    else {
-      this.mobile = true;
-    }
-  }
-
-  // Handle screen resize
-  attachResizeListener(){
-    window.addEventListener('resize', () => {
-      this.handleScreenSize();
+    this.windowService.medium.subscribe(isMobile => {
+      this.mobile = isMobile;
     });
   }
 
@@ -42,7 +33,6 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
     this.utilities.scrollTop(window);
     this.handleScreenSize();
-    this.attachResizeListener();
     this.senior['shareUrl'] = `${environment.url}/library?profile=${this.senior.id}`;
   }
 

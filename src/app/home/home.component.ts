@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import Typed  from 'typed.js';
+import Typed from 'typed.js';
+import { WindowService } from '../services/window.service';
 
 @Component({
   selector: 'app-home',
@@ -8,9 +9,8 @@ import Typed  from 'typed.js';
 })
 export class HomeComponent implements OnInit {
 
-  breakPoint: Number = 576;
-  mobile: Boolean = false;
-  ref: string = '#typed';
+  mobile: Boolean = true;
+  ref: string = '#mobile-typed';
   typedConfig = {
     strings: ['Honor your Senior', 'Represent your Class', 'Show your School Spirit'],
     typeSpeed: 15,
@@ -22,42 +22,28 @@ export class HomeComponent implements OnInit {
   }
   typed: Typed;
 
-  constructor() { }
+  constructor(private windowService: WindowService) { }
 
-  // Handle screen resize
-  attachResizeListener() {
-    window.addEventListener('resize', async () => {
-      let reference = this.mobile;
-      await this.handleScreenSize();
+  // Rebuild typed on screen resize
+  handleScreenResize() {
+    this.windowService.small.subscribe(isMobile => {
+      this.mobile = isMobile;
+      this.ref = this.mobile ? '#mobile-typed' : '#typed';
 
       let resetTyped = () => {
-        if (this.typed !== null) {
+        if (this.typed) {
           this.typed.destroy();
           this.typed = new Typed(this.ref, this.typedConfig);
         }
       }
 
-      if (reference != this.mobile){
-        try { 
-          resetTyped(); 
-        }
-        catch(e) {
-          setTimeout(() => resetTyped(), 200);
-        }
+      try { 
+        resetTyped(); 
+      }
+      catch(e) {
+        setTimeout(() => resetTyped(), 200);
       }
     });
-  }
-
-  // Check if screen is mobile
-  handleScreenSize(){
-    if (window.innerWidth >= this.breakPoint) {
-      this.mobile = false;
-      this.ref = '#typed';
-    }
-    else {
-      this.mobile = true;
-      this.ref = '#mobile-typed';
-    }
   }
 
   // Cancel the typed event
@@ -67,9 +53,7 @@ export class HomeComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.handleScreenSize();
-    this.attachResizeListener();
-
+    await this.handleScreenResize();
     this.typed = new Typed(this.ref, this.typedConfig);
   }
 

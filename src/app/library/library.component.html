@@ -13,20 +13,12 @@
                         <span>Create Senior Profile</span> 
                     </button></a>
                 </div>
-                <h1 class="mt-4 display-4 library-title">Class of 2020</h1>
-                <h3 class="mb-4 f1"> &mdash; Senior Library &mdash; </h3>
+                <div class="mt-4 display-4 library-title">Class of 2020</div>
+                <div class="mt-2 mb-4 h3 f1"> &mdash; Senior Library &mdash; </div>
             </div>
 
-            <div class="my-3" [ngClass]="(mobile==false)?'mx-4':'mx-2'">
-                <div class="create-profile-wrapper w-100 text-center" *ngIf="mobile">
-                    <a [routerLink]="['/create']">
-                        <button class="btn btn-primary inc-font py-2 px-4">
-                            <span>Create Senior Profile &nbsp;<i class="fa fa-arrow-circle-right"></i></span>
-                        </button>
-                    </a>
-                </div>
-
-                <div class="row mt-3">
+            <div class="mt-4 mb-3" [ngClass]="{'mx-4': !mobile}">
+                <div class="row">
                     <!--Search-->
                     <form [formGroup]="searchForm" class="col-12 col-md-8">
                         <div class="form-group mb-2">
@@ -38,7 +30,7 @@
                     <!--Order By-->
                     <form [formGroup]="orderForm" class="col-12 col-md-4">
                         <div class="form-group select-form-group mb-0">
-                            <select required class="form-control primary-border px-3 order-select" id="order" name="order" 
+                            <select required class="form-control primary-border bg-white px-3 order-select" id="order" name="order" 
                             formControlName="order" (change)="pof()">
                                 <option *ngFor="let opt of selectOptions" [value]="opt.key" [selected]="opt.selected == true">{{ opt.value }}</option>
                             </select>
@@ -47,9 +39,9 @@
                 </div>
             </div>
 
-            <div *ngIf="seniors" class="row equal" [ngClass]="(mobile==false)?'mx-2':'mx-0'">
+            <div *ngIf="seniors" class="row equal pt-1" [ngClass]="{'mx-2': !mobile}">
                 <div *ngFor="let senior of seniors" class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
-                    <div class="bg-white border border-light-gray rounded py-3 h-100 w-100 text-center mx-auto d-flex overflow-hidden senior-card"
+                    <div class="bg-white border border-light-gray py-3 h-100 w-100 text-center mx-auto d-flex overflow-hidden senior-card"
                      (click)="getProfile(senior)" id="{{senior.id}}">
                         <div class="align-self-center justify-content-center w-100">
                             <div *ngIf="senior.url" class="w-100 text-center">

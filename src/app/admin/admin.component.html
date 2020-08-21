@@ -1,9 +1,5 @@
 <app-navbar></app-navbar>
 
-<div *ngIf="showSnackbar">
-    <app-snackbar [message]="message"></app-snackbar>
-</div>
-
 <div class="container-fluid pt-3 pb-4 w-100 mx-auto text-center bg-lightest" style="min-height: 100vh;">
     <div *ngIf="!seniors" class="row text-center mt-5 justify-content-center">
         <div class="spinner-border text-primary text-center" role="status">

@@ -58,7 +58,7 @@ module.exports = class Validation {
 
     checkIP(ip, ips) {
         if (ips.includes(ip.toString())){
-            console.log('Blocked IP' + ip)
+            console.log(`Blocked IP: ${ip}`)
             return constants.errCodes.otherErr
         }
         return null

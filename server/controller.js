@@ -43,7 +43,7 @@ module.exports = class Controller{
         })
     }
 
-    // Remove uploaded file
+    // Remove uploaded file on server
     removeUpload(path) {
         fs.unlink(path, (err) => {
             if (err) return
@@ -76,17 +76,14 @@ module.exports = class Controller{
     }
 
     // Retrieve all senior profiles from firebase
-    fetchAllSeniors(isAdmin) {
+    fetchAllSeniors() {
         const orderField = 'uploaded'
         return db.collection(constants.firebaseConn.seniorsCollection).orderBy(orderField, 'desc').get()
         .then((snapshot) => {
             let seniors = []
 
             snapshot.forEach(doc => seniors.push(doc.data()))
-
-            if (!isAdmin) {
-                seniors.forEach(senior => this.hideIP(senior))
-            }
+            seniors.forEach(senior => this.hideIP(senior))
 
             this.cacheSet(cacheKey, seniors, ttl)
             return seniors

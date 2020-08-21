@@ -1,12 +1,38 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
+import { ReplaySubject } from 'rxjs'
 import { environment } from '../../environments/environment'
 
 @Injectable({
     providedIn: 'root'
 })
 export class UserService {
-    constructor(private http: HttpClient) { }
+    private _library: ReplaySubject<any>;
+
+    constructor(private http: HttpClient) { 
+        this._library = new ReplaySubject<any>(1);
+    }
+
+    get library() {
+        return this._library.asObservable();
+    }
+
+    set library(lib: any) {
+        this._library.next(lib);
+    }
+
+    // Retrieve all senior profiles
+    async fetchLibrary() {
+        let seniors = await this.http.get(`${environment.apiUrl}/seniors/get/all`).toPromise()
+            .catch(e => {
+                console.error('Unable to fetch senior library!', e);
+                return;
+            });
+
+        if (seniors) {
+            this._library.next(seniors)
+        }
+    }
 
     // Create new senior profile
     create(fname:string, lname:string, highSchool:string, comments:string, profile:any) {
@@ -20,44 +46,46 @@ export class UserService {
         return this.http.post(`${environment.apiUrl}/create`, formData).toPromise();
     }
 
-    // Retrieve all senior profiles
-    getAll(){
-        return this.http.get(`${environment.apiUrl}/seniors/get/all`).toPromise();
-    }
-
     // Sort Seniors by Full Name
     sortByName(obj:any[]){
         return obj.sort((a, b) => {
-        let aFullName = (a.lname + ' ' + a.fname).trim().toLowerCase().replace('  ', ' ');
-        let bFullName = (b.lname + ' ' + b.fname).trim().toLowerCase().replace('  ', ' ');
+            let aFullName = (a.lname + ' ' + a.fname).trim().toLowerCase().replace('  ', ' ');
+            let bFullName = (b.lname + ' ' + b.fname).trim().toLowerCase().replace('  ', ' ');
 
-        if(aFullName < bFullName) { return -1; }
-        if(aFullName > bFullName) { return 1; }
-        return 0;
+            if(aFullName < bFullName) { return -1; }
+            if(aFullName > bFullName) { return 1; }
+
+            return 0;
         });
     }
 
     // Sort Seniors by Newest Date Uploaded
     sortByDateNew(obj:any[]) {
         return obj.sort((a, b) => {
-        let aDate = a.uploaded._seconds;
-        let bDate = b.uploaded._seconds;
+            if (!a.uploaded || !b.uploaded) { return 0; }
+            
+            let aDate = a.uploaded._seconds;
+            let bDate = b.uploaded._seconds;
 
-        if(aDate < bDate) { return 1; }
-        if(aDate > bDate) { return -1; }
-        return 0;
+            if(aDate < bDate) { return 1; }
+            if(aDate > bDate) { return -1; }
+
+            return 0;
         });
     }
 
     // Sort Seniors by Oldest Date Uploaded
     sortByDateOld(obj:any[]) {
         return obj.sort((a, b) => {
-        let aDate = a.uploaded._seconds;
-        let bDate = b.uploaded._seconds;
+            if (!a.uploaded || !b.uploaded) { return 0; }
 
-        if(aDate < bDate) { return -1; }
-        if(aDate > bDate) { return 1; }
-        return 0;
+            let aDate = a.uploaded._seconds;
+            let bDate = b.uploaded._seconds;
+
+            if(aDate < bDate) { return -1; }
+            if(aDate > bDate) { return 1; }
+            
+            return 0;
         });
     }
 
@@ -70,8 +98,9 @@ export class UserService {
         let name = (fname + ' ' + lname).substring(0, length);
 
         if (fname === query || lname === query || query === name){
-        return true;
+            return true;
         }
+
         return false;
     }
 }

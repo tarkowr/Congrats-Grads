@@ -17,9 +17,6 @@ export class AdminComponent implements OnInit {
 
   searchForm: FormGroup;
 
-  showSnackbar: Boolean = false;
-  message: string;
-
   seniorsTab = { name: 'pills-seniors-tab', current: true }
   metricsTab = { name: 'pills-metrics-tab', current: false }
   tabs = [this.seniorsTab, this.metricsTab];
@@ -86,33 +83,15 @@ export class AdminComponent implements OnInit {
     this.seniors = this.utilities.copyArrayOfObj(this.backup.filter(s => this.userService.matchSearch(s.fname, s.lname, query)));
   }
 
-  // Retrieve all seniors from firebase
-  getSeniors() {
-    return this.userService.getAll()
-      .then((data:[]) => {
-        return data.length > 0 ? data : null;
-      })
-      .catch(err => {
-        console.log(err)
-        return null;
-      });
-  }
-
-  async ngOnInit() {
+  ngOnInit() {
     this.buildSearchForm();
-    this.seniors = await this.getSeniors();
 
-    if (this.seniors) {
+    this.userService.library.subscribe((library: any[]) => {
+      this.seniors = library;
+
       this.seniors = this.userService.sortByDateNew(this.seniors);
       this.backup = this.utilities.copyArrayOfObj(this.seniors);
-      return;
-    }
-
-    setTimeout(() => {
-      this.showSnackbar = true;
-      this.message = 'Unable to Retrieve Data';
-      setTimeout(() => this.showSnackbar = false, 3000);
-    }, 1000);
+    });
   }
 
 }

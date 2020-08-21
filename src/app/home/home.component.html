@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid bg-lightest">
     <div class="row">
         <div *ngIf="!mobile" class="col col-0 col-lg-5 col-xl-4 col-override p-0" style="min-height: 100vh;">
             <div class="landing-pic d-none d-lg-block d-xl-block border-right border-light-gray"></div> 
@@ -33,7 +33,7 @@
                     <h4 class="text-dark f1"><em>#congratsgrads</em></h4>
                 </div>
 
-                <div [ngClass]="(mobile==false)?'mt-5':'mt-3'" class="pt-3">
+                <div [ngClass]="mobile ? 'mt-3':'mt-5'" class="pt-3">
                     <a [routerLink]="['/create']">
                         <button class="btn btn-primary inc-font py-2 px-4" (click)="cancel()">
                             <span>Create Senior Profile</span>
@@ -55,7 +55,7 @@
                 </div>
             </div>
 
-            <div class="row mt-4 landing-footer border-top border-lighter">
+            <div class="row mt-4 landing-footer border-top border-lighter bg-white">
                 <div class="col-12">
                     <app-footer></app-footer>
                 </div>
