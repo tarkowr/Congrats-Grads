@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { Utilities } from '../utilities/utilities';
 import { RegexUtilities } from '../utilities/regex.utilities';
 import { WindowService } from '../services/window.service';
+import { LibraryProfileStateService } from '../services/library-profile-state.service';
 
 @Component({
   selector: 'app-library',
@@ -15,13 +16,9 @@ export class LibraryComponent implements OnInit {
 
   seniors: any[];
   backup: any[];
-  selected: any = undefined;
   totalSeniors: number;
 
   mobile: Boolean = true;
-
-  showSnackbar: Boolean = false;
-  snackbarMessage:string;
 
   paginationStartIndex: number = 0;
   paginationLimits = { desktop: 20, mobile: 12 };
@@ -59,8 +56,9 @@ export class LibraryComponent implements OnInit {
   constructor(
     private userService: UserService,
     private windowService: WindowService,
+    private libraryStateService: LibraryProfileStateService,
+    private router: Router,
     private formBuilder: FormBuilder,
-    private activatedRoute: ActivatedRoute,
     private utilities: Utilities,
     private regexUtilities: RegexUtilities) { }
 
@@ -68,9 +66,10 @@ export class LibraryComponent implements OnInit {
 
   get o() { return this.orderForm.controls }
 
-  // UI: Display clicked senior profile
+  // UI: Go to senior profile
   getProfile(senior) {
-    this.selected = senior;
+    this.libraryStateService.setSenior(senior);
+    this.router.navigate(['profile']);
   }
 
   // Handle a change in the user's viewport
@@ -85,21 +84,6 @@ export class LibraryComponent implements OnInit {
         this.clearSearch();
       }
     });
-  }
-
-  // Determine whether to exit profile view based on navbar click
-  cancelSelected(event){
-    let target: string = event.target.innerText;
-
-    if (target.toLowerCase() === 'library'){
-      this.selected = undefined;
-    }
-  }
-
-  // Exit profile view
-  // TODO: Find a way to save user's scroll position when switching between profile and library
-  cancel() {
-    this.selected = undefined;
   }
 
   // Initialize the search form
@@ -153,6 +137,8 @@ export class LibraryComponent implements OnInit {
       pageMax = this.totalSeniors;
     }
 
+    // Index of the last senior on the current page when there is a current search filter
+    // Example: 20-X of 120
     if (this.searchActive) {
       pageMax = this.paginationStartIndex + this.seniors.length;
     }
@@ -246,36 +232,6 @@ export class LibraryComponent implements OnInit {
     this.seniors = this.paginationWrapper(foundSeniors);
   }
 
-  // Get senior by ID
-  lookupSenior(id:string) {
-    let found = undefined;
-
-    this.backup.forEach(s => {
-      if (s.id === id){
-        found = s;
-      }
-    });
-
-    return found;
-  }
-
-  // Get senior profile by url query string ID
-  handleProfileLink(id:string) {
-    let senior = this.lookupSenior(id);
-
-    if (!senior){
-      setTimeout(() => {
-        this.showSnackbar = true;
-        this.snackbarMessage = 'Unable to find profile!';
-        setTimeout(() => this.showSnackbar = false, 3000);
-      }, 1000);
-
-      return;
-    }
-
-    this.selected = senior;
-  }
-
   ngOnInit() {
     this.buildSearchForm();
     this.buildOrderForm();
@@ -290,12 +246,6 @@ export class LibraryComponent implements OnInit {
       this.backup = this.utilities.copyArrayOfObj(this.userService.sortByDateNew(this.seniors));
       this.restoreBackupWithPagination();
       this.totalSeniors = this.backup.length;
-
-      this.activatedRoute.queryParams.subscribe(params => {
-        const id = params['profile'];
-        if (!id) return;
-        this.handleProfileLink(id);
-      });
     })
   }
   

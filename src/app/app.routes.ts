@@ -8,12 +8,14 @@ import { ContactComponent } from './contact/contact.component';
 import { TermsComponent } from './terms/terms.component';
 import { LoginComponent } from './login/login.component';
 import { AdminComponent } from './admin/admin.component';
+import { ProfileComponent } from './profile/profile.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
     { path: 'home', component: HomeComponent },
     { path: 'create', component: CreateComponent },
     { path: 'library', component: LibraryComponent },
+    { path: 'profile', component: ProfileComponent },
     { path: 'privacy', component: PrivacyComponent },
     { path: 'contact',  component: ContactComponent },
     { path: 'terms', component: TermsComponent },

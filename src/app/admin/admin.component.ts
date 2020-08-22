@@ -3,8 +3,9 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { DateUtilities } from '../utilities/date.utilities';
 import { Utilities } from '../utilities/utilities';
-import { environment } from 'src/environments/environment';
 import { RegexUtilities } from '../utilities/regex.utilities';
+import { LibraryProfileStateService } from '../services/library-profile-state.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin',
@@ -23,7 +24,9 @@ export class AdminComponent implements OnInit {
 
   constructor(
     private userService: UserService,
+    private libraryStateService: LibraryProfileStateService,
     private formBuilder: FormBuilder,
+    private router: Router,
     private utilities: Utilities,
     private dateUtilities: DateUtilities,
     private regexUtilities: RegexUtilities) { }
@@ -52,9 +55,10 @@ export class AdminComponent implements OnInit {
     return this.dateUtilities.formatDate(date);
   }
 
-  // UI: Generate profile URL for senior
-  getProfileUrl(id) {
-    return `${environment.url}/library?profile=${id}`;
+  // UI: Navigate to senior profile
+  getProfile(senior: any) {
+    this.libraryStateService.setSenior(senior);
+    this.router.navigate(['profile']);
   }
 
   // Initialize the search form
