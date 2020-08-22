@@ -30,7 +30,7 @@ export class UserService {
             });
 
         if (seniors) {
-            this._library.next(seniors)
+            this._library.next(seniors);
         }
     }
 

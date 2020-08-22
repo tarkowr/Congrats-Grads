@@ -4,7 +4,7 @@ import { UserService } from '../services/user.service';
 import { DateUtilities } from '../utilities/date.utilities';
 import { Utilities } from '../utilities/utilities';
 import { RegexUtilities } from '../utilities/regex.utilities';
-import { LibraryProfileStateService } from '../services/library-profile-state.service';
+import { AppStateService } from '../services/app-state.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -24,7 +24,7 @@ export class AdminComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private libraryStateService: LibraryProfileStateService,
+    private appStateService: AppStateService,
     private formBuilder: FormBuilder,
     private router: Router,
     private utilities: Utilities,
@@ -57,7 +57,7 @@ export class AdminComponent implements OnInit {
 
   // UI: Navigate to senior profile
   getProfile(senior: any) {
-    this.libraryStateService.setSenior(senior);
+    this.appStateService.seniorProfile = senior;
     this.router.navigate(['profile']);
   }
 

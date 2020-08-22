@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
-import { LocalStorage } from '../services/localStorage.service';
+import { LocalStorage } from '../services/local-storage.service';
 import { RegexUtilities } from '../utilities/regex.utilities';
 
 @Component({

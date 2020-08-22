@@ -5,7 +5,7 @@ import { routes } from './app.routes';
 @NgModule({
   imports: [RouterModule.forRoot(routes),
     RouterModule.forRoot(routes, {
-    scrollPositionRestoration: 'enabled',
+    scrollPositionRestoration: 'top',
   })],
   exports: [RouterModule]
 })

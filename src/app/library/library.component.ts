@@ -5,7 +5,7 @@ import { UserService } from '../services/user.service';
 import { Utilities } from '../utilities/utilities';
 import { RegexUtilities } from '../utilities/regex.utilities';
 import { WindowService } from '../services/window.service';
-import { LibraryProfileStateService } from '../services/library-profile-state.service';
+import { AppStateService } from '../services/app-state.service';
 
 @Component({
   selector: 'app-library',
@@ -56,7 +56,7 @@ export class LibraryComponent implements OnInit {
   constructor(
     private userService: UserService,
     private windowService: WindowService,
-    private libraryStateService: LibraryProfileStateService,
+    private appStateService: AppStateService,
     private router: Router,
     private formBuilder: FormBuilder,
     private utilities: Utilities,
@@ -68,7 +68,7 @@ export class LibraryComponent implements OnInit {
 
   // UI: Go to senior profile
   getProfile(senior) {
-    this.libraryStateService.setSenior(senior);
+    this.appStateService.seniorProfile = senior;
     this.router.navigate(['profile']);
   }
 
@@ -86,22 +86,19 @@ export class LibraryComponent implements OnInit {
     });
   }
 
-  // Initialize the search form
-  buildSearchForm() {
+  // Initialize the search and order inputs
+  buildForms() {
     this.searchForm = this.formBuilder.group({
       search: ['',  Validators.compose([
         Validators.required, Validators.pattern(this.regexUtilities.search)
       ])]
     });
-  }
 
-  // Initialize the search form
-  buildOrderForm() {
     this.orderForm = this.formBuilder.group({
       order: [this.selectedOption.key,  Validators.compose([
         Validators.required
       ])]
-    })
+    });
   }
 
   // Restore seniors array from backup with pagination
@@ -233,9 +230,7 @@ export class LibraryComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.buildSearchForm();
-    this.buildOrderForm();
-
+    this.buildForms();
     this.handleScreenResize();
 
     this.userService.library.subscribe((library: any[]) => {
@@ -246,7 +241,7 @@ export class LibraryComponent implements OnInit {
       this.backup = this.utilities.copyArrayOfObj(this.userService.sortByDateNew(this.seniors));
       this.restoreBackupWithPagination();
       this.totalSeniors = this.backup.length;
-    })
+    });
   }
   
 }

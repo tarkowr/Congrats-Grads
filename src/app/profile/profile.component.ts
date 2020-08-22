@@ -1,8 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Utilities } from '../utilities/utilities';
 import { WindowService } from '../services/window.service';
-import { LibraryProfileStateService } from '../services/library-profile-state.service';
+import { AppStateService } from '../services/app-state.service';
 
 @Component({
   selector: 'app-profile',
@@ -17,7 +17,7 @@ export class ProfileComponent implements OnInit {
   constructor(private utilities: Utilities,
     private router: Router,
     private windowService: WindowService,
-    private libraryStateService: LibraryProfileStateService,
+    private appStateService: AppStateService,
     ) { }
 
   // Check if screen is mobile
@@ -28,13 +28,12 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.senior = this.libraryStateService.getSenior();
+    this.senior = this.appStateService.seniorProfile;
 
     if (!this.senior) {
-      this.router.navigate(['library']);
+      this.router.navigate(['library'], { skipLocationChange: true });
     }
 
-    this.utilities.scrollTop(window);
     this.handleScreenSize();
   }
 
