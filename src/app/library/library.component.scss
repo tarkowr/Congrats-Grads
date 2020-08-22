@@ -12,13 +12,6 @@
 .senior-card:hover {
     box-shadow: 0 0 16px rgba(0, 0, 0, 0.15);
 }
-.back-btn {
-    position: fixed;
-    top: 85px;
-    left: 10px;
-    z-index: 100;
-    opacity: 1;
-}
 .search-input {
     border-radius: 20px;
     max-width: 450px;
@@ -32,7 +25,9 @@
     color: gray;
 }
 .create-profile-wrapper{
-    position: static;
+    position: absolute;
+    top: 30px;
+    left: 40px;
 }
 .create-profile-wrapper > a > button:hover{
     background-color: #26B1FF !important;
@@ -54,12 +49,5 @@
     .order-select {
         float: left;
         max-width: 150px;
-    }
-}
-@media(min-width: 992px) {
-    .create-profile-wrapper{
-        position: absolute;
-        top: 30px;
-        left: 40px;
     }
 }
