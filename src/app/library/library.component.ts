@@ -67,7 +67,11 @@ export class LibraryComponent implements OnInit {
 
   // UI: Go to senior profile
   getProfile(senior) {
-    this.router.navigate(['profile']);
+    if (!senior || !senior.id) {
+      return;
+    }
+    
+    this.router.navigate([`profile/${senior.id}`]);
   }
 
   // Handle a change in the user's viewport

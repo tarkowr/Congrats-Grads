@@ -2,7 +2,6 @@ $background: linear-gradient(to right, #00b7ff, #aeecff);
 
 #background {
     background-image: $background;
-    height: 65vh;
     overflow-y: visible;
 }
 #profile{
@@ -19,17 +18,8 @@ $background: linear-gradient(to right, #00b7ff, #aeecff);
     height: auto;
     max-height: 458px;
 }
-.hide-overflow {
-    overflow: hidden;
-}
 @media(max-width: 768px) {
     .profile-pic{
         min-width: 200px;
-    }
-    #background{
-        background-image: none;
-    }
-    .wrapper {
-        background-image: $background;
     }
 }

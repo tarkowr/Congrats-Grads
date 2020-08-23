@@ -16,6 +16,7 @@ export const routes: Routes = [
     { path: 'create', component: CreateComponent },
     { path: 'library', component: LibraryComponent },
     { path: 'profile', component: ProfileComponent },
+    { path: 'profile/:id', component: ProfileComponent },
     { path: 'privacy', component: PrivacyComponent },
     { path: 'contact',  component: ContactComponent },
     { path: 'terms', component: TermsComponent },

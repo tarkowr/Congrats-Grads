@@ -1,17 +1,18 @@
 <app-navbar></app-navbar>
 
-<div class="page-margin-top page-min-height wrapper">
-    <div id="background" class="text-center w-100">
+<div class="page-margin-top">
+    <div id="background" class="text-center w-100 page-min-height">
         <div class="w-100 row m-0" [ngClass]="mobile ? 'pt-4':'pt-5'">
             <div id="profile" class="col-10 offset-1 col-lg-8 offset-lg-2 bg-white mb-5">
-                <div class="row px-3 content-container overflow-hidden" [ngClass]="mobile ? 'py-4':'py-5'">
-                    <div *ngIf="!senior" class="w-100 text-center my-5 py-5">
+                <div class="px-3 content-container overflow-hidden" [ngClass]="mobile ? 'py-4':'py-5'">
+                    <div *ngIf="!senior && !error" class="w-100 text-center my-5 py-5">
                         <div class="spinner-border text-primary" role="status">
                             <span class="sr-only">Loading...</span>
                         </div>
                     </div>
-                    <div *ngIf="senior">
-                        <div *ngIf="senior.url" class=" col-12 col-md-6 overflow-hidden d-flex text-center w-100">
+
+                    <div *ngIf="senior && !error" class="row">
+                        <div *ngIf="senior.url" class="col-12 col-md-6 overflow-hidden d-flex text-center">
                             <img src="{{senior.url}}" class="rounded profile-pic align-self-center mx-auto justify-content-center">
                         </div>
                         <div class="col-12 col-md-6 text-left overflow-hidden px-0" [ngClass]="mobile ? 'pt-2':'pt-0'">
@@ -21,6 +22,18 @@
                             <div class="mb-0 mt-2 oswald inc-font f6 text-gray">{{ senior.school | uppercase }}</div>
                             <div class="mt-2">{{ senior.comments }}</div>
                         </div>
+                    </div>
+
+                    <div *ngIf="error" class="my-5">
+                        <div class="h5">
+                            We can't find that profile!
+                        </div>
+                        <div class="mt-4">
+                            <a routerLink="/home"><button class="btn btn-primary px-4 py-2">Return Home</button></a>
+                        </div>
+                        <div class="mt-2">
+                            <a routerLink="/library" class="text-primary mt-2 f4">View Library</a>
+                        </div> 
                     </div>
                 </div>
             </div>
