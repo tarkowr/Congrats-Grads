@@ -1,11 +1,16 @@
 <app-navbar></app-navbar>
 
-<div style="min-height: calc(100%-75px);">
-    <div class="w-100 h-100" class="wrapper">
-        <div id="background" class="text-center w-100">
-            <div class="w-100 row m-0" [ngClass]="mobile ? 'pt-4':'pt-5'">
-                <div id="profile" class="col-10 offset-1 col-lg-8 offset-lg-2 bg-white mb-5">
-                    <div class="row px-3 content-container overflow-hidden" [ngClass]="mobile ? 'py-4':'py-5'">
+<div class="page-margin-top page-min-height wrapper">
+    <div id="background" class="text-center w-100">
+        <div class="w-100 row m-0" [ngClass]="mobile ? 'pt-4':'pt-5'">
+            <div id="profile" class="col-10 offset-1 col-lg-8 offset-lg-2 bg-white mb-5">
+                <div class="row px-3 content-container overflow-hidden" [ngClass]="mobile ? 'py-4':'py-5'">
+                    <div *ngIf="!senior" class="w-100 text-center my-5 py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div *ngIf="senior">
                         <div *ngIf="senior.url" class=" col-12 col-md-6 overflow-hidden d-flex text-center w-100">
                             <img src="{{senior.url}}" class="rounded profile-pic align-self-center mx-auto justify-content-center">
                         </div>
@@ -22,3 +27,7 @@
         </div>
     </div>
 </div>
+
+
+    
+    

@@ -13,7 +13,6 @@ import { AppStateService } from '../services/app-state.service';
   styleUrls: ['./library.component.scss']
 })
 export class LibraryComponent implements OnInit {
-
   seniors: any[];
   backup: any[];
   totalSeniors: number;
@@ -68,7 +67,6 @@ export class LibraryComponent implements OnInit {
 
   // UI: Go to senior profile
   getProfile(senior) {
-    this.appStateService.seniorProfile = senior;
     this.router.navigate(['profile']);
   }
 

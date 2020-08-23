@@ -169,7 +169,7 @@ app.get('*', function(req, res) {
 })
 
 const PORT = process.env.PORT || 3200
-app.listen(PORT, function(){
+app.listen(PORT, function() {
     console.log(`Listening on port ${PORT}`)
 
     // Empty uploads folder
@@ -181,7 +181,7 @@ app.listen(PORT, function(){
             logger.logMessage(`Fetched ${seniors.length} seniors`)
         })
         .catch(err => {
-            logger.logError('Unable to fetch senior library!', err);
+            logger.logError('Unable to fetch senior library!', err)
         })
 
     // Store blacklist in cache

@@ -1,52 +1,54 @@
 <app-navbar></app-navbar>
 
-<div class="container-fluid pt-3 pb-4 w-100 mx-auto text-center bg-lightest" style="min-height: 100vh;">
-    <div *ngIf="!seniors" class="row text-center mt-5 justify-content-center">
-        <div class="spinner-border text-primary text-center" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-
-    <div *ngIf="seniors" class="container my-3">
-
-        <!-- Actions -->
-        <ul class="nav nav-pills f4 mb-2" id="pills-admin-actions-tab" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" href="#pills-seniors" id="pills-seniors-tab" (click)="setActivePill($event)"
-                data-toggle="pill" role="tab" aria-controls="pills-seniors" aria-selected="true">Seniors</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#pills-metrics" id="pills-metrics-tab" (click)="setActivePill($event)"
-                data-toggle="pill"  role="tab" aria-controls="pills-metrics" aria-selected="false">Metrics</a>
-            </li>
-        </ul>
-
-        <div class="tab-content" id="pills-seniors" *ngIf="seniorsTab.current">
-            <div class="my-3 f4 h4">
-                Count: {{ seniors.length }}
+<div class="page-margin-top">
+    <div class="container-fluid pt-3 pb-4 w-100 mx-auto text-center bg-lightest" style="min-height: 100vh;">
+        <div *ngIf="!seniors" class="row text-center mt-5 justify-content-center">
+            <div class="spinner-border text-primary text-center" role="status">
+              <span class="sr-only">Loading...</span>
             </div>
-            <form [formGroup]="searchForm" class="shadow border-top">
-                <div class="form-group mb-0">
-                    <input type="search" required class="form-control px-3 search-input" id="search" name="search" placeholder="Search" 
-                    formControlName="search" (input)="onSearch()" maxlength="100">
+        </div>
+    
+        <div *ngIf="seniors" class="container my-3">
+    
+            <!-- Actions -->
+            <ul class="nav nav-pills f4 mb-2" id="pills-admin-actions-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#pills-seniors" id="pills-seniors-tab" (click)="setActivePill($event)"
+                    data-toggle="pill" role="tab" aria-controls="pills-seniors" aria-selected="true">Seniors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#pills-metrics" id="pills-metrics-tab" (click)="setActivePill($event)"
+                    data-toggle="pill"  role="tab" aria-controls="pills-metrics" aria-selected="false">Metrics</a>
+                </li>
+            </ul>
+    
+            <div class="tab-content" id="pills-seniors" *ngIf="seniorsTab.current">
+                <div class="my-3 f4 h4">
+                    Count: {{ seniors.length }}
                 </div>
-            </form>
-            <div class="shadow">
-                <div *ngFor="let senior of seniors" class="d-block bg-white border-bottom w-100 text-left senior">
-                    <div class="p-3" (click)="getProfile(senior)">
-                        <div *ngIf="isNew(senior.uploaded)" class="d-inline-block">
-                            <div class="bg-info mr-3 px-2 text-white rounded"><small><strong style="font-family: sans-serif;">NEW</strong></small></div>
+                <form [formGroup]="searchForm" class="shadow border-top">
+                    <div class="form-group mb-0">
+                        <input type="search" required class="form-control px-3 search-input" id="search" name="search" placeholder="Search" 
+                        formControlName="search" (input)="onSearch()" maxlength="100">
+                    </div>
+                </form>
+                <div class="shadow">
+                    <div *ngFor="let senior of seniors" class="d-block bg-white border-bottom w-100 text-left senior">
+                        <div class="p-3" (click)="getProfile(senior)">
+                            <div *ngIf="isNew(senior.uploaded)" class="d-inline-block">
+                                <div class="bg-info mr-3 px-2 text-white rounded"><small><strong style="font-family: sans-serif;">NEW</strong></small></div>
+                            </div>
+                            <div class="f4 mr-3 d-inline-block" style="min-width: 200px;">{{ senior.fname }} {{ senior.lname }}</div>
+                            <div class="text-gray d-inline-block">{{ getDate(senior.uploaded._seconds) }}</div>
                         </div>
-                        <div class="f4 mr-3 d-inline-block" style="min-width: 200px;">{{ senior.fname }} {{ senior.lname }}</div>
-                        <div class="text-gray d-inline-block">{{ getDate(senior.uploaded._seconds) }}</div>
                     </div>
                 </div>
             </div>
+    
+            <div class="tab-content" id="pills-metrics" *ngIf="metricsTab.current">
+                <div class="f4 my-3 h4">Coming Soon!</div>
+            </div>
+    
         </div>
-
-        <div class="tab-content" id="pills-metrics" *ngIf="metricsTab.current">
-            <div class="f4 my-3 h4">Coming Soon!</div>
-        </div>
-
     </div>
 </div>
