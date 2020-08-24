@@ -19,28 +19,29 @@ export class LibraryComponent implements OnInit {
 
   mobile: Boolean = true;
 
-  paginationStartIndex: number = 0;
-  paginationLimits = { desktop: 20, mobile: 12 };
+  readonly paginationLimits = { desktop: 20, mobile: 12 };
   paginationMaxPerPage = this.paginationLimits.desktop;
+  paginationStartIndex: number = 0;
 
+  readonly noSearchResultsMessage: string = 'No Results!';
   searchForm: FormGroup;
+  searchQuery: string = '';
   noSearchResults: Boolean = false;
-  noSearchResultsMessage: string = 'No Results!';
   searchActive: Boolean = false;
   searchFound: number = 0;
 
   orderForm: FormGroup;
-  selectOptions = [
+  readonly selectOptions = [
     {
       key: 1,
       value: 'Alphabetical',
-      selected: true,
+      selected: false,
       action: this.userService.sortByName
     },
     {
       key: 2,
       value: 'Newest',
-      selected: false,
+      selected: true,
       action: this.userService.sortByDateNew
     },
     {
@@ -50,7 +51,8 @@ export class LibraryComponent implements OnInit {
       action: this.userService.sortByDateOld
     }
   ];
-  selectedOption = this.selectOptions[1];
+  readonly defaultOption = this.selectOptions[1];
+  selectedOption = this.defaultOption;
 
   constructor(
     private userService: UserService,
@@ -67,22 +69,29 @@ export class LibraryComponent implements OnInit {
 
   // UI: Go to senior profile
   getProfile(senior) {
-    if (!senior || !senior.id) {
-      return;
-    }
+    if (!senior) return;
+
+    this.appStateService.seniorId = senior.id;
     
     this.router.navigate([`profile/${senior.id}`]);
   }
 
+  // Set limit for number of profiles on one page based on mobile state
+  setMaxSeniorsPerPage() {
+    this.paginationMaxPerPage = this.mobile ? this.paginationLimits.mobile : this.paginationLimits.desktop;
+  }
+
   // Handle a change in the user's viewport
   handleScreenResize(){
+    this.setMaxSeniorsPerPage();
+
     this.windowService.large.subscribe(isMobile => {
       this.mobile = isMobile;
 
-      this.resetPagination();
-      this.paginationMaxPerPage = this.mobile ? this.paginationLimits.mobile : this.paginationLimits.desktop;
+      this.setMaxSeniorsPerPage();
 
-      if (this.backup) {
+      if (this.seniors) {
+        this.resetPagination();
         this.clearSearch();
       }
     });
@@ -190,16 +199,27 @@ export class LibraryComponent implements OnInit {
     this.searchActive = false;
     this.searchForm.reset();
     this.restoreBackupWithPagination();
+    this.savePageState();
   }
 
   // Pagination, Order, Filter
-  pof() {
-    let selected = this.getSelectedOption();
+  pof(isRestoringState = false) {
+
+    // If library is empty (likely still loading) then reset forms
+    if (!this.seniors) {
+      this.searchForm.reset();
+      this.o.order.setValue(this.defaultOption.key);
+      return;
+    }
+
+    const selected = this.getSelectedOption();
 
     // Order seniors if selected order has changed
     if (this.selectedOption.key != selected.key) {
       this.selectedOption = selected;
-      this.resetPagination();
+
+      if (!isRestoringState) this.resetPagination();
+
       selected.action(this.backup);
     }
 
@@ -207,6 +227,15 @@ export class LibraryComponent implements OnInit {
     let query:string = this.f.search.value ? this.f.search.value.toLowerCase() : '';
     this.noSearchResults = false;
 
+    // On new query reset pagination
+    if (this.searchQuery != query && !isRestoringState) { 
+      this.searchQuery = query;
+      this.resetPagination();
+    }
+
+    if (!isRestoringState) this.savePageState();
+
+    // Reset search if search input is invalid
     if (this.searchForm.invalid) {
       this.searchActive = false;
       this.searchFound = 0;
@@ -214,21 +243,43 @@ export class LibraryComponent implements OnInit {
       return;
     }
 
-    // Reset pagination on new search
-    if(!this.searchActive) {
-      this.resetPagination();
-      this.searchActive = true;
-    }
+    if (!this.searchActive) this.searchActive = true;
 
     let foundSeniors: any[] = this.findMatchingSeniors(query);
     this.searchFound = foundSeniors.length;
- 
-    if (this.searchFound <= 0) {
-      this.noSearchResults = true;
+     
+    if (this.searchFound <= 0) this.noSearchResults = true;
+
+    this.seniors = this.paginationWrapper(foundSeniors);
+  }
+
+  // Save page state so page doesn't reset upon navigating away
+  savePageState() {
+    this.appStateService.searchQuery = this.f.search.value ? this.f.search.value.toLowerCase() : undefined;
+    this.appStateService.orderKey = this.selectedOption.key == this.defaultOption.key ? undefined : this.selectedOption.key;
+    this.appStateService.pageStartIndex = this.paginationStartIndex;
+    this.appStateService.isMobile = this.mobile;
+  }
+
+  // Restore page to saved state
+  getSavedPageState() {
+    const searchQueryState = this.appStateService.searchQuery;
+    const orderKeyState = this.appStateService.orderKey;
+    const pageState = this.appStateService.pageStartIndex;
+
+    if (searchQueryState) {
+      this.f.search.setValue(searchQueryState);
     }
 
-    // Handle pagination
-    this.seniors = this.paginationWrapper(foundSeniors);
+    if (orderKeyState) {
+      this.o.order.setValue(orderKeyState);
+    }
+
+    if (pageState) {
+      this.paginationStartIndex = pageState;
+    }
+
+    this.pof(true);
   }
 
   ngOnInit() {
@@ -240,9 +291,24 @@ export class LibraryComponent implements OnInit {
 
       this.seniors = library;
 
-      this.backup = this.utilities.copyArrayOfObj(this.userService.sortByDateNew(this.seniors));
-      this.restoreBackupWithPagination();
-      this.totalSeniors = this.backup.length;
+      this.backup = this.utilities.copyArrayOfObj(this.defaultOption.action(library));
+      this.totalSeniors = library.length;
+
+      // Restore state if saved
+      if (this.appStateService.libraryHasSavedState(this.mobile)) {
+        this.getSavedPageState();
+      }
+      else {
+        this.restoreBackupWithPagination();
+      }
+
+      // Scroll to selected senior on return from profile
+      if (this.appStateService.seniorId) {
+        setTimeout(() => {
+          document.getElementById(this.appStateService.seniorId).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest"});
+          this.appStateService.seniorId = undefined;
+        }, 0);
+      }
     });
   }
   

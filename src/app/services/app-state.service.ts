@@ -7,13 +7,17 @@ export class AppStateService {
 
     constructor() { }
 
-    private _seniorProfile: any;
+    // Library State
+    searchQuery: string;
+    orderKey: number;
+    pageStartIndex: number = 0;
+    seniorId: string;
+    isMobile: Boolean;
 
-    get seniorProfile() {
-        return this._seniorProfile;
-    }
+    libraryHasSavedState(mobile: Boolean) {
+        const hasState = this.searchQuery || this.orderKey || this.pageStartIndex;
+        const hasMobileChanged = this.isMobile != undefined && this.isMobile != mobile;
 
-    set seniorProfile(senior: any) {
-        this._seniorProfile = senior;
+        return hasState && !hasMobileChanged;
     }
 }

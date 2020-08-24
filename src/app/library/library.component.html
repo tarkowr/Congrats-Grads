@@ -28,7 +28,7 @@
                         <div class="form-group select-form-group mb-0">
                             <select required class="form-control primary-border bg-white px-3 order-select" id="order" name="order" 
                             formControlName="order" (change)="pof()">
-                                <option *ngFor="let opt of selectOptions" [value]="opt.key" [selected]="opt.selected == true">{{ opt.value }}</option>
+                                <option *ngFor="let opt of selectOptions" [value]="opt.key">{{ opt.value }}</option>
                             </select>
                         </div>
                     </form>

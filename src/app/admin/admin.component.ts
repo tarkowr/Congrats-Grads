@@ -57,8 +57,7 @@ export class AdminComponent implements OnInit {
 
   // UI: Navigate to senior profile
   getProfile(senior: any) {
-    this.appStateService.seniorProfile = senior;
-    this.router.navigate(['profile']);
+    this.router.navigate([`profile/${senior.id}`]);
   }
 
   // Initialize the search form
