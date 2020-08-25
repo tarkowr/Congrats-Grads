@@ -21,8 +21,7 @@ let storage = admin.storage().bucket()
 // Setup cache
 let cache = new NodeCache()
 const ttl = constants.cache.ttl
-const cacheKey = constants.cache.cacheKey
-const blacklistKey = constants.cache.blacklistKey
+const seniorCacheKey = constants.cache.seniorCacheKey
 
 module.exports = class Controller{
 
@@ -65,16 +64,6 @@ module.exports = class Controller{
         cache.del(key)
     }
 
-    // Retrieve blacklist from firebase
-    fetchBlacklist() {
-        return db.collection(constants.firebaseConn.filterCollection).doc(constants.firebaseConn.blacklistDoc).get()
-            .then(doc => {
-                let ips = doc.data().ip
-                this.cacheSet(blacklistKey, ips, 0)
-                return ips
-            })
-    }
-
     // Retrieve all senior profiles from firebase
     fetchAllSeniors() {
         const orderField = 'uploaded'
@@ -85,7 +74,7 @@ module.exports = class Controller{
             snapshot.forEach(doc => seniors.push(doc.data()))
             seniors.forEach(senior => this.hideIP(senior))
 
-            this.cacheSet(cacheKey, seniors, ttl)
+            this.cacheSet(seniorCacheKey, seniors, ttl)
             return seniors
         })
     }
@@ -111,13 +100,13 @@ module.exports = class Controller{
 
     // Update the cache upon senior upload
     updateSeniorCache(senior) {
-        let cachedResults = this.cacheGet(cacheKey)
+        let cachedResults = this.cacheGet(seniorCacheKey)
 
         if (cachedResults){
             senior['uploaded'] = { _seconds: this.calcTimestamp(senior['uploaded']), _nanoseconds:0 }
 			this.hideIP(senior)
             cachedResults.push(senior)
-            this.cacheSet(cacheKey, cachedResults)
+            this.cacheSet(seniorCacheKey, cachedResults)
         }
     }
 	

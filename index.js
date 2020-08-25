@@ -72,11 +72,9 @@ app.post('/create', upload.single('profile'), async (req, res) => {
 
     // Input validation
     const err = validation.validateProfile(fname, lname, school, comments, profile)
-    const ipErr = validation.checkIP(ip, controller.cacheGet(constants.cache.blacklistKey))
-    const errors = err || ipErr
 
-    if (errors) {
-        onError(errors)
+    if (err) {
+        onError(err)
         return
     }
     
@@ -119,7 +117,7 @@ app.post('/create', upload.single('profile'), async (req, res) => {
 
 // Get users from firebase
 app.get('/seniors/get/all', async (req, res) => {
-    let cachedResults = controller.cacheGet(constants.cache.cacheKey)
+    let cachedResults = controller.cacheGet(constants.cache.seniorCacheKey)
 
     // Return cached results if available
     if (cachedResults) {
@@ -182,14 +180,5 @@ app.listen(PORT, function() {
         })
         .catch(err => {
             logger.logError('Unable to fetch senior library!', err)
-        })
-
-    // Store blacklist in cache
-    controller.fetchBlacklist()
-        .then(ips => {
-            logger.logMessage('Fetched IP blacklist', ips)
-        })
-        .catch(err => {
-            logger.logError('Unable to fetch IP blacklist', err)
         })
 })

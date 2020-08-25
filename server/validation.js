@@ -55,12 +55,4 @@ module.exports = class Validation {
 
         return null
     }
-
-    checkIP(ip, ips) {
-        if (ips.includes(ip.toString())){
-            console.log(`Blocked IP: ${ip}`)
-            return constants.errCodes.otherErr
-        }
-        return null
-    }
 }

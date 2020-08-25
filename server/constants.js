@@ -7,14 +7,11 @@ const errCodes = {
 
 const firebaseConn = {
     seniorsCollection: 'seniors',
-    filterCollection: 'filters',
-    blacklistDoc: 'blacklist'
 }
 
 const cache = {
     ttl: 24 * 60 * 60, // 24 hour cache
-    cacheKey: 'seniors',
-    blacklistKey: 'blacklist'
+    seniorCacheKey: 'seniors',
 }
 
 module.exports = { firebaseConn: firebaseConn, errCodes: errCodes, cache: cache }
