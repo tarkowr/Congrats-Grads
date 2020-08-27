@@ -6,7 +6,6 @@ import { LibraryComponent } from './library/library.component';
 import { PrivacyComponent } from './privacy/privacy.component';
 import { ContactComponent } from './contact/contact.component';
 import { TermsComponent } from './terms/terms.component';
-import { LoginComponent } from './login/login.component';
 import { AdminComponent } from './admin/admin.component';
 import { ProfileComponent } from './profile/profile.component';
 
@@ -21,6 +20,5 @@ export const routes: Routes = [
     { path: 'contact',  component: ContactComponent },
     { path: 'terms', component: TermsComponent },
     { path: 'admin', component: AdminComponent },
-    { path: 'login', component: LoginComponent },
     { path: '**', component: PageNotFoundComponent }
 ];

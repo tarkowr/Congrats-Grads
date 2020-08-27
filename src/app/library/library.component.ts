@@ -129,6 +129,7 @@ export class LibraryComponent implements OnInit {
 
   // Determine current pagination state
   getPageState() {
+    
     // Index of the last senior on the current page
     // Example: 20-X of 120
     let pageMax = this.paginationMaxPerPage + this.paginationStartIndex;
