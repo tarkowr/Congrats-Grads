@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Location } from '@angular/common';
+import { WindowService } from '../services/window.service';
 
 @Component({
   selector: 'app-navbar',
@@ -7,8 +9,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavbarComponent implements OnInit {
 
-  constructor() { }
+  @Input() showBackButton: Boolean = true;
 
-  ngOnInit() { }
+  mobile: Boolean = true;
+
+  constructor(private windowService: WindowService,
+    private location: Location) { }
+
+  // Navigate back to previous page
+  back() {
+    this.location.back();
+  }
+
+  ngOnInit() { 
+    this.windowService.large.subscribe(isMobile => {
+      this.mobile = isMobile;
+    });
+  }
 
 }

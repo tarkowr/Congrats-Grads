@@ -1,6 +1,24 @@
 .nav-link {
-    font-size: 1.2em;
+    font-size: 1.2em !important;
 }
 .navbar-brand{
-    font-size: 1.4em;
+    font-size: 1.4em !important;
+}
+.navbar-toggler {
+    font-size: 1.1em !important;
+}
+.brand-link {
+    color: white !important;
+    text-decoration: none !important;
+}
+.back-button {
+    font-size: 1.15em !important;
+}
+@media(max-width: 992px) {
+    .nav-link {
+        font-size: 1.15em !important;
+    }
+    .navbar-brand {
+        font-size: 1.3em !important;
+    }
 }
