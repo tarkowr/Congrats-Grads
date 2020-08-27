@@ -37,10 +37,10 @@ export class DateUtilities {
     // Format a date time
     formatDate(date:Date) {
         let minutes = this.addZeroToSingleDigit(date.getMinutes());
-        return (date.getMonth()+1) + '/' + date.getDate() + '/' + date.getFullYear() + ' ' + this.formatStandardTime(date.getHours(), minutes);
+        return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear() + ' ' + this.formatStandardTime(date.getHours(), minutes);
     }
 
-    // Determine whether a timestamp (seconds) occured within the limit
+    // Determine whether a timestamp (seconds) occurs within a threshold
     isDatePastLimit(timestamp:number, hours:number) {
         let threshold = 60 * 60 * 1000 * hours;
         let uploadedMilli = timestamp * 1000;
