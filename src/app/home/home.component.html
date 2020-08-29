@@ -1,5 +1,7 @@
 <div class="container-fluid bg-lightest">
     <div class="row">
+
+        <!--Landing Picture-->
         <div *ngIf="!mobile" class="col col-0 col-lg-5 col-xl-4 col-override p-0" style="min-height: 100vh;">
             <div class="landing-pic d-none d-lg-block d-xl-block border-right border-light-gray"></div> 
         </div>
@@ -14,6 +16,8 @@
         </div>
 
         <div class="col col-12 col-lg-7 col-xl-8 justify-content-center text-center">
+
+            <!--Desktop Upper CTA-->
             <div *ngIf="!mobile" class="mr-2 mt-3 justify-content-right text-right">
                 <a [routerLink]="['/library']">
                     <button class="btn btn-outline-primary inc-font library-btn px-3" (click)="cancel()">
@@ -23,16 +27,15 @@
             </div>
 
             <div class="landing-text">
+
+                <!--Desktop Promo-->
                 <div *ngIf="!mobile">
                     <img class="logo" src="../../assets/logos/icon.png">
                     <h1 class="display-4 mt-4 f1"><span id="typed"></span></h1>
                     <h2 class="mt-3 text-primary f1 congratsgrads"><em>#congratsgrads</em></h2>
                 </div>
 
-                <div *ngIf="mobile">
-                    <h4 class="text-dark f1"><em>#congratsgrads</em></h4>
-                </div>
-
+                <!--Call to Action-->
                 <div [ngClass]="mobile ? 'mt-3':'mt-5'" class="pt-3">
                     <a [routerLink]="['/create']">
                         <button class="btn btn-primary inc-font py-2 px-4" (click)="cancel()">

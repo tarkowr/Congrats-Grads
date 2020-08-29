@@ -1,4 +1,6 @@
-<div class="container-fluid bg-lightest">
+<app-navbar *ngIf="mobile"></app-navbar>
+
+<div class="container-fluid bg-lightest" [ngClass]="mobile ? 'page-min-height page-margin-top':''">
 
     <div *ngIf="showSnackbar">
         <app-snackbar [message]="message"></app-snackbar>
@@ -8,11 +10,17 @@
 
         <div class="col col-12 col-lg-7 col-xl-8 justify-content-center text-center">
             <div class="mt-4">
-                <h1 class="f6 text-secondary">
+
+                <!--Header-->
+                <div *ngIf="!mobile" class="h1 f6 text-secondary">
                     <a [routerLink]="['/']">
                         <img class="logo" src="../../assets/logos/icon.png">
                     </a> &nbsp;Upload Profile
-                </h1>
+                </div>
+
+                <div *ngIf="mobile" class="h3 text-secondary">
+                    Upload Profile
+                </div>
 
                 <!--Create Profile Form-->
                 <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="text-left mt-4 offset-override">
@@ -83,7 +91,7 @@
 
                     <!--Image Upload-->
                     <div class="form-group mb-3">
-                        <label for="profileImg">Upload Image <span class="text-danger">*</span></label>
+                        <label for="profileImg" class="text-secondary">Upload Image <span class="text-danger">*</span></label>
                         <br>
                         <label class="btn btn-secondary-light">
                             Browse <input type="file" name="profileImg" hidden accept="image/x-png,image/jpeg" formControlName="profileImg"
@@ -109,7 +117,7 @@
                         </div>
                     </div>
 
-                    <!--SUBMIT-->
+                    <!--Submit-->
                     <div class="form-group mb-2">
                         <button [disabled]="loading || btnWait" class="btn btn-login btn-primary btn-block mt-4 py-3"><span *ngIf="!loading">UPLOAD PROFILE</span>
                         <div *ngIf="loading" class="spinner-border text-white" role="status">
@@ -126,7 +134,7 @@
             </div>
         </div>
 
-        <!--IMAGE-->
+        <!--Page Image-->
         <div class="col col-0 col-lg-5 col-xl-4 col-override p-0" style="min-height: 100vh;">
             <div class="landing-pic d-none d-lg-block d-xl-block"></div> 
         </div>

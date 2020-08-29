@@ -101,6 +101,7 @@ app.post('/create', upload.single('profile'), async (req, res) => {
     await controller.uploadProfileImage(path)
         .catch(err => {
             logger.logError('Unable to upload profile image!', err)
+            controller.removeUpload(path)
             res.status(500).send(err)
             return
         })

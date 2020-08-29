@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { LocalStorage } from '../services/local-storage.service';
+import { WindowService } from '../services/window.service';
 import { RegexUtilities } from '../utilities/regex.utilities';
 
 @Component({
@@ -11,6 +12,8 @@ import { RegexUtilities } from '../utilities/regex.utilities';
   styleUrls: ['./create.component.scss']
 })
 export class CreateComponent implements OnInit {
+  mobile: Boolean = true;
+
   createForm: FormGroup;
   submitted: Boolean = false;
   loading: Boolean = false;
@@ -34,6 +37,7 @@ export class CreateComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
+    private windowService: WindowService,
     private userService: UserService,
     private router: Router,
     private regexUtilities: RegexUtilities) { 
@@ -41,6 +45,13 @@ export class CreateComponent implements OnInit {
     }
 
   get f() { return this.createForm.controls }
+
+  // Handle a change in the user's viewport
+  handleScreenResize(){
+    this.windowService.large.subscribe(isMobile => {
+      this.mobile = isMobile;
+    });
+  }
 
   // Initialize the create user form
   buildUserForm() {
@@ -180,5 +191,6 @@ export class CreateComponent implements OnInit {
 
   ngOnInit() {
     this.buildUserForm();
+    this.handleScreenResize();
   }
 }
