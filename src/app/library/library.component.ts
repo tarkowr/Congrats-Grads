@@ -283,6 +283,16 @@ export class LibraryComponent implements OnInit {
     this.pof(true);
   }
 
+  // Scroll to selected senior on return from profile
+  scrollToSelectedSenior() {
+    if (this.appStateService.seniorId) {
+      setTimeout(() => {
+        document.getElementById(this.appStateService.seniorId).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest"});
+        this.appStateService.seniorId = undefined;
+      }, 0);
+    }
+  }
+
   ngOnInit() {
     this.buildForms();
     this.handleScreenResize();
@@ -303,13 +313,7 @@ export class LibraryComponent implements OnInit {
         this.restoreBackupWithPagination();
       }
 
-      // Scroll to selected senior on return from profile
-      if (this.appStateService.seniorId) {
-        setTimeout(() => {
-          document.getElementById(this.appStateService.seniorId).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest"});
-          this.appStateService.seniorId = undefined;
-        }, 0);
-      }
+      this.scrollToSelectedSenior();
     });
   }
   

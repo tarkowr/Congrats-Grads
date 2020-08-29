@@ -1,6 +1,6 @@
 <app-navbar *ngIf="mobile"></app-navbar>
 
-<div class="container-fluid bg-lightest" [ngClass]="mobile ? 'page-min-height page-margin-top':''">
+<div class="container-fluid bg-lightest" [ngClass]="mobile ? 'page-min-height page-margin-top':'mt-0'">
 
     <div *ngIf="showSnackbar">
         <app-snackbar [message]="message"></app-snackbar>
@@ -12,14 +12,14 @@
             <div class="mt-4">
 
                 <!--Header-->
+                <div *ngIf="mobile" class="h3 text-secondary">
+                    Upload Profile
+                </div>
+                
                 <div *ngIf="!mobile" class="h1 f6 text-secondary">
                     <a [routerLink]="['/']">
                         <img class="logo" src="../../assets/logos/icon.png">
                     </a> &nbsp;Upload Profile
-                </div>
-
-                <div *ngIf="mobile" class="h3 text-secondary">
-                    Upload Profile
                 </div>
 
                 <!--Create Profile Form-->

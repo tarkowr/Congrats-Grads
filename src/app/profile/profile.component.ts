@@ -18,7 +18,7 @@ export class ProfileComponent implements OnInit {
     private windowService: WindowService,
     private activatedRoute: ActivatedRoute,) { }
 
-  // Check if screen is mobile
+  // Handle change in the user's viewport size
   handleScreenSize(){
     this.windowService.medium.subscribe(isMobile => {
       this.mobile = isMobile;

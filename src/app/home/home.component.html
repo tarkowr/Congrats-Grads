@@ -2,9 +2,6 @@
     <div class="row">
 
         <!--Landing Picture-->
-        <div *ngIf="!mobile" class="col col-0 col-lg-5 col-xl-4 col-override p-0" style="min-height: 100vh;">
-            <div class="landing-pic d-none d-lg-block d-xl-block border-right border-light-gray"></div> 
-        </div>
         <div *ngIf="mobile" class="col col-12 col-override p-0">
             <div class="landing-pic-mini">
                 <div class="w-100 h-100 shadow-effect text-center align-items-center">
@@ -15,12 +12,16 @@
             </div>
         </div>
 
+        <div *ngIf="!mobile" class="col col-0 col-lg-5 col-xl-4 col-override p-0" style="min-height: 100vh;">
+            <div class="landing-pic d-none d-lg-block d-xl-block border-right border-light-gray"></div> 
+        </div>
+
         <div class="col col-12 col-lg-7 col-xl-8 justify-content-center text-center">
 
             <!--Desktop Upper CTA-->
             <div *ngIf="!mobile" class="mr-2 mt-3 justify-content-right text-right">
                 <a [routerLink]="['/library']">
-                    <button class="btn btn-outline-primary inc-font library-btn px-3" (click)="cancel()">
+                    <button class="btn btn-outline-primary inc-font library-btn px-3">
                         View Senior Library
                     </button>
                 </a>
@@ -38,12 +39,12 @@
                 <!--Call to Action-->
                 <div [ngClass]="mobile ? 'mt-3':'mt-5'" class="pt-3">
                     <a [routerLink]="['/create']">
-                        <button class="btn btn-primary inc-font py-2 px-4" (click)="cancel()">
+                        <button class="btn btn-primary inc-font py-2 px-4">
                             <span>Create Senior Profile</span>
                         </button>
                     </a>
                     <div class="inc-font f3 mt-3">
-                        <span *ngIf="!mobile">Already Uploaded? &nbsp; <br class="conditional-br"></span> <a (click)="cancel()" [routerLink]="['/library']" class="text-primary">View Library</a>
+                        <span *ngIf="!mobile">Already Uploaded? &nbsp; <br class="conditional-br"></span> <a [routerLink]="['/library']" class="text-primary">View Library</a>
                     </div>
                     <div class="text-center mt-4">
                         <h1>

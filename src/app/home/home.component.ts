@@ -46,12 +46,6 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // Cancel the typed event
-  cancel() {
-    this.typed.destroy();
-    this.typed = null;
-  }
-
   async ngOnInit() {
     await this.handleScreenResize();
     this.typed = new Typed(this.ref, this.typedConfig);

@@ -9,7 +9,7 @@ export class WindowService {
     private _medium: ReplaySubject<boolean>;
     private _large: ReplaySubject<boolean>;
 
-    // Default to mobile view (width < 500)
+    // IMPORTANT: Default to mobile view (width < 500)
     private _isSmall: boolean = true;
     private _isMedium: boolean = true;
     private _isLarge: boolean = true;
@@ -48,6 +48,7 @@ export class WindowService {
         this._large.next(isMobile)
     }
 
+    // Determine whether window size has passed any breakpoints and notify subscribers if so
     checkBreakpoints() {
         const width = window.innerWidth;
 
