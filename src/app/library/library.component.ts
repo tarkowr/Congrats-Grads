@@ -92,7 +92,7 @@ export class LibraryComponent implements OnInit {
 
       if (this.seniors) {
         this.resetPagination();
-        this.clearSearch();
+        this.clearSearch(false);
       }
     });
   }
@@ -195,11 +195,18 @@ export class LibraryComponent implements OnInit {
   }
 
   // Clear search if no results found
-  clearSearch() {
+  clearSearch(pof: Boolean = false) {
     this.noSearchResults = false;
     this.searchActive = false;
     this.searchForm.reset();
-    this.restoreBackupWithPagination();
+
+    if (pof) {
+      this.pof(true);
+    }
+    else {
+      this.restoreBackupWithPagination();
+    }
+
     this.savePageState();
   }
 
@@ -218,20 +225,18 @@ export class LibraryComponent implements OnInit {
     // Order seniors if selected order has changed
     if (this.selectedOption.key != selected.key) {
       this.selectedOption = selected;
-
-      if (!isRestoringState) this.resetPagination();
-
+      if (!isRestoringState) this.resetPagination()
       selected.action(this.backup);
     }
 
-    // Handle search
+    // Filter seniors by search query
     let query:string = this.f.search.value ? this.f.search.value.toLowerCase() : '';
     this.noSearchResults = false;
 
-    // On new query reset pagination
-    if (this.searchQuery != query && !isRestoringState) { 
+    // Reset pagination on new query 
+    if (this.searchQuery != query) { 
       this.searchQuery = query;
-      this.resetPagination();
+      if (!isRestoringState) this.resetPagination();
     }
 
     if (!isRestoringState) this.savePageState();
@@ -292,7 +297,7 @@ export class LibraryComponent implements OnInit {
       }, 0);
     }
   }
-
+  
   ngOnInit() {
     this.buildForms();
     this.handleScreenResize();

@@ -51,4 +51,10 @@ export class HomeComponent implements OnInit {
     this.typed = new Typed(this.ref, this.typedConfig);
   }
 
+  ngOnDestroy(){
+    if (this.typed) {
+      this.typed.destroy();
+    }
+  }
+
 }
