@@ -14,7 +14,8 @@ export class AppStateService {
     seniorId: string;
     isMobile: Boolean;
 
-    libraryHasSavedState(mobile: Boolean) {
+    // Return whether library state exists
+    libraryHasSavedState(mobile: Boolean) : Boolean {
         const hasState = this.searchQuery || this.orderKey || this.pageStartIndex;
         const hasMobileChanged = this.isMobile != undefined && this.isMobile != mobile;
 

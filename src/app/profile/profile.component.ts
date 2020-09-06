@@ -18,17 +18,17 @@ export class ProfileComponent implements OnInit {
     private windowService: WindowService,
     private activatedRoute: ActivatedRoute,) { }
 
-  // Handle change in the user's viewport size
-  handleScreenSize(){
+  // OnInit: Handle change in the user's viewport size
+  private handleScreenSize(){
     this.windowService.medium.subscribe(isMobile => {
       this.mobile = isMobile;
     });
   }
 
-  ngOnInit() {
-    this.handleScreenSize();
-
+  // OnInit: Parse URL path to get the last segment (senior ID) and lookup senior data by ID
+  private getSeniorFromUrl() {
     this.activatedRoute.pathFromRoot[1].url.subscribe((segments: UrlSegment[]) => {
+      
       // Get the last segment of URL path
       const id = segments.pop().path;
       
@@ -40,6 +40,11 @@ export class ProfileComponent implements OnInit {
         }
       })
     });
+  }
+
+  ngOnInit() {
+    this.handleScreenSize();
+    this.getSeniorFromUrl();
   }
 
 }

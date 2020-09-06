@@ -16,7 +16,7 @@ export class NavbarComponent implements OnInit {
   constructor(private windowService: WindowService,
     private location: Location) { }
 
-  // Navigate back to previous page
+  // UI: Navigate back to previous page
   back() {
     this.location.back();
   }

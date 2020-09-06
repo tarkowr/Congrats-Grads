@@ -13,8 +13,8 @@ import { AppStateService } from '../services/app-state.service';
   styleUrls: ['./library.component.scss']
 })
 export class LibraryComponent implements OnInit {
-  seniors: any[];
-  backup: any[];
+  seniors: any[]; // This will only contain the seniors that are currently displayed on the page
+  master: any[]; // Master will always contain every senior in the library
   totalSeniors: number;
 
   mobile: Boolean = true;
@@ -168,7 +168,7 @@ export class LibraryComponent implements OnInit {
     if (this.selectedOption.key != selected.key) {
       this.selectedOption = selected;
       this.resetPagination();
-      selected.action(this.backup);
+      selected.action(this.master);
     }
   }
 
@@ -178,7 +178,7 @@ export class LibraryComponent implements OnInit {
 
   // Return all seniors that match a search query
   private filterSeniors(query: string) {
-    return this.backup.filter(s => this.userService.matchSearch(s.fname, s.lname, query));
+    return this.master.filter(s => this.userService.matchSearch(s.fname, s.lname, query));
   }
 
   // Return search input from user
@@ -201,7 +201,7 @@ export class LibraryComponent implements OnInit {
     if (this.searchForm.invalid) {
       this.searchActive = false;
       this.searchFound = 0;
-      return this.backup;
+      return this.master;
     }
 
     this.searchActive = true;
@@ -225,12 +225,12 @@ export class LibraryComponent implements OnInit {
     this.searchQuery = '';
     this.resetPagination();
     this.savePageState();
-    this.seniors = this.paginate(this.backup);
+    this.seniors = this.paginate(this.master);
   }
 
   // UI: Pagination, Order, Filter
   pof() {
-    if (!this.backup) {
+    if (!this.master) {
       this.searchForm.reset();
       this.o.order.setValue(this.defaultOption.key);
       return;
@@ -282,7 +282,7 @@ export class LibraryComponent implements OnInit {
       setTimeout(() => {
         document.getElementById(this.appStateService.seniorId).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest"});
         this.appStateService.seniorId = undefined;
-      }, 0);
+      });
     }
   }
 
@@ -316,7 +316,7 @@ export class LibraryComponent implements OnInit {
 
       this.setMaxSeniorsPerPage();
 
-      if (this.backup) {
+      if (this.master) {
         this.resetPagination();
         this.clearSearch();
       }
@@ -326,9 +326,9 @@ export class LibraryComponent implements OnInit {
   // OnInit: Get senior data from firebase
   private getSeniors() {
     this.userService.library.subscribe((library: any[]) => {
-      if (this.backup) return;
+      if (this.master) return;
 
-      this.backup = this.utilities.copyArrayOfObj(this.defaultOption.action(library));
+      this.master = this.utilities.copyArrayOfObj(this.defaultOption.action(library));
 
       this.totalSeniors = library.length;
 
@@ -336,7 +336,7 @@ export class LibraryComponent implements OnInit {
         this.restorePageState();
       }
       else {
-        this.seniors = this.paginate(this.backup);
+        this.seniors = this.paginate(this.master);
       }
 
       this.scrollToSelectedSenior();

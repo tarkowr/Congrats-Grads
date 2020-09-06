@@ -22,20 +22,8 @@ export class ContactComponent implements OnInit {
 
   get f() { return this.contactForm.controls }
 
-  // Initialize the contact form
-  buildContactForm() {
-    this.contactForm = this.formBuilder.group({
-      sender: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexUtilities.email)
-      ])],
-      message: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexUtilities.emailMessage)
-      ])]
-    });
-  }
-
   // Handle successful sent email
-  onSuccess() {
+  private onSuccess() {
     this.contactForm.reset();
     this.submitted = false;
     this.message = 'Message Sent!'
@@ -43,18 +31,18 @@ export class ContactComponent implements OnInit {
   }
 
   // Handle email error
-  onError(err) {
+  private onError(err) {
     this.message = 'Unable to Send Message!'
     this.showSnackbar = true;
   }
 
   // On complete
-  onComplete() {
+  private onComplete() {
     this.loading = false;
     setTimeout(() => this.showSnackbar = false, 3000);
   }
 
-  // Contact form on submit
+  // UI: Contact form on submit
   onSubmit() {
     this.submitted = true;
 
@@ -78,6 +66,18 @@ export class ContactComponent implements OnInit {
 
   ngOnInit() {
     this.buildContactForm();
+  }
+
+  // OnInit: Initialize the contact form
+  private buildContactForm() {
+    this.contactForm = this.formBuilder.group({
+      sender: ['',  Validators.compose([
+        Validators.required, Validators.pattern(this.regexUtilities.email)
+      ])],
+      message: ['',  Validators.compose([
+        Validators.required, Validators.pattern(this.regexUtilities.emailMessage)
+      ])]
+    });
   }
 
 }

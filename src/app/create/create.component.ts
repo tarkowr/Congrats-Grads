@@ -21,8 +21,6 @@ export class CreateComponent implements OnInit {
   image: any;
   fileMessage: string = "No file chosen";
   
-  localStorage: LocalStorage;
-
   btnWait: Boolean = false;
 
   showSnackbar:Boolean = false;
@@ -39,40 +37,13 @@ export class CreateComponent implements OnInit {
     private formBuilder: FormBuilder,
     private windowService: WindowService,
     private userService: UserService,
+    private localStorage: LocalStorage,
     private router: Router,
-    private regexUtilities: RegexUtilities) { 
-      this.localStorage = new LocalStorage();
-    }
+    private regexUtilities: RegexUtilities) { }
 
   get f() { return this.createForm.controls }
 
-  // Handle a change in the user's viewport
-  handleScreenResize(){
-    this.windowService.large.subscribe(isMobile => {
-      this.mobile = isMobile;
-    });
-  }
-
-  // Initialize the create user form
-  buildUserForm() {
-    this.createForm = this.formBuilder.group({
-      firstname: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexUtilities.name)
-      ])],
-      lastname: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexUtilities.name)
-      ])],
-      school: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexUtilities.school)
-      ])],
-      profileImg: [''],
-      comments: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexUtilities.about)
-      ])]
-    });
-  }
-
-  // Handle selected image
+  // UI: Handle selected image
   selectImage(event) {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
@@ -85,18 +56,17 @@ export class CreateComponent implements OnInit {
   }
 
   // Prevent too many uploads from single user
-  validateUploadCount(){
+  private validateUploadCount(){
     const max = 2;
     let uploads:[] = this.localStorage.getUploaded();
 
     if (!uploads) return true;
 
-    if (uploads.length >= max) return false;
-    else return true;
+    return uploads.length < max;
   }
 
-  // Display errors based on type
-  handleError(err) {
+  // Display server errors based on type
+  private handleError(err) {
     if (!err) return;
 
     switch(err.error) {
@@ -116,7 +86,7 @@ export class CreateComponent implements OnInit {
   }
 
   // Successful profile upload
-  onSuccess(data) {
+  private onSuccess(data) {
     this.submitted = false;
     this.createForm.reset();
     this.message = 'Successfully Uploaded!';
@@ -126,7 +96,7 @@ export class CreateComponent implements OnInit {
   }
 
   // Error on profile upload
-  onError(err) {
+  private onError(err) {
     this.message = 'Unable to Create Profile';
     this.showSnackbar = true;
     this.error = true;
@@ -135,7 +105,7 @@ export class CreateComponent implements OnInit {
   }
 
   // After handling profile upload response
-  onComplete() {
+  private onComplete() {
     this.loading = false;
 
     setTimeout(() => {
@@ -148,14 +118,14 @@ export class CreateComponent implements OnInit {
   }
 
   // Reset all client-side error indicators
-  resetErrors() {
+  private resetErrors() {
     this.maxUpload = false;
     this.wrongType = false;
     this.sizeLimit = false;
     this.otherErr = false;
   }
 
-  // Create form on submit
+  // UI: Handle upload form on submission
   onSubmit() {
     this.submitted = true;
 
@@ -192,5 +162,31 @@ export class CreateComponent implements OnInit {
   ngOnInit() {
     this.buildUserForm();
     this.handleScreenResize();
+  }
+
+  // OnInit: Initialize the create user form
+  private buildUserForm() {
+    this.createForm = this.formBuilder.group({
+      firstname: ['',  Validators.compose([
+        Validators.required, Validators.pattern(this.regexUtilities.name)
+      ])],
+      lastname: ['',  Validators.compose([
+        Validators.required, Validators.pattern(this.regexUtilities.name)
+      ])],
+      school: ['',  Validators.compose([
+        Validators.required, Validators.pattern(this.regexUtilities.school)
+      ])],
+      profileImg: [''],
+      comments: ['',  Validators.compose([
+        Validators.required, Validators.pattern(this.regexUtilities.about)
+      ])]
+    });
+  }
+
+  // OnInit: Handle a change in the user's viewport
+  private handleScreenResize(){
+    this.windowService.large.subscribe(isMobile => {
+      this.mobile = isMobile;
+    });
   }
 }

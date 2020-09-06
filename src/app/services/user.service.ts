@@ -52,14 +52,14 @@ export class UserService {
             let aFullName = (a.lname + ' ' + a.fname).trim().toLowerCase().replace('  ', ' ');
             let bFullName = (b.lname + ' ' + b.fname).trim().toLowerCase().replace('  ', ' ');
 
-            if(aFullName < bFullName) { return -1; }
-            if(aFullName > bFullName) { return 1; }
+            if (aFullName < bFullName) { return -1; }
+            else if (aFullName > bFullName) { return 1; }
 
             return 0;
         });
     }
 
-    // Sort Seniors by Newest Date Uploaded
+    // Sort Seniors by Latest Date Uploaded
     sortByDateNew(obj:any[]) {
         return obj.sort((a, b) => {
             if (!a.uploaded || !b.uploaded) { return 0; }
@@ -67,8 +67,8 @@ export class UserService {
             let aDate = a.uploaded._seconds;
             let bDate = b.uploaded._seconds;
 
-            if(aDate < bDate) { return 1; }
-            if(aDate > bDate) { return -1; }
+            if (aDate < bDate) { return 1; }
+            else if (aDate > bDate) { return -1; }
 
             return 0;
         });
@@ -82,14 +82,14 @@ export class UserService {
             let aDate = a.uploaded._seconds;
             let bDate = b.uploaded._seconds;
 
-            if(aDate < bDate) { return -1; }
-            if(aDate > bDate) { return 1; }
+            if (aDate < bDate) { return -1; }
+            else if (aDate > bDate) { return 1; }
             
             return 0;
         });
     }
 
-    // Determine whether a search matches a senior
+    // Determine whether a search query matches a senior
     matchSearch(fname: string, lname: string, query: string) {
         let length = query.length;
         query = query.toLowerCase();
@@ -97,10 +97,6 @@ export class UserService {
         lname = lname.substring(0, length).toLowerCase();
         let name = (fname + ' ' + lname).substring(0, length);
 
-        if (fname === query || lname === query || query === name){
-            return true;
-        }
-
-        return false;
+        return (fname === query || lname === query || query === name);
     }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import Typed from 'typed.js';
 import { WindowService } from '../services/window.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -22,27 +23,25 @@ export class HomeComponent implements OnInit {
   }
   typed: Typed;
 
+  windowSubscription: Subscription;
+
   constructor(private windowService: WindowService) { }
 
-  // Rebuild typed on screen resize
-  handleScreenResize() {
-    this.windowService.small.subscribe(isMobile => {
+  // Reset typed to a new typed object
+  private resetTyped(newTyped: Typed) {
+    if (this.typed) {
+      this.typed.destroy();
+      this.typed = newTyped;
+    }
+  }
+
+  // OnInit: Rebuild typed on screen resize
+  private handleScreenResize() {
+    this.windowSubscription = this.windowService.small.subscribe(isMobile => {
       this.mobile = isMobile;
       this.ref = this.mobile ? '#mobile-typed' : '#typed';
 
-      let resetTyped = () => {
-        if (this.typed) {
-          this.typed.destroy();
-          this.typed = new Typed(this.ref, this.typedConfig);
-        }
-      }
-
-      try { 
-        resetTyped(); 
-      }
-      catch(e) {
-        setTimeout(() => resetTyped(), 200);
-      }
+      setTimeout(() => this.resetTyped(new Typed(this.ref, this.typedConfig)));
     });
   }
 
@@ -52,9 +51,8 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnDestroy(){
-    if (this.typed) {
-      this.typed.destroy();
-    }
+    this.windowSubscription.unsubscribe();
+    this.resetTyped(null);
   }
 
 }
