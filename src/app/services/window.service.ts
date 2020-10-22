@@ -28,24 +28,12 @@ export class WindowService {
         return this._small.asObservable();
     }
 
-    set small(isMobile: any) {
-        this._small.next(isMobile)
-    }
-
     get medium() {
         return this._medium.asObservable()
     }
 
-    set medium(isMobile: any) {
-        this._medium.next(isMobile)
-    }
-
     get large() {
         return this._large.asObservable()
-    }
-
-    set large(isMobile: any) {
-        this._large.next(isMobile)
     }
 
     // Determine whether window size has passed any breakpoints and notify subscribers if so

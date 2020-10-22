@@ -5,6 +5,7 @@ import { UserService } from '../services/user.service';
 import { LocalStorage } from '../services/local-storage.service';
 import { WindowService } from '../services/window.service';
 import { RegexUtilities } from '../utilities/regex.utilities';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-create',
@@ -13,6 +14,8 @@ import { RegexUtilities } from '../utilities/regex.utilities';
 })
 export class CreateComponent implements OnInit {
   mobile: Boolean = true;
+
+  windowSubscription: Subscription;
 
   createForm: FormGroup;
   submitted: Boolean = false;
@@ -164,6 +167,10 @@ export class CreateComponent implements OnInit {
     this.handleScreenResize();
   }
 
+  ngOnDestroy() {
+    this.windowSubscription.unsubscribe();
+  }
+
   // OnInit: Initialize the create user form
   private buildUserForm() {
     this.createForm = this.formBuilder.group({
@@ -185,7 +192,7 @@ export class CreateComponent implements OnInit {
 
   // OnInit: Handle a change in the user's viewport
   private handleScreenResize(){
-    this.windowService.large.subscribe(isMobile => {
+    this.windowSubscription = this.windowService.large.subscribe(isMobile => {
       this.mobile = isMobile;
     });
   }

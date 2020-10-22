@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { WindowService } from '../services/window.service';
 import { UserService } from '../services/user.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -14,13 +15,16 @@ export class ProfileComponent implements OnInit {
   mobile: Boolean = true;
   error: Boolean = false;
 
+  windowSubscription: Subscription;
+  librarySubscription: Subscription;
+
   constructor(private userService: UserService,
     private windowService: WindowService,
     private activatedRoute: ActivatedRoute,) { }
 
   // OnInit: Handle change in the user's viewport size
   private handleScreenSize(){
-    this.windowService.medium.subscribe(isMobile => {
+    this.windowSubscription = this.windowService.medium.subscribe(isMobile => {
       this.mobile = isMobile;
     });
   }
@@ -32,7 +36,7 @@ export class ProfileComponent implements OnInit {
       // Get the last segment of URL path
       const id = segments.pop().path;
       
-      this.userService.library.subscribe((library: any[]) => {
+      this.librarySubscription = this.userService.library.subscribe((library: any[]) => {
         this.senior = library.find(s => s.id == id);
 
         if (!this.senior) {
@@ -45,6 +49,14 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
     this.handleScreenSize();
     this.getSeniorFromUrl();
+  }
+
+  ngOnDestroy() {
+    this.windowSubscription.unsubscribe();
+
+    if (this.librarySubscription) {
+      this.librarySubscription.unsubscribe();
+    }
   }
 
 }

@@ -6,6 +6,7 @@ import { Utilities } from '../utilities/utilities';
 import { RegexUtilities } from '../utilities/regex.utilities';
 import { WindowService } from '../services/window.service';
 import { AppStateService } from '../services/app-state.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-library',
@@ -16,6 +17,9 @@ export class LibraryComponent implements OnInit {
   seniors: any[]; // This will only contain the seniors that are currently displayed on the page
   master: any[]; // Master will always contain every senior in the library
   totalSeniors: number;
+
+  librarySubscription: Subscription;
+  windowSubscription: Subscription;
 
   mobile: Boolean = true;
 
@@ -280,7 +284,7 @@ export class LibraryComponent implements OnInit {
   private scrollToSelectedSenior() {
     if (this.appStateService.seniorId) {
       setTimeout(() => {
-        document.getElementById(this.appStateService.seniorId).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest"});
+        document.getElementById(this.appStateService.seniorId).scrollIntoView({ behavior: "auto", block: "center", inline: "nearest"});
         this.appStateService.seniorId = undefined;
       });
     }
@@ -290,6 +294,11 @@ export class LibraryComponent implements OnInit {
     this.buildForms();
     this.handleScreenResize();
     this.getSeniors();
+  }
+
+  ngOnDestroy() {
+    this.windowSubscription.unsubscribe();
+    this.librarySubscription.unsubscribe();
   }
 
   // OnInit: Initialize the search and order inputs
@@ -311,7 +320,7 @@ export class LibraryComponent implements OnInit {
   private handleScreenResize(){
     this.setMaxSeniorsPerPage();
 
-    this.windowService.large.subscribe(isMobile => {
+    this.windowSubscription = this.windowService.large.subscribe(isMobile => {
       this.mobile = isMobile;
 
       this.setMaxSeniorsPerPage();
@@ -325,9 +334,7 @@ export class LibraryComponent implements OnInit {
 
   // OnInit: Get senior data from firebase
   private getSeniors() {
-    this.userService.library.subscribe((library: any[]) => {
-      if (this.master) return;
-
+    this.librarySubscription = this.userService.library.subscribe((library: any[]) => {
       this.master = this.utilities.copyArrayOfObj(this.defaultOption.action(library));
 
       this.totalSeniors = library.length;
