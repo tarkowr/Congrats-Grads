@@ -7,6 +7,7 @@ const NodeCache = require('node-cache')
 const config = require('../.env/config.json')
 const serviceAccount = require('../.env/congratsgrads-firebase-adminsdk-x83rw-55675f8283.json')
 const constants = require('./constants')
+const logger = require('./logger')
 
 // Connect to Firebase and Firebase Storage
 admin.initializeApp({
@@ -49,7 +50,6 @@ module.exports = class Controller{
     removeUpload(path) {
         fs.unlink(path, (err) => {
             if (err) return
-            console.log('Removed upload')
         })
     }
 
@@ -84,10 +84,10 @@ module.exports = class Controller{
     }
 
     // Compress uploaded profile pictures
-    compressProfileImage(path) {
+    compressProfileImage(path, output) {
         return compress({
             source: path,
-            destination: 'compressed-',
+            destination: output,
             enginesSetup: {
                 jpg: { engine: 'mozjpeg', command: ['-quality', '60']},
                 png: { engine: 'pngquant', command: ['--quality=20-50', '-o']},
@@ -173,5 +173,49 @@ module.exports = class Controller{
                 onSuccess()
             }
         })
+    }
+
+    // Helper to download profile pictures in firebase for backup
+    async downloadProfilePictures() {
+        let counter = 0
+        let res = await storage.getFiles()
+
+        logger.logMessage(`Fetched ${res[0].length} profile pictures`)
+
+        res[0].forEach(async (image) => { 
+            await image.download({destination: `downloads/${image.name}`})
+            counter = counter + 1
+            logger.logMessage(`Downloaded ${image.name}`)
+        })
+
+        logger.logMessage(`Downloaded ${counter} profile pictures`)
+    }
+
+    // Helper to compress all downloaded profile pictures
+    async compressDownloadedProfilePictures() {
+        let counter = 0
+        const dir = await fs.promises.opendir('downloads')
+        for await (const image of dir) {
+            await this.compressProfileImage(`downloads/${image.name}`, 'compressed/')
+            counter = counter + 1
+            logger.logMessage(`Compressed ${image.name}`)
+        }
+
+        logger.logMessage(`Compressed ${counter} profile pictures`)
+    }   
+    
+    // Helper to delete select files in storage and reupload the compressed version
+    async uploadCompressedProfilePictures() {
+        let counter = 0
+        let res = await storage.getFiles()
+
+        const dir = await fs.promises.opendir('compressed')
+        for await (const image of dir) {
+            await res[0].find(i => i.name == image.name).delete()
+            await this.uploadProfileImage(`compressed/${image.name}`)
+            counter = counter + 1
+        }
+
+        logger.logMessage(`Uploaded ${counter} profile pictures`)
     }
 }

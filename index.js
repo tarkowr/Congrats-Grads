@@ -87,7 +87,8 @@ app.post('/create', upload.single('profile'), async (req, res) => {
     }
 
     // Profile image compression
-    const compressionResult = await controller.compressProfileImage(og_path)
+    const compressPrefix = 'compressed-'
+    const compressionResult = await controller.compressProfileImage(og_path, compressPrefix)
 
     const { statistics, errors } = compressionResult
     
@@ -97,7 +98,7 @@ app.post('/create', upload.single('profile'), async (req, res) => {
         logger.logWarning(errors)
     }
     else {
-        new_path = 'compressed-' + og_path
+        new_path = compressPrefix + og_path
     }
 
     const path = new_path ? new_path : og_path

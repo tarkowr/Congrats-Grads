@@ -47,3 +47,6 @@ Thumbs.db
 
 .env
 uploads
+downloads
+compressed
+compressed-uploads
