@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer')
 const fs = require('fs')
 const path = require('path')
+const { compress } = require("compress-images/promise")
 const admin = require('firebase-admin')
 const NodeCache = require('node-cache')
 const config = require('../.env/config.json')
@@ -27,18 +28,20 @@ module.exports = class Controller{
 
     // Empty the uploads folder
     removeUploads() {
-        const dir = 'uploads'
+        const dirs = ['uploads', 'compressed-uploads']
 
-        fs.readdir(dir, (err, files) => {
-            if (err) return
-        
-            for (const file of files) {
-				if (file == 'initialize.txt') return
-                fs.unlink(path.join(dir, file), err => {
-                    if (err) return
-                    console.log('Removed uploaded file')
-                })
-            }
+        dirs.forEach((dir) => {
+            fs.readdir(dir, (err, files) => {
+                if (err) return
+            
+                for (const file of files) {
+                    if (file == 'initialize.txt') return
+                    fs.unlink(path.join(dir, file), err => {
+                        if (err) return
+                        console.log('Removed uploaded file')
+                    })
+                }
+            })
         })
     }
 
@@ -46,6 +49,7 @@ module.exports = class Controller{
     removeUpload(path) {
         fs.unlink(path, (err) => {
             if (err) return
+            console.log('Removed upload')
         })
     }
 
@@ -76,6 +80,18 @@ module.exports = class Controller{
 
             this.cacheSet(seniorCacheKey, seniors, ttl)
             return seniors
+        })
+    }
+
+    // Compress uploaded profile pictures
+    compressProfileImage(path) {
+        return compress({
+            source: path,
+            destination: 'compressed-',
+            enginesSetup: {
+                jpg: { engine: 'mozjpeg', command: ['-quality', '60']},
+                png: { engine: 'pngquant', command: ['--quality=20-50', '-o']},
+            }
         })
     }
 

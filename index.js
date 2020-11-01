@@ -57,16 +57,24 @@ app.post('/create', upload.single('profile'), async (req, res) => {
     let school = req.body.highSchool
     let comments = req.body.comments
     let profile = req.file
-    const path = req.file.path
+    let og_path = req.file.path
+    let new_path = undefined
 
     const ip = req.headers['x-forwarded-for'] || 
         req.connection.remoteAddress || 
         req.socket.remoteAddress ||
         (req.connection.socket ? req.connection.socket.remoteAddress : null)
 
+    let removeUploads = () => {
+        controller.removeUpload(og_path)
+        if (new_path) {
+            controller.removeUpload(new_path)
+        }
+    }
+    
     let onError = (err) => {
         logger.logWarning('Invalid uploaded profile!', `Error ${err}`)
-        controller.removeUpload(path)
+        removeUploads()
         res.status(500).send(err)
     }
 
@@ -77,7 +85,24 @@ app.post('/create', upload.single('profile'), async (req, res) => {
         onError(err)
         return
     }
+
+    // Profile image compression
+    const compressionResult = await controller.compressProfileImage(og_path)
+
+    const { statistics, errors } = compressionResult
     
+    logger.logMessage(statistics)
+
+    if (errors && errors.length > 0) {
+        logger.logWarning(errors)
+    }
+    else {
+        new_path = 'compressed-' + og_path
+    }
+
+    const path = new_path ? new_path : og_path
+    
+    // Finalize senior object
     let fileName = profile.filename
     let url = `https://firebasestorage.googleapis.com/v0/b/congratsgrads.appspot.com/o/${fileName}?alt=media`
 
@@ -101,7 +126,7 @@ app.post('/create', upload.single('profile'), async (req, res) => {
     await controller.uploadProfileImage(path)
         .catch(err => {
             logger.logError('Unable to upload profile image!', err)
-            controller.removeUpload(path)
+            removeUploads()
             res.status(500).send(err)
             return
         })
