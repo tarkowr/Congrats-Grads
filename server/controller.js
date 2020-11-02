@@ -25,7 +25,7 @@ let cache = new NodeCache()
 const ttl = constants.cache.ttl
 const seniorCacheKey = constants.cache.seniorCacheKey
 
-module.exports = class Controller{
+module.exports = class Controller {
 
     // Empty the uploads folder
     removeUploads() {
@@ -39,7 +39,7 @@ module.exports = class Controller{
                     if (file == 'initialize.txt') return
                     fs.unlink(path.join(dir, file), err => {
                         if (err) return
-                        console.log('Removed uploaded file')
+                        logger.logMessage('Removed uploaded file')
                     })
                 }
             })
@@ -69,14 +69,17 @@ module.exports = class Controller{
     }
 
     // Retrieve all senior profiles from firebase
-    fetchAllSeniors() {
+    fetchAllSeniors(admin=false) {
         const orderField = 'uploaded'
         return db.collection(constants.firebaseConn.seniorsCollection).orderBy(orderField, 'desc').get()
         .then((snapshot) => {
             let seniors = []
 
             snapshot.forEach(doc => seniors.push(doc.data()))
-            seniors.forEach(senior => this.hideIP(senior))
+
+            if (!admin) {
+                seniors.forEach(senior => this.hideIP(senior))
+            }
 
             this.cacheSet(seniorCacheKey, seniors, ttl)
             return seniors
@@ -173,6 +176,15 @@ module.exports = class Controller{
                 onSuccess()
             }
         })
+    }
+
+    // Helper to download all senior data and save to JSON file
+    async downloadSeniors() {
+        let seniors = await this.fetchAllSeniors(true)
+        let json = JSON.stringify(seniors)
+        fs.writeFile('senior-backup.json', json, 'utf8', () => {})
+
+        logger.logMessage(`Downloaded ${seniors.length} senior profiles`)
     }
 
     // Helper to download profile pictures in firebase for backup
