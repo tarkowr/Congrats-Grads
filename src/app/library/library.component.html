@@ -9,14 +9,14 @@
                         <span>Create Senior Profile</span> 
                     </button></a>
                 </div>
-                <div class="mt-4 display-4 library-title">Class of 2020</div>
+                <div class="mt-4 display-4 library-title">Class of {{ selectedYear.value }}</div>
                 <div class="mt-2 mb-4 h3 f1"> &mdash; Senior Library &mdash; </div>
             </div>
 
             <div class="mt-4 mb-3" [ngClass]="{'mx-4': !mobile}">
                 <div class="row">
                     <!--Search-->
-                    <form [formGroup]="searchForm" class="col-12 col-md-8">
+                    <form [formGroup]="searchForm" class="col-12 col-md-6">
                         <div class="form-group mb-2">
                             <input type="search" required class="form-control primary-border px-3 search-input" id="search" name="search" placeholder="Search" 
                             formControlName="search" (input)="pof()" maxlength="100">
@@ -24,11 +24,18 @@
                     </form>
 
                     <!--Order By-->
-                    <form [formGroup]="orderForm" class="col-12 col-md-4">
+                    <form [formGroup]="orderForm" class="col-12 col-md-6">
                         <div class="form-group select-form-group mb-0">
-                            <select required class="form-control primary-border bg-white px-3 order-select" id="order" name="order" 
+                            <select required class="form-control primary-border bg-white px-3 order-select mx-1" id="order" name="order" 
                             formControlName="order" (change)="pof()">
                                 <option *ngFor="let opt of selectOptions" [value]="opt.key">{{ opt.value }}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group select-form-group mb-0">
+                            <select required class="form-control primary-border bg-white px-3 year-select mx-1" id="year" name="year" 
+                            formControlName="year" (change)="changeYear()">
+                                <option *ngFor="let opt of yearOptions" [value]="opt.key">{{ opt.value }}</option>
                             </select>
                         </div>
                     </form>

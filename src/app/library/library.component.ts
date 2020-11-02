@@ -15,8 +15,21 @@ import { Subscription } from 'rxjs';
 })
 export class LibraryComponent implements OnInit {
   seniors: any[]; // This will only contain the seniors that are currently displayed on the page
-  master: any[]; // Master will always contain every senior in the library
+  master: Record<string, any []>; // Master will always contain every senior in the library
   totalSeniors: number;
+
+  readonly yearOptions = [
+    {
+      key: 1,
+      value: '2020',
+    },
+    {
+      key: 2,
+      value: '2021',
+    }
+  ];
+  defaultYear = this.yearOptions[1];
+  selectedYear = this.defaultYear;
 
   librarySubscription: Subscription;
   windowSubscription: Subscription;
@@ -38,19 +51,16 @@ export class LibraryComponent implements OnInit {
     {
       key: 1,
       value: 'Alphabetical',
-      selected: false,
       action: this.userService.sortByName
     },
     {
       key: 2,
       value: 'Newest',
-      selected: true,
       action: this.userService.sortByDateNew
     },
     {
       key: 3,
       value: 'Oldest',
-      selected: false,
       action: this.userService.sortByDateOld
     }
   ];
@@ -70,6 +80,10 @@ export class LibraryComponent implements OnInit {
 
   get o() { return this.orderForm.controls }
 
+  get yearMaster(): any[] {
+    return this.master[this.selectedYear.value];
+  }
+
   // UI: Go to senior profile page
   getProfile(senior) {
     if (!senior) return;
@@ -77,6 +91,23 @@ export class LibraryComponent implements OnInit {
     this.appStateService.seniorId = senior.id;
 
     this.router.navigate([`profile/${senior.id}`]);
+  }
+
+  //
+  // YEAR
+  //
+  
+  // Handle change in selected year
+  changeYear(onRestore=false) {
+    this.selectedYear = this.yearOptions.find(y => y.key == this.o.year.value);
+    this.totalSeniors = this.yearMaster.length;
+
+    if (!onRestore) {
+      this.o.order.setValue(this.defaultOption.key);
+      this.selectedOption = this.defaultOption;
+      this.selectedOption.action(this.yearMaster);
+      this.clearSearch();
+    }
   }
 
   //
@@ -172,7 +203,7 @@ export class LibraryComponent implements OnInit {
     if (this.selectedOption.key != selected.key) {
       this.selectedOption = selected;
       this.resetPagination();
-      selected.action(this.master);
+      selected.action(this.yearMaster);
     }
   }
 
@@ -182,7 +213,7 @@ export class LibraryComponent implements OnInit {
 
   // Return all seniors that match a search query
   private filterSeniors(query: string) {
-    return this.master.filter(s => this.userService.matchSearch(s.fname, s.lname, query));
+    return this.yearMaster.filter(s => this.userService.matchSearch(s.fname, s.lname, query));
   }
 
   // Return search input from user
@@ -205,7 +236,7 @@ export class LibraryComponent implements OnInit {
     if (this.searchForm.invalid) {
       this.searchActive = false;
       this.searchFound = 0;
-      return this.master;
+      return this.yearMaster;
     }
 
     this.searchActive = true;
@@ -229,7 +260,7 @@ export class LibraryComponent implements OnInit {
     this.searchQuery = '';
     this.resetPagination();
     this.savePageState();
-    this.seniors = this.paginate(this.master);
+    this.seniors = this.paginate(this.yearMaster);
   }
 
   // UI: Pagination, Order, Filter
@@ -252,6 +283,7 @@ export class LibraryComponent implements OnInit {
   private savePageState() {
     this.appStateService.searchQuery = this.f.search.value ? this.f.search.value.toLowerCase() : undefined;
     this.appStateService.orderKey = this.selectedOption.key == this.defaultOption.key ? undefined : this.selectedOption.key;
+    this.appStateService.yearKey = this.selectedYear.key == this.defaultYear.key ? undefined : this.selectedYear.key;
     this.appStateService.pageStartIndex = this.paginationStartIndex;
     this.appStateService.isMobile = this.mobile;
   }
@@ -260,7 +292,13 @@ export class LibraryComponent implements OnInit {
   private restorePageState() {
     const searchQueryState = this.appStateService.searchQuery;
     const orderKeyState = this.appStateService.orderKey;
+    const yearKeyState = this.appStateService.yearKey;
     const pageState = this.appStateService.pageStartIndex;
+
+    if (yearKeyState) {
+      this.o.year.setValue(yearKeyState);
+      this.changeYear(true);
+    }
 
     if (searchQueryState) {
       this.f.search.setValue(searchQueryState);
@@ -290,6 +328,22 @@ export class LibraryComponent implements OnInit {
     }
   }
 
+  // Separate seniors by year
+  private parseSeniorsByYear(library: any[]) {
+    let parsed: Record<string, any []> = {}
+
+    library.forEach((senior) => {
+      if (!parsed[senior['year']]) {
+        parsed[senior['year']] = [senior];
+      }
+      else {
+        parsed[senior['year']].push(senior);
+      }
+    });
+
+    return parsed;
+  }
+
   ngOnInit() {
     this.buildForms();
     this.handleScreenResize();
@@ -311,6 +365,9 @@ export class LibraryComponent implements OnInit {
 
     this.orderForm = this.formBuilder.group({
       order: [this.selectedOption.key,  Validators.compose([
+        Validators.required
+      ])],
+      year: [this.selectedYear.key,  Validators.compose([
         Validators.required
       ])]
     });
@@ -335,19 +392,18 @@ export class LibraryComponent implements OnInit {
   // OnInit: Get senior data from firebase
   private getSeniors() {
     this.librarySubscription = this.userService.library.subscribe((library: any[]) => {
-      this.master = this.utilities.copyArrayOfObj(this.defaultOption.action(library));
+      this.master = this.parseSeniorsByYear(this.defaultOption.action(library));
 
-      this.totalSeniors = library.length;
+      this.totalSeniors = this.yearMaster.length;
 
       if (this.appStateService.libraryHasSavedState(this.mobile)) {
         this.restorePageState();
       }
       else {
-        this.seniors = this.paginate(this.master);
+        this.seniors = this.paginate(this.yearMaster);
       }
 
       this.scrollToSelectedSenior();
     });
   }
-  
 }

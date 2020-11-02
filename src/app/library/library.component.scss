@@ -21,6 +21,11 @@
     float: right;
     border-radius: 10px;
 }
+.year-select {
+    max-width: 125px;
+    float: right;
+    border-radius: 10px;
+}
 .search-input::placeholder {
     color: gray;
 }
@@ -49,5 +54,9 @@
     .order-select {
         float: left;
         max-width: 150px;
+    }
+    .year-select {
+        float: left;
+        max-width: 110px;
     }
 }

@@ -109,7 +109,7 @@ app.post('/create', upload.single('profile'), async (req, res) => {
 
     const id = uuid.v4()
     const uploaded = new Date()
-    const schoolYear = 2020
+    const schoolYear = 2021
 
     const senior = {
         fname: fname,
