@@ -50,6 +50,7 @@
 .page-btn-left {
     margin-right: 2px;
 }
+// TODO: Get right width (off by 1)
 @media(max-width: 768px) {
     .order-select {
         float: left;
