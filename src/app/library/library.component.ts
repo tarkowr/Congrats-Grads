@@ -28,7 +28,7 @@ export class LibraryComponent implements OnInit {
       value: '2021',
     }
   ];
-  defaultYear = this.yearOptions[0];
+  defaultYear = this.yearOptions[1];
   selectedYear = this.defaultYear;
 
   librarySubscription: Subscription;
