@@ -4,6 +4,17 @@ CongratsGrads is a website to honor 2020 high school graduates.
 
 **[Visit CongratsGrads](https://congratsgrads.web.app)**
 
+## Deployment - Static
+
+1. Create production build of Angular project `ng build --prod`
+2. Deploy to Firebase `firebase deploy`
+
+## Deployment - Server
+
+1. Connect to Heroku `heroku login`
+2. Git add/commit
+3. Deploy to Heroku `git push heroku master`
+
 ## What I learned
 
 * NodeJS Routing and Request Handling
