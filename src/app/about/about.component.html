@@ -20,47 +20,17 @@
                 </div>
         
                 <div class="mt-5">
-                    <div class="row pb-2">
+                    <div *ngFor="let member of team" class="row py-2">
                         <div class="col-12 col-md-5 text-center mx-auto">
                             <div class="image-wrapper d-inline-block overflow-hidden mb-4">
-                                <img src="../../assets/images/richie.jpg" class="about-image"/>
+                                <img src="../../assets/images/{{member.img}}" class="about-image"/>
                             </div>
                         </div>
                         <div class="col-12 col-md-7 text-left">
-                            <h3 class="jost">RICHIE TARKOWSKI</h3>
-                            <div class="jost text-primary mb-1 title"><em>LEAD SOFTWARE DEVELOPER, UI/UX DESIGNER</em></div>
+                            <h3 class="jost">{{ member.name | uppercase }}</h3>
+                            <div class="jost text-primary mb-1 title"><em>{{ member.title | uppercase }}</em></div>
                             <div class="f3 mb-5">
-                                Richie is a senior at Ferris State University, studying Computer Information Systems. He works at Hagerty as a Software Engineer on its mobile team. His favorite thing about being a part of the Congrats Grads team is working with his two sisters on a project.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row py-2">
-                        <div class="col-12 col-md-5 text-center mx-auto">
-                            <div class="image-wrapper d-inline-block overflow-hidden mb-4">
-                                <img src="../../assets/images/alyssa.jpg" class="about-image"/>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-7 text-left">
-                            <h3 class="jost">ALYSSA TARKOWSKI</h3>
-                            <div class="jost text-primary mb-1 title"><em>HEAD OF MARKETING, UI/UX DESIGNER</em></div>
-                            <div class="f3 mb-5">
-                                Alyssa is a freshman at Ferris State University pursuing a degree in Computer Information Systems. She is an incoming Software Engineer Intern at State Farm. Her favorite thing about being a part of the Congrats Grads team is putting a smile on seniors' faces.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row pt-2">
-                        <div class="col-12 col-md-5 text-center mx-auto">
-                            <div class="image-wrapper d-inline-block overflow-hidden mb-4">
-                                <img src="../../assets/images/carinne.jpg" class="about-image"/>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-7 text-left">
-                            <h3 class="jost">CARINNE TARKOWSKI</h3>
-                            <div class="jost text-primary mb-1 title"><em>MARKETING INTERN</em></div>
-                            <div class="f3 mb-5">
-                                Carinne is a freshman in high school, and she manages the Congrats Grads Instagram page. Her favorite thing about being a part of the Congrats Grads team is designing creative content for the social media pages. 
+                                {{ member.bio }}
                             </div>
                         </div>
                     </div>

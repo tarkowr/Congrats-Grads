@@ -9,7 +9,7 @@ CongratsGrads is a website to honor 2020 high school graduates.
 * NodeJS Routing and Request Handling
 * Storing documents in Google Firebase
 * Using Firebase Storage to store Uploaded Images
-* Handling user-submitted Images
+* Compressing Images
 * Angular 8 web development
 * TypeScript, SCSS, and Bootstrap
 * Server-side data Caching
