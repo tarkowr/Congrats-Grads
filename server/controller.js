@@ -95,6 +95,9 @@ module.exports = class Controller {
                 jpg: { engine: 'mozjpeg', command: ['-quality', '60']},
                 png: { engine: 'pngquant', command: ['--quality=20-50', '-o']},
             }
+        }).then(results => {
+            const { statistics, errors } = results
+            return !(errors && errors.length > 0)
         })
     }
 
@@ -104,8 +107,6 @@ module.exports = class Controller {
             metadata: {
                 cacheControl: 'public, max-age=31536000'
             }
-        }).then(() => {
-            this.removeUpload(path)
         })
     }
 

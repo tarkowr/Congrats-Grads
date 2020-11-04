@@ -7,10 +7,12 @@ import { PrivacyComponent } from './privacy/privacy.component';
 import { ContactComponent } from './contact/contact.component';
 import { TermsComponent } from './terms/terms.component';
 import { ProfileComponent } from './profile/profile.component';
+import { AboutComponent } from './about/about.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
     { path: 'home', component: HomeComponent },
+    { path: 'about', component: AboutComponent },
     { path: 'create', component: CreateComponent },
     { path: 'library', component: LibraryComponent },
     { path: 'profile', component: ProfileComponent },

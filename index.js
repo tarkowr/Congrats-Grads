@@ -58,7 +58,7 @@ app.post('/create', upload.single('profile'), async (req, res) => {
     let comments = req.body.comments
     let profile = req.file
     let og_path = req.file.path
-    let new_path = undefined
+    let upload_path = og_path
 
     const ip = req.headers['x-forwarded-for'] || 
         req.connection.remoteAddress || 
@@ -67,8 +67,8 @@ app.post('/create', upload.single('profile'), async (req, res) => {
 
     let removeUploads = () => {
         controller.removeUpload(og_path)
-        if (new_path) {
-            controller.removeUpload(new_path)
+        if (og_path != upload_path) {
+            controller.removeUpload(upload_path)
         }
     }
     
@@ -88,20 +88,16 @@ app.post('/create', upload.single('profile'), async (req, res) => {
 
     // Profile image compression
     const compressPrefix = 'compressed-'
-    const compressionResult = await controller.compressProfileImage(og_path, compressPrefix)
-
-    const { statistics, errors } = compressionResult
     
-    logger.logMessage(statistics)
-
-    if (errors && errors.length > 0) {
-        logger.logWarning(errors)
+    const success = await controller.compressProfileImage(og_path, compressPrefix)
+        .catch(err => {
+            logger.logError('Unable to compress profile image!', err)
+            return false
+        })
+    
+    if (success) {
+        upload_path = compressPrefix + og_path
     }
-    else {
-        new_path = compressPrefix + og_path
-    }
-
-    const path = new_path ? new_path : og_path
     
     // Finalize senior object
     let fileName = profile.filename
@@ -124,7 +120,10 @@ app.post('/create', upload.single('profile'), async (req, res) => {
     }
 
     // Upload image and profile
-    await controller.uploadProfileImage(path)
+    await controller.uploadProfileImage(upload_path)
+        .then(() => {
+            removeUploads()
+        })
         .catch(err => {
             logger.logError('Unable to upload profile image!', err)
             removeUploads()
