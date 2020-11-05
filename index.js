@@ -175,7 +175,7 @@ app.post('/contact/send', async (req, res) => {
         return
     }
 
-    let onSuccess = () => {
+    let onSuccess = (info) => {
         res.status(200).send()
     }
 

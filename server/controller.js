@@ -170,13 +170,18 @@ module.exports = class Controller {
         }
     
         // Send email
-        client.sendMail(mailOptions, (error, info) => {
-            if (error){
-                onError(error)
-            } else {
-                onSuccess()
-            }
-        })
+        try {
+            client.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    onError(error)
+                } else {
+                    onSuccess(info)
+                }
+            })
+        }
+        catch (err) {
+            onError(err)
+        }
     }
 
     // Helper to download all senior data and save to JSON file
