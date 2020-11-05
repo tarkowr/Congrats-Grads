@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { PageNotFoundComponent } from './static/page-not-found/page-not-found.component';
 import { CreateComponent } from './create/create.component';
 import { LibraryComponent } from './library/library.component';
-import { PrivacyComponent } from './privacy/privacy.component';
+import { PrivacyComponent } from './static/privacy/privacy.component';
 import { ContactComponent } from './contact/contact.component';
-import { TermsComponent } from './terms/terms.component';
+import { TermsComponent } from './static/terms/terms.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AboutComponent } from './about/about.component';
 

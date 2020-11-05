@@ -6,16 +6,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { PageNotFoundComponent } from './static/page-not-found/page-not-found.component';
 import { CreateComponent } from './create/create.component';
-import { SnackbarComponent } from './snackbar/snackbar.component';
+import { SnackbarComponent } from './shared/snackbar/snackbar.component';
 import { LibraryComponent } from './library/library.component';
-import { NavbarComponent } from './navbar/navbar.component';
+import { NavbarComponent } from './shared/navbar/navbar.component';
 import { ProfileComponent } from './profile/profile.component';
-import { PrivacyComponent } from './privacy/privacy.component';
+import { PrivacyComponent } from './static/privacy/privacy.component';
 import { ContactComponent } from './contact/contact.component';
-import { FooterComponent } from './footer/footer.component';
-import { TermsComponent } from './terms/terms.component';
+import { FooterComponent } from './shared/footer/footer.component';
+import { TermsComponent } from './static/terms/terms.component';
 import { AboutComponent } from './about/about.component';
 
 @NgModule({

@@ -1,6 +1,8 @@
+$len: 175px;
+
 .image-wrapper {
-    width: 175px;
-    height: 175px;
+    width: $len;
+    height: $len;
     border-radius: 100px;
     box-shadow: 0 0 16px rgba(0, 0, 0, 0.25);
     transition: box-shadow 0.5s;
@@ -9,7 +11,7 @@
     box-shadow: 0 0 24px rgba(0, 0, 0, 0.45);
 }
 .about-image {
-    width: 175px;
+    width: $len;
 }
 .title {
     font-size: 0.8em;
