@@ -22,7 +22,6 @@
     "bad-words": "^3.0.3",
     "bootstrap": "^4.5.0",
     "compress-images": "^1.9.5",
-    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "firebase-admin": "^8.13.0",
@@ -36,7 +35,6 @@
     "rxjs": "~6.4.0",
     "tslib": "^1.13.0",
     "typed.js": "^2.0.11",
-    "underscore": "^1.10.2",
     "uuid": "^8.3.0",
     "zone.js": "~0.9.1"
   },

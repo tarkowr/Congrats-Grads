@@ -48,7 +48,9 @@
                      (click)="getProfile(senior)" id="{{senior.id}}">
                         <div class="align-self-center justify-content-center w-100">
                             <div *ngIf="senior.url" class="w-100 text-center">
-                                <img src="{{senior.url}}" class="profile-pic rounded">
+                                <div class="picture-wrapper rounded">
+                                    <img src="{{senior.url}}" class="profile-pic">
+                                </div>
                             </div>
                             <div class="w-100 text-center mt-2 px-3 f4 inc-font">
                                 {{ senior.fname }} {{ senior.lname }}

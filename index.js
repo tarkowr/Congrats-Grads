@@ -2,8 +2,6 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const express = require('express')
 const multer = require('multer')
-const cookieParser = require('cookie-parser')
-const _ = require('underscore')
 const uuid = require('uuid')
 const Validation = require('./server/validation')
 const Controller = require('./server/controller')
@@ -45,10 +43,7 @@ app.use(bodyParser.urlencoded({
 }))
 
 app.use(bodyParser.json())
-app.use(cookieParser())
-
-app.use(express.static(__dirname + '/dist'))
-app.use(cors())
+app.use(cors()) // TODO: Find a workaround in the future
 
 // Create new senior profile
 app.post('/create', upload.single('profile'), async (req, res) => {
@@ -186,6 +181,13 @@ app.post('/contact/send', async (req, res) => {
 
     controller.sendEmail(sender, receiver, subject, message, onSuccess, onError)
 })
+
+// Serve Angular files from server:
+// app.use(express.static(__dirname + '/dist'))
+
+// app.get('*', function(req, res) {
+//     res.sendFile(path.join(__dirname + '/dist/index.html'))
+// })
 
 // Redirect any other requests to the site
 app.get('*', function(req, res) {

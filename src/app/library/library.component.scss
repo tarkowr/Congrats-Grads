@@ -1,9 +1,16 @@
+$image-width: 200px;
+
 .library-title{
     font-family: 'Lobster Two', cursive;
 }
-.profile-pic{
-    width: 200px !important;
+.picture-wrapper {
     max-height: 333px;
+    overflow: hidden;
+    margin: 0 auto;
+    width: $image-width !important;
+}
+.profile-pic {
+    width: $image-width !important;
 }
 .senior-card {
     border-radius: 10px;
@@ -29,12 +36,12 @@
 .search-input::placeholder {
     color: gray;
 }
-.create-profile-wrapper{
+.create-profile-wrapper {
     position: absolute;
     top: 30px;
     left: 40px;
 }
-.create-profile-wrapper > a > button:hover{
+.create-profile-wrapper > a > button:hover {
     background-color: #26B1FF !important;
 }
 .page-btn {

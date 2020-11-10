@@ -1,5 +1,9 @@
 $background: linear-gradient(to right, #00b7ff, #aeecff);
 
+$image-width: 100%;
+$image-min-width: 200px;
+$image-max-width: 275px;
+
 #background {
     background-image: $background;
     overflow-y: visible;
@@ -11,15 +15,17 @@ $background: linear-gradient(to right, #00b7ff, #aeecff);
 .display-5{
     font-size: 3.2rem;
 }
-.profile-pic{
-    width: 100%;
-    min-width: 200px;
-    max-width: 275px;
+.profile-wrapper {
+    width: $image-width;
+    min-width: $image-min-width;
+    max-width: $image-max-width;
     height: auto;
     max-height: 458px;
+    overflow: hidden;
 }
-@media(max-width: 768px) {
-    .profile-pic{
-        min-width: 200px;
-    }
+.profile-pic {
+    width: $image-width;
+    min-width: $image-min-width;
+    max-width: $image-max-width;
+    height: auto;
 }

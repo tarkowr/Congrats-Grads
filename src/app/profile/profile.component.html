@@ -13,7 +13,9 @@
 
                     <div *ngIf="senior && !error" class="row">
                         <div *ngIf="senior.url" class="col-12 col-md-6 overflow-hidden d-flex text-center">
-                            <img src="{{senior.url}}" class="rounded profile-pic align-self-center mx-auto justify-content-center">
+                            <div class="profile-wrapper align-self-center mx-auto justify-content-center rounded ">
+                                <img src="{{senior.url}}" class="profile-pic">
+                            </div>
                         </div>
                         <div class="col-12 col-md-6 text-left overflow-hidden px-0" [ngClass]="mobile ? 'pt-2':'pt-0'">
                             <h6 class="py-0 mb-2 jost f4" [ngClass]="mobile ? 'text-center':'text-left'"><strong>── CLASS OF {{ senior.year }} ──</strong></h6>
