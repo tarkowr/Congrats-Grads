@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Location } from '@angular/common';
-import { WindowService } from '../../services/window.service';
+import { WindowService } from '../../../services/window.service';
 import { Subscription } from 'rxjs';
 
 @Component({

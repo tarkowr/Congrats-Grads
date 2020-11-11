@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { ReplaySubject } from 'rxjs'
 import { environment } from '../../environments/environment'
+import { Senior } from '../models/senior';
 
 @Injectable({
     providedIn: 'root'
 })
-export class UserService {
+export class LibraryService {
     private _library: ReplaySubject<any>;
 
     constructor(private http: HttpClient) { 
@@ -46,9 +47,20 @@ export class UserService {
         return this.http.post(`${environment.apiUrl}/create`, formData).toPromise();
     }
 
+    // Determine whether a search query matches a name
+    matchesSearch(fname: string, lname: string, query: string) : Boolean {
+        let length = query.length;
+        query = query.toLowerCase();
+        fname = fname.substring(0, length).toLowerCase();
+        lname = lname.substring(0, length).toLowerCase();
+        let name = (fname + ' ' + lname).substring(0, length);
+
+        return (fname === query || lname === query || query === name);
+    }
+
     // Sort Seniors by Full Name
-    sortByName(obj:any[]){
-        return obj.sort((a, b) => {
+    sortByName(lib: Senior[]){
+        return lib.sort((a, b) => {
             let aFullName = (a.lname + ' ' + a.fname).trim().toLowerCase().replace('  ', ' ');
             let bFullName = (b.lname + ' ' + b.fname).trim().toLowerCase().replace('  ', ' ');
 
@@ -60,8 +72,8 @@ export class UserService {
     }
 
     // Sort Seniors by Latest Date Uploaded
-    sortByDateNew(obj:any[]) {
-        return obj.sort((a, b) => {
+    sortByNewest(lib: Senior[]) {
+        return lib.sort((a, b) => {
             if (!a.uploaded || !b.uploaded) { return 0; }
             
             let aDate = a.uploaded._seconds;
@@ -75,8 +87,8 @@ export class UserService {
     }
 
     // Sort Seniors by Oldest Date Uploaded
-    sortByDateOld(obj:any[]) {
-        return obj.sort((a, b) => {
+    sortByOldest(lib: Senior[]) {
+        return lib.sort((a, b) => {
             if (!a.uploaded || !b.uploaded) { return 0; }
 
             let aDate = a.uploaded._seconds;
@@ -87,16 +99,5 @@ export class UserService {
             
             return 0;
         });
-    }
-
-    // Determine whether a search query matches a senior
-    matchSearch(fname: string, lname: string, query: string) {
-        let length = query.length;
-        query = query.toLowerCase();
-        fname = fname.substring(0, length).toLowerCase();
-        lname = lname.substring(0, length).toLowerCase();
-        let name = (fname + ' ' + lname).substring(0, length);
-
-        return (fname === query || lname === query || query === name);
     }
 }

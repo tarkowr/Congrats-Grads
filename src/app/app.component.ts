@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from './services/user.service';
+import { LibraryService } from './services/library.service';
 import { WindowService } from './services/window.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { WindowService } from './services/window.service';
 export class AppComponent implements OnInit {
   title = 'Congrats Grads';
 
-  constructor(private userService: UserService,
+  constructor(private libraryService: LibraryService,
     private windowService: WindowService) {}
 
   ngOnInit() {
@@ -20,6 +20,6 @@ export class AppComponent implements OnInit {
       this.windowService.checkBreakpoints();
     });
 
-    this.userService.fetchLibrary();
+    this.libraryService.fetchLibrary();
   }
 }

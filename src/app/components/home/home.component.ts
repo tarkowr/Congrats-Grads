@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import Typed from 'typed.js';
-import { WindowService } from '../services/window.service';
+import { WindowService } from '../../services/window.service';
 import { Subscription } from 'rxjs';
 
 @Component({

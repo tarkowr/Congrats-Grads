@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserService } from '../services/user.service';
-import { LocalStorage } from '../services/local-storage.service';
-import { WindowService } from '../services/window.service';
-import { RegexUtilities } from '../utilities/regex.utilities';
+import { LibraryService } from '../../services/library.service';
+import { LibraryState } from '../../models/state/library.state';
+import { LocalStorage } from '../../services/local-storage.service';
+import { WindowService } from '../../services/window.service';
+import { RegexUtilities } from '../../utilities/regex.utilities';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -39,7 +40,8 @@ export class CreateComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private windowService: WindowService,
-    private userService: UserService,
+    private libraryService: LibraryService,
+    private libraryState: LibraryState,
     private localStorage: LocalStorage,
     private router: Router,
     private regexUtilities: RegexUtilities) { }
@@ -149,9 +151,10 @@ export class CreateComponent implements OnInit {
 
     this.loading = true;
 
-    this.userService.create(this.f.firstname.value, this.f.lastname.value, this.f.school.value, this.f.comments.value, this.image)
+    this.libraryService.create(this.f.firstname.value, this.f.lastname.value, this.f.school.value, this.f.comments.value, this.image)
       .then(async (data) => {
-        await this.userService.fetchLibrary();
+        await this.libraryService.fetchLibrary();
+        this.libraryState.reset();
         this.onSuccess(data);
       })
       .catch(err => {

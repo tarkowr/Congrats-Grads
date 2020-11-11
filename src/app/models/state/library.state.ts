@@ -3,11 +3,9 @@ import { Injectable } from '@angular/core'
 @Injectable({
     providedIn: 'root'
 })
-export class AppStateService {
-
+export class LibraryState {
     constructor() { }
 
-    // Library State
     searchQuery: string;
     orderKey: number;
     yearKey: number;
@@ -15,11 +13,18 @@ export class AppStateService {
     seniorId: string;
     isMobile: Boolean;
 
-    // Return whether library state exists
-    libraryHasSavedState(mobile: Boolean) : Boolean {
+    hasState(mobile: Boolean) : Boolean {
         const hasState = this.searchQuery || this.orderKey || this.yearKey || this.pageStartIndex;
         const hasMobileChanged = this.isMobile != undefined && this.isMobile != mobile;
 
         return hasState && !hasMobileChanged;
+    }
+
+    reset() {
+        this.searchQuery = undefined;
+        this.orderKey = undefined;
+        this.yearKey = undefined;
+        this.pageStartIndex = 0;
+        this.seniorId = undefined;
     }
 }

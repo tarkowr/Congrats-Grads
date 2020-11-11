@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
-import { WindowService } from '../services/window.service';
-import { UserService } from '../services/user.service';
+import { WindowService } from '../../services/window.service';
+import { LibraryService } from '../../services/library.service';
 import { Subscription } from 'rxjs';
+import { Senior } from 'src/app/models/senior';
 
 @Component({
   selector: 'app-profile',
@@ -11,14 +12,14 @@ import { Subscription } from 'rxjs';
 })
 export class ProfileComponent implements OnInit {
 
-  senior: any;
+  senior: Senior;
   mobile: Boolean = true;
   error: Boolean = false;
 
   windowSubscription: Subscription;
   librarySubscription: Subscription;
 
-  constructor(private userService: UserService,
+  constructor(private libraryService: LibraryService,
     private windowService: WindowService,
     private activatedRoute: ActivatedRoute,) { }
 
@@ -36,7 +37,7 @@ export class ProfileComponent implements OnInit {
       // Get the last segment of URL path
       const id = segments.pop().path;
       
-      this.librarySubscription = this.userService.library.subscribe((library: any[]) => {
+      this.librarySubscription = this.libraryService.library.subscribe((library: Senior[]) => {
         this.senior = library.find(s => s.id == id);
 
         if (!this.senior) {
