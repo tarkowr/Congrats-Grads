@@ -95,7 +95,7 @@ export class LibraryComponent implements OnInit {
   }
 
   // Copy array of objects w/o reference to properties
-  copyArrayOfObj(arr:any[]){
+  copyArrayOfObj(arr: any[]){
     return arr.map(obj => ({ ...obj }));
   }
 

@@ -12,8 +12,8 @@ export class ContactComponent implements OnInit {
   contactForm: FormGroup;
   submitted: Boolean = false;
   loading: Boolean = false;
-  showSnackbar:Boolean = false;
-  message:String;
+  showSnackbar: Boolean = false;
+  message: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -32,6 +32,7 @@ export class ContactComponent implements OnInit {
 
   // Handle email error
   private onError(err) {
+    console.error('Unable to send email!', err);
     this.message = 'Unable to Send Message!'
     this.showSnackbar = true;
   }

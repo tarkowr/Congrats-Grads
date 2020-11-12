@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LibraryService } from '../../services/library.service';
 import { LibraryState } from '../../models/state/library.state';
+import { Senior } from '../../models/senior';
 import { LocalStorage } from '../../services/local-storage.service';
 import { WindowService } from '../../services/window.service';
 import { RegexConstants } from '../../constants/regex.constants';
@@ -27,10 +28,10 @@ export class CreateComponent implements OnInit {
   
   btnWait: Boolean = false;
 
-  showSnackbar:Boolean = false;
-  message:String;
+  showSnackbar: Boolean = false;
+  message: string;
   
-  error:Boolean = false;
+  error: Boolean = false;
   maxUpload: Boolean = false;
   missingImage: Boolean = true;
   wrongType: Boolean = false;
@@ -91,13 +92,13 @@ export class CreateComponent implements OnInit {
   }
 
   // Successful profile upload
-  private onSuccess(data) {
+  private onSuccess(senior: Senior) {
     this.submitted = false;
     this.createForm.reset();
     this.message = 'Successfully Uploaded!';
     this.showSnackbar = true;
     this.error = false;
-    this.localStorage.setUploaded(data['id']);
+    this.localStorage.setUploaded(senior.id);
   }
 
   // Error on profile upload
@@ -152,10 +153,10 @@ export class CreateComponent implements OnInit {
     this.loading = true;
 
     this.libraryService.create(this.f.firstname.value, this.f.lastname.value, this.f.school.value, this.f.comments.value, this.image)
-      .then(async (data) => {
+      .then(async (senior: Senior) => {
         await this.libraryService.fetchLibrary();
         this.libraryState.reset();
-        this.onSuccess(data);
+        this.onSuccess(senior);
       })
       .catch(err => {
         this.onError(err);

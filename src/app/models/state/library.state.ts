@@ -13,6 +13,7 @@ export class LibraryState {
     seniorId: string;
     isMobile: Boolean;
 
+    // Returns whether the library has a state other than default
     hasState(mobile: Boolean) : Boolean {
         const hasState = this.searchQuery || this.orderKey || this.yearKey || this.pageStartIndex;
         const hasMobileChanged = this.isMobile != undefined && this.isMobile != mobile;
@@ -20,6 +21,7 @@ export class LibraryState {
         return hasState && !hasMobileChanged;
     }
 
+    // Reset the library state to default
     reset() {
         this.searchQuery = undefined;
         this.orderKey = undefined;
