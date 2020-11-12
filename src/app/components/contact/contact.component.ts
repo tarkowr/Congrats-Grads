@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ContactService } from '../../services/contact.service';
-import { RegexUtilities } from '../../utilities/regex.utilities';
+import { RegexConstants } from '../../constants/regex.constants';
 
 @Component({
   selector: 'app-contact',
@@ -18,7 +18,7 @@ export class ContactComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private contactService: ContactService,
-    private regexUtilities: RegexUtilities) { }
+    private regexConstants: RegexConstants) { }
 
   get f() { return this.contactForm.controls }
 
@@ -72,10 +72,10 @@ export class ContactComponent implements OnInit {
   private buildContactForm() {
     this.contactForm = this.formBuilder.group({
       sender: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexUtilities.email)
+        Validators.required, Validators.pattern(this.regexConstants.EMAIL)
       ])],
       message: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexUtilities.emailMessage)
+        Validators.required, Validators.pattern(this.regexConstants.EMAIL_MESSAGE)
       ])]
     });
   }

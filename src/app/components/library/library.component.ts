@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { LibraryService } from 'src/app/services/library.service';
-import { Utilities } from 'src/app/utilities/utilities';
-import { RegexUtilities } from 'src/app/utilities/regex.utilities';
-import { WindowService } from 'src/app/services/window.service';
-import { LibraryState } from 'src/app/models/state/library.state';
+import { LibraryService } from '../../services/library.service';
+import { RegexConstants } from '../../constants/regex.constants';
+import { WindowService } from '../../services/window.service';
+import { Senior } from '../../models/senior';
+import { LibraryState } from '../../models/state/library.state';
 import { Subscription } from 'rxjs';
-import { Senior } from 'src/app/models/senior';
 
 @Component({
   selector: 'app-library',
@@ -49,8 +48,7 @@ export class LibraryComponent implements OnInit {
     private libraryState: LibraryState,
     private router: Router,
     private formBuilder: FormBuilder,
-    private utilities: Utilities,
-    private regexUtilities: RegexUtilities) { }
+    private regexConstants: RegexConstants) { }
 
   get f() { return this.searchForm.controls }
 
@@ -96,6 +94,11 @@ export class LibraryComponent implements OnInit {
     return options;
   }
 
+  // Copy array of objects w/o reference to properties
+  copyArrayOfObj(arr:any[]){
+    return arr.map(obj => ({ ...obj }));
+  }
+
   // UI: Go to senior profile page
   getProfile(senior: Senior) {
     this.libraryState.seniorId = senior.id;
@@ -130,7 +133,7 @@ export class LibraryComponent implements OnInit {
 
   // Reduce senior list to current page
   private paginate(seniorsList: Senior[]) : Senior[] {
-    return this.utilities.copyArrayOfObj(seniorsList).splice(this.paginationStartIndex, this.paginationMaxPerPage);
+    return this.copyArrayOfObj(seniorsList).splice(this.paginationStartIndex, this.paginationMaxPerPage);
   }
 
   // Reset pagination to the first page
@@ -180,7 +183,7 @@ export class LibraryComponent implements OnInit {
     if (this.paginationStartIndex != 0) {
       this.paginationStartIndex -= this.paginationMaxPerPage;
       this.pof();
-      this.utilities.scrollTop(window);
+      window.scrollTo(0, 0);
     }
   }
  
@@ -191,7 +194,7 @@ export class LibraryComponent implements OnInit {
     if (this.paginationStartIndex + this.paginationMaxPerPage < activeSeniors) {
       this.paginationStartIndex += this.paginationMaxPerPage;
       this.pof();
-      this.utilities.scrollTop(window);
+      window.scrollTo(0, 0);
     }
   }
 
@@ -368,7 +371,7 @@ export class LibraryComponent implements OnInit {
   private buildForms() {
     this.searchForm = this.formBuilder.group({
       search: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexUtilities.search)
+        Validators.required, Validators.pattern(this.regexConstants.SEARCH)
       ])]
     });
 

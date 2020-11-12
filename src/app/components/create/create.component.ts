@@ -5,7 +5,7 @@ import { LibraryService } from '../../services/library.service';
 import { LibraryState } from '../../models/state/library.state';
 import { LocalStorage } from '../../services/local-storage.service';
 import { WindowService } from '../../services/window.service';
-import { RegexUtilities } from '../../utilities/regex.utilities';
+import { RegexConstants } from '../../constants/regex.constants';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -44,7 +44,7 @@ export class CreateComponent implements OnInit {
     private libraryState: LibraryState,
     private localStorage: LocalStorage,
     private router: Router,
-    private regexUtilities: RegexUtilities) { }
+    private regexConstants: RegexConstants) { }
 
   get f() { return this.createForm.controls }
 
@@ -178,17 +178,17 @@ export class CreateComponent implements OnInit {
   private buildUserForm() {
     this.createForm = this.formBuilder.group({
       firstname: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexUtilities.name)
+        Validators.required, Validators.pattern(this.regexConstants.NAME)
       ])],
       lastname: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexUtilities.name)
+        Validators.required, Validators.pattern(this.regexConstants.NAME)
       ])],
       school: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexUtilities.school)
+        Validators.required, Validators.pattern(this.regexConstants.SCHOOL)
       ])],
       profileImg: [''],
       comments: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexUtilities.about)
+        Validators.required, Validators.pattern(this.regexConstants.COMMENTS)
       ])]
     });
   }
