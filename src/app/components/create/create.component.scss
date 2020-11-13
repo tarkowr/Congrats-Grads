@@ -1,44 +1,15 @@
-.landing-pic{
-    background: url('../../../assets/images/create.jpg'); 
-    background-size: cover;
-    height: 100vh;
-    background-repeat: no-repeat;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-.logo{
-    background: url('../../../assets/logos/icon.png');
-    background-repeat: no-repeat;
-    width: 65px;
-    margin-bottom: 10px;
-}
-.col-override{
+.col-override {
     max-width: 100%;
 }
-.offset-override{
-    max-width: 550px;
-    margin-right: 0%;
-    margin-left: 0%;
+.create-card {
+    max-width: 600px;
     margin: 0 auto;
 }
-label{
+label {
     font-weight: 500;
 }
 .invalid-feedback {
     font-weight: 500;
 }
 
-@media (min-width: 992px){ /*Large*/
-    .offset-override{
-      margin-right: 8%;
-      margin-left: 8%;
-    }
-}
-@media (min-width: 1200px){ /*Extra-Large*/
-    .offset-override{
-        margin-right: 10%;
-        margin-left: 10%;
-        margin: 0 auto;
-    }
-}
+
