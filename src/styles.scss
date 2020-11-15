@@ -1,6 +1,6 @@
 $font: 'Muli', sans-serif;
 $breakpoint: 992px;
-$navbarHeight: 75px;
+$navbarHeight: 60px;
 
 /*Variable Overrides*/
 $theme-colors: (
@@ -87,7 +87,7 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: $navbarHeight !important;
 }
 .page-min-height {
-    min-height: calc(100vh - 75px) !important;
+    min-height: calc(100vh - 60px) !important;
 }
 
 .height-100 {

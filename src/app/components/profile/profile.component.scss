@@ -5,7 +5,7 @@ $image-min-width: 200px;
 $image-max-width: 275px;
 
 #background {
-    background-image: $background;
+    background: $background;
     overflow-y: visible;
 }
 #profile{
