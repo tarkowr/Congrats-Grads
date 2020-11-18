@@ -1,6 +1,11 @@
 $font: 'Muli', sans-serif;
 $breakpoint: 992px;
-$navbarHeight: 60px;
+
+// Global SCSS variables
+:root 
+{
+    --navHeight: 60px;
+}
 
 /*Variable Overrides*/
 $theme-colors: (
@@ -84,12 +89,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .page-margin-top {
-    margin-top: $navbarHeight !important;
+    margin-top: var(--navHeight) !important;
 }
 .page-min-height {
-    min-height: calc(100vh - 60px) !important;
+    min-height: calc(100vh - var(--navHeight)) !important;
 }
-
 .height-100 {
     min-height: 100vh !important;
 }
