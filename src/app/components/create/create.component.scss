@@ -1,6 +1,11 @@
 .pic-wrapper {
     margin-top: calc(var(--navHeight) * -1);
 }
+.pic-top-border {
+    height: 1.5px;
+    top: var(--navHeight);
+    z-index: 100;
+}
 .pic {
     background: url('../../../assets/images/create.jpg'); 	
     background-size: cover;	

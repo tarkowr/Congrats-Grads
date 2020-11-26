@@ -1,4 +1,4 @@
-export class Senior {
+export interface Senior {
     fname: string;
     lname: string;
     school: string;
@@ -9,7 +9,7 @@ export class Senior {
     year: Number;
  }
 
- class TimeStamp {
+ interface TimeStamp {
      _nanoseconds: Number;
      _seconds: Number;
  }
