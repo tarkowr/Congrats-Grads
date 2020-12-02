@@ -27,7 +27,7 @@ html, body {
     width: 100% !important;
     margin: 0;
     font-family: $font; 
-    font-weight: 200;
+    font-weight: 300;
     font-size: 1em;
     padding: 0;
 }
@@ -86,6 +86,16 @@ html, body {
 
 h1, h2, h3, h4, h5, h6 {
     font-weight: 300;
+}
+
+.form-control {
+    font-weight: 300 !important;
+}
+label{
+    font-weight: 500;
+}
+.invalid-feedback {
+    font-weight: 500;
 }
 
 .page-margin-top {

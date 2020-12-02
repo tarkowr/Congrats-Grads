@@ -55,7 +55,7 @@
                             <div class="w-100 text-center mt-2 px-3 f4 inc-font">
                                 {{ senior.fname }} {{ senior.lname }}
                             </div>
-                            <div class="w-100 text-center mb-2 px-3 f3 text-secondary">
+                            <div class="w-100 text-center mb-2 px-3 text-secondary">
                                 {{ senior.school }}
                             </div>
                         </div>
@@ -66,7 +66,7 @@
                     <div class="inc-font rounded-circle border bg-white page-btn d-inline-block text-center" (click)="pageLeft()">
                         <i class="fa fa-angle-left page-btn-left"></i>
                     </div>
-                    <div class="d-inline-block mx-2 not-selectable f3">{{ getPageState() }}</div>
+                    <div class="d-inline-block mx-2 not-selectable">{{ getPageState() }}</div>
                     <div class="inc-font rounded-circle border bg-white page-btn d-inline-block text-center" (click)="pageRight()">
                         <i class="fa fa-angle-right page-btn-right"></i>
                     </div>
@@ -80,7 +80,7 @@
             </div>
 
             <div *ngIf="noSearchResults" class="text-center my-3">
-                <div class="inc-font text-gray f3">
+                <div class="inc-font text-gray">
                     No Results!
                 </div>
                 <div>
@@ -90,7 +90,7 @@
                 </div>
             </div>
 
-            <div class="text-center f3 mt-2">
+            <div class="text-center mt-2">
                 Experiencing an issue? <a [routerLink]="['/contact']" class="text-primary">Let us know!</a>
             </div>
         </div>

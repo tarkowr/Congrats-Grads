@@ -1,10 +1,12 @@
 .pic-wrapper {
     margin-top: calc(var(--navHeight) * -1);
 }
-.pic-top-border {
+.pic-border {
     height: 1.5px;
-    top: var(--navHeight);
     z-index: 100;
+}
+.pic-top {
+    top: var(--navHeight);
 }
 .pic {
     background: url('../../../assets/images/create.jpg'); 	
@@ -22,12 +24,6 @@
 .create-card {
     max-width: 600px;
     margin: 0 auto;
-}
-label {
-    font-weight: 500;
-}
-.invalid-feedback {
-    font-weight: 500;
 }
 
 
