@@ -88,7 +88,7 @@ module.exports = class Controller {
 
     // Compress uploaded profile pictures
     compressProfileImage(path, output) {
-        return compress({
+       return compress({
             source: path,
             destination: output,
             enginesSetup: {
@@ -195,31 +195,23 @@ module.exports = class Controller {
 
     // Helper to download profile pictures in firebase for backup
     async downloadProfilePictures() {
-        let counter = 0
         let res = await storage.getFiles()
 
         logger.logMessage(`Fetched ${res[0].length} profile pictures`)
 
         res[0].forEach(async (image) => { 
             await image.download({destination: `downloads/${image.name}`})
-            counter = counter + 1
             logger.logMessage(`Downloaded ${image.name}`)
         })
-
-        logger.logMessage(`Downloaded ${counter} profile pictures`)
     }
 
     // Helper to compress all downloaded profile pictures
     async compressDownloadedProfilePictures() {
-        let counter = 0
         const dir = await fs.promises.opendir('downloads')
         for await (const image of dir) {
-            await this.compressProfileImage(`downloads/${image.name}`, 'compressed/')
-            counter = counter + 1
+            await this.compressProfileImage(`downloads/${image.name}`, 'compressed/', image.name)
             logger.logMessage(`Compressed ${image.name}`)
         }
-
-        logger.logMessage(`Compressed ${counter} profile pictures`)
     }   
     
     // Helper to delete select files in storage and reupload the compressed version

@@ -14,9 +14,11 @@ export class ProfileComponent implements OnInit {
 
   senior: Senior;
   mobile: Boolean = true;
+  showBackButton: Boolean = false;
   error: Boolean = false;
 
   windowSubscription: Subscription;
+  largeWindowSubscription: Subscription;
   librarySubscription: Subscription;
 
   constructor(private libraryService: LibraryService,
@@ -27,6 +29,10 @@ export class ProfileComponent implements OnInit {
   private handleScreenSize(){
     this.windowSubscription = this.windowService.medium.subscribe(isMobile => {
       this.mobile = isMobile;
+    });
+
+    this.largeWindowSubscription = this.windowService.large.subscribe(isMobile => {
+      this.showBackButton = !isMobile;
     });
   }
 
@@ -54,6 +60,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnDestroy() {
     this.windowSubscription.unsubscribe();
+    this.largeWindowSubscription.unsubscribe();
 
     if (this.librarySubscription) {
       this.librarySubscription.unsubscribe();

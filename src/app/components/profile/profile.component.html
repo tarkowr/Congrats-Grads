@@ -1,5 +1,11 @@
 <app-navbar></app-navbar>
 
+<a *ngIf="showBackButton" [routerLink]="['/library']">
+    <button class="btn btn-secondary back-btn inc-font py-2 px-3">
+        <i class="fa fa-arrow-circle-left"></i>
+    </button>
+</a>
+
 <div class="page-margin-top">
     <div id="background" class="text-center w-100 page-min-height">
         <div class="w-100 row m-0" [ngClass]="mobile ? 'pt-4':'pt-5'">

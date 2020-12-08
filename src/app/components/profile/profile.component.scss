@@ -29,3 +29,10 @@ $image-max-width: 275px;
     max-width: $image-max-width;
     height: auto;
 }
+.back-btn {
+    position: fixed;
+    top: calc(10px + var(--navHeight));
+    left: 10px;
+    z-index: 100;
+    opacity: 1;
+}
