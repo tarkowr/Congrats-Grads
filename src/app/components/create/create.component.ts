@@ -61,6 +61,17 @@ export class CreateComponent implements OnInit {
     }
   }
 
+  // Client-side validation of uploaded image
+  private validateImage() {
+    const maxSize = 3 * 1024 * 1024;
+
+    if (this.image) {
+      if (this.image.size > maxSize) {
+        this.sizeLimit = true;
+      }
+    }
+  }
+
   // Prevent too many uploads from single user
   private validateUploadCount(){
     const max = 2;
@@ -140,6 +151,8 @@ export class CreateComponent implements OnInit {
     if (this.createForm.invalid) {
       return;
     }
+
+    this.validateImage();
 
     if (this.missingImage || this.wrongType || this.sizeLimit) {
       return;
