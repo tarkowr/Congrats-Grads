@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer')
 const fs = require('fs')
 const path = require('path')
-const { compress } = require("compress-images/promise")
+const sharp = require('sharp')
 const admin = require('firebase-admin')
 const NodeCache = require('node-cache')
 const config = require('../.env/config.json')
@@ -29,7 +29,7 @@ module.exports = class Controller {
 
     // Empty the uploads folder
     removeUploads() {
-        const dirs = ['uploads', 'compressed-uploads']
+        const dirs = ['uploads', 'resized']
 
         dirs.forEach((dir) => {
             fs.readdir(dir, (err, files) => {
@@ -86,18 +86,28 @@ module.exports = class Controller {
         })
     }
 
-    // Compress uploaded profile pictures
-    compressProfileImage(path, output) {
-       return compress({
-            source: path,
-            destination: output,
-            enginesSetup: {
-                jpg: { engine: 'mozjpeg', command: ['-quality', '60']},
-                png: { engine: 'pngquant', command: ['--quality=20-50', '-o']},
-            }
-        }).then(results => {
-            const { statistics, errors } = results
-            return !(errors && errors.length > 0)
+    // Resize uploaded profile pictures to reduce their size
+    async resizeProfileImage(path, ouput, imageName) {
+        let i = await sharp(path, { failOnError: false })
+        let metadata = await i.metadata()
+        let height = metadata.height
+        let width = metadata.width
+
+        const maxSize = 720
+
+        if ((height >= width ? height : width) > maxSize) {
+            return await i.resize({ height: maxSize }).withMetadata().toFile(ouput)
+                .then(data => {
+                    logger.logMessage(`New size of ${imageName} : ${data.size}`)
+                    return true
+                }).catch(err => {
+                    logger.logError(imageName, err)
+                    return false
+                })
+        }
+
+        return new Promise((resolve, reject) => {
+            resolve(false)
         })
     }
 
@@ -205,24 +215,23 @@ module.exports = class Controller {
         })
     }
 
-    // Helper to compress all downloaded profile pictures
-    async compressDownloadedProfilePictures() {
+    // Helper to reduce the size of downloaded profile pictures
+    async resizeDownloadedProfilePictures() {
         const dir = await fs.promises.opendir('downloads')
         for await (const image of dir) {
-            await this.compressProfileImage(`downloads/${image.name}`, 'compressed/', image.name)
-            logger.logMessage(`Compressed ${image.name}`)
+            await this.resizeProfileImage(`downloads/${image.name}`, `resized/${image.name}`, image.name)
         }
-    }   
+    }
     
-    // Helper to delete select files in storage and reupload the compressed version
-    async uploadCompressedProfilePictures() {
+    // Helper to delete select files in storage and reupload the resized version
+    async uploadResizedProfilePictures() {
         let counter = 0
         let res = await storage.getFiles()
 
-        const dir = await fs.promises.opendir('compressed')
+        const dir = await fs.promises.opendir('resized')
         for await (const image of dir) {
             await res[0].find(i => i.name == image.name).delete()
-            await this.uploadProfileImage(`compressed/${image.name}`)
+            await this.uploadProfileImage(`resized/${image.name}`)
             counter = counter + 1
         }
 

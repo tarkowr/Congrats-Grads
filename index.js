@@ -81,17 +81,12 @@ app.post('/create', upload.single('profile'), async (req, res) => {
         return
     }
 
-    // Profile image compression
-    const compressPrefix = 'compressed-'
-    
-    const success = await controller.compressProfileImage(og_path, compressPrefix)
-        .catch(err => {
-            logger.logError('Unable to compress profile image!', err)
-            return false
-        })
+    // Resize profile image
+    const resizedImagePath = `resized/${profile.filename}`
+    const success = await controller.resizeProfileImage(og_path, resizedImagePath, profile.filename)
     
     if (success) {
-        upload_path = compressPrefix + og_path
+        upload_path = resizedImagePath
     }
     
     // Finalize senior object
