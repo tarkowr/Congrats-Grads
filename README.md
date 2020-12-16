@@ -4,7 +4,7 @@ CongratsGrads is a website to honor 2020 high school graduates.
 
 **[Visit CongratsGrads](https://congratsgrads.web.app)**
 
-## Deployment - Static
+## Deployment
 
 1. Create production build of Angular project `ng build --prod`
 2. Deploy to Firebase `firebase deploy`

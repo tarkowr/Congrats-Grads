@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { LibraryService } from '../../services/library.service';
 import { LibraryState } from '../../models/state/library.state';
 import { Senior } from '../../models/senior';
-import { LocalStorage } from '../../services/local-storage.service';
+import { StorageService } from '../../services/storage.service';
 import { WindowService } from '../../services/window.service';
-import { RegexConstants } from '../../constants/regex.constants';
-import { Subscription } from 'rxjs';
+import { app, regex, storage } from '../../app.constants';
 
 @Component({
   selector: 'app-create',
@@ -43,11 +43,14 @@ export class CreateComponent implements OnInit {
     private windowService: WindowService,
     private libraryService: LibraryService,
     private libraryState: LibraryState,
-    private localStorage: LocalStorage,
-    private router: Router,
-    private regexConstants: RegexConstants) { }
+    private storageService: StorageService,
+    private router: Router) { }
 
   get f() { return this.createForm.controls }
+
+  get uploads() : any[] {
+    return this.storageService.get(storage.uploads) || [];
+  }
 
   // UI: Handle selected image
   selectImage(event) {
@@ -72,14 +75,12 @@ export class CreateComponent implements OnInit {
     }
   }
 
-  // Prevent too many uploads from single user
-  private validateUploadCount(){
-    const max = 2;
-    let uploads:[] = this.localStorage.getUploaded();
+  // Add new upload to local storage
+  private setUploaded(id: string) {
+    let uploaded: string[] = this.uploads;
 
-    if (!uploads) return true;
-
-    return uploads.length < max;
+    uploaded.push(id);
+    this.storageService.set(storage.uploads, uploaded);
   }
 
   // Display server errors based on type
@@ -109,7 +110,7 @@ export class CreateComponent implements OnInit {
     this.message = 'Successfully Uploaded!';
     this.showSnackbar = true;
     this.error = false;
-    this.localStorage.setUploaded(senior.id);
+    this.setUploaded(senior.id);
   }
 
   // Error on profile upload
@@ -158,7 +159,7 @@ export class CreateComponent implements OnInit {
       return;
     }
 
-    if (!this.validateUploadCount()){
+    if (this.uploads.length >= app.maxUploads) {
       this.maxUpload = true;
       return;
     }
@@ -192,23 +193,23 @@ export class CreateComponent implements OnInit {
   private buildUserForm() {
     this.createForm = this.formBuilder.group({
       firstname: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexConstants.NAME)
+        Validators.required, Validators.pattern(regex.name)
       ])],
       lastname: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexConstants.NAME)
+        Validators.required, Validators.pattern(regex.name)
       ])],
       school: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexConstants.SCHOOL)
+        Validators.required, Validators.pattern(regex.school)
       ])],
       profileImg: [''],
       comments: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexConstants.COMMENTS)
+        Validators.required, Validators.pattern(regex.comments)
       ])]
     });
   }
 
   // OnInit: Handle a change in the user's viewport
-  private handleScreenResize(){
+  private handleScreenResize() {
     this.windowSubscription = this.windowService.large.subscribe(isMobile => {
       this.mobile = isMobile;
     });

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { v4 as uuid } from 'uuid';
 import { LibraryService } from './services/library.service';
 import { WindowService } from './services/window.service';
+import { StorageService } from './services/storage.service';
+import { storage } from './app.constants';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +14,8 @@ export class AppComponent implements OnInit {
   title = 'Congrats Grads';
 
   constructor(private libraryService: LibraryService,
-    private windowService: WindowService) {}
+    private windowService: WindowService,
+    private storageService: StorageService) {}
 
   ngOnInit() {
     this.windowService.checkBreakpoints();
@@ -21,5 +25,12 @@ export class AppComponent implements OnInit {
     });
 
     this.libraryService.fetchLibrary();
+
+    let user = this.storageService.get(storage.userId);
+
+    if (!user) {
+      user = uuid();
+      this.storageService.set(storage.userId, user);
+    }
   }
 }

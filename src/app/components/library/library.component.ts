@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LibraryService } from '../../services/library.service';
-import { RegexConstants } from '../../constants/regex.constants';
+import { regex } from '../../app.constants';
 import { WindowService } from '../../services/window.service';
 import { Senior } from '../../models/senior';
 import { LibraryState } from '../../models/state/library.state';
@@ -47,8 +47,7 @@ export class LibraryComponent implements OnInit {
     private windowService: WindowService,
     private libraryState: LibraryState,
     private router: Router,
-    private formBuilder: FormBuilder,
-    private regexConstants: RegexConstants) { }
+    private formBuilder: FormBuilder) { }
 
   get f() { return this.searchForm.controls }
 
@@ -95,7 +94,7 @@ export class LibraryComponent implements OnInit {
   }
 
   // Copy array of objects w/o reference to properties
-  copyArrayOfObj(arr: any[]){
+  copyArrayOfObj(arr: any[]) {
     return arr.map(obj => ({ ...obj }));
   }
 
@@ -371,7 +370,7 @@ export class LibraryComponent implements OnInit {
   private buildForms() {
     this.searchForm = this.formBuilder.group({
       search: ['',  Validators.compose([
-        Validators.required, Validators.pattern(this.regexConstants.SEARCH)
+        Validators.required, Validators.pattern(regex.search)
       ])]
     });
 
@@ -386,7 +385,7 @@ export class LibraryComponent implements OnInit {
   }
   
   // OnInit: Handle a change in the user's viewport
-  private handleScreenResize(){
+  private handleScreenResize() {
     this.setMaxSeniorsPerPage();
 
     this.windowSubscription = this.windowService.large.subscribe(isMobile => {

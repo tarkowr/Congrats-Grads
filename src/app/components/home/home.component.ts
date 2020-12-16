@@ -50,7 +50,7 @@ export class HomeComponent implements OnInit {
     this.typed = new Typed(this.ref, this.typedConfig);
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.windowSubscription.unsubscribe();
     this.resetTyped(null);
   }

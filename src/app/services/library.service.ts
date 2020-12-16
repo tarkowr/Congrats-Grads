@@ -14,7 +14,7 @@ export class LibraryService {
         this._library = new ReplaySubject<any>(1);
     }
 
-    get library() {
+    get library() : any {
         return this._library.asObservable();
     }
 
@@ -31,12 +31,12 @@ export class LibraryService {
             });
 
         if (seniors) {
-            this._library.next(seniors);
+            this.library = seniors;
         }
     }
 
     // Create new senior profile
-    create(fname:string, lname:string, highSchool:string, comments:string, profile:any) {
+    create(fname: string, lname: string, highSchool: string, comments: string, profile: any) {
         let formData = new FormData();
         formData.append('fname', fname);
         formData.append('lname', lname);
@@ -48,7 +48,7 @@ export class LibraryService {
     }
 
     // Determine whether a search query matches a name
-    matchesSearch(fname: string, lname: string, query: string) : Boolean {
+    matchesSearch(fname: string, lname: string, query: string) : boolean {
         let length = query.length;
         query = query.toLowerCase();
         fname = fname.substring(0, length).toLowerCase();
@@ -59,7 +59,7 @@ export class LibraryService {
     }
 
     // Sort Seniors by Full Name
-    sortByName(lib: Senior[]){
+    sortByName(lib: Senior[]) : Senior[] {
         return lib.sort((a, b) => {
             let aFullName = (a.lname + ' ' + a.fname).trim().toLowerCase().replace('  ', ' ');
             let bFullName = (b.lname + ' ' + b.fname).trim().toLowerCase().replace('  ', ' ');
@@ -72,7 +72,7 @@ export class LibraryService {
     }
 
     // Sort Seniors by Latest Date Uploaded
-    sortByNewest(lib: Senior[]) {
+    sortByNewest(lib: Senior[]) : Senior[] {
         return lib.sort((a, b) => {
             if (!a.uploaded || !b.uploaded) { return 0; }
             
@@ -87,7 +87,7 @@ export class LibraryService {
     }
 
     // Sort Seniors by Oldest Date Uploaded
-    sortByOldest(lib: Senior[]) {
+    sortByOldest(lib: Senior[]) : Senior[] {
         return lib.sort((a, b) => {
             if (!a.uploaded || !b.uploaded) { return 0; }
 

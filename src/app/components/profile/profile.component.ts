@@ -23,10 +23,10 @@ export class ProfileComponent implements OnInit {
 
   constructor(private libraryService: LibraryService,
     private windowService: WindowService,
-    private activatedRoute: ActivatedRoute,) { }
+    private activatedRoute: ActivatedRoute) { }
 
   // OnInit: Handle change in the user's viewport size
-  private handleScreenSize(){
+  private handleScreenSize() {
     this.windowSubscription = this.windowService.medium.subscribe(isMobile => {
       this.mobile = isMobile;
     });
