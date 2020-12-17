@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
-import { ReplaySubject } from 'rxjs'
-import { environment } from '../../environments/environment'
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ReplaySubject } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { Senior } from '../models/senior';
 
 @Injectable({

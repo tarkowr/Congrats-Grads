@@ -6,10 +6,10 @@ export interface Senior {
     id: string;
     uploaded: TimeStamp;
     url: string;
-    year: Number;
+    year: number;
  }
 
  interface TimeStamp {
-     _nanoseconds: Number;
-     _seconds: Number;
+     _nanoseconds: number;
+     _seconds: number;
  }

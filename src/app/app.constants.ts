@@ -1,5 +1,6 @@
 export const app = {
-    maxUploads: 3
+    maxUploads: 3,
+    maxFailedAnalytics: 5
 }
 
 export const regex = {

@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid';
 import { LibraryService } from './services/library.service';
 import { WindowService } from './services/window.service';
 import { StorageService } from './services/storage.service';
+import { AnalyticsService } from './services/analytics.service';
 import { storage } from './app.constants';
 
 @Component({
@@ -15,6 +16,7 @@ export class AppComponent implements OnInit {
 
   constructor(private libraryService: LibraryService,
     private windowService: WindowService,
+    private analytics: AnalyticsService,
     private storageService: StorageService) {}
 
   ngOnInit() {
@@ -31,6 +33,7 @@ export class AppComponent implements OnInit {
     if (!user) {
       user = uuid();
       this.storageService.set(storage.userId, user);
+      this.analytics.trackEvent('new_user');
     }
   }
 }

@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LibraryService } from '../../services/library.service';
 import { regex } from '../../app.constants';
 import { WindowService } from '../../services/window.service';
+import { AnalyticsService } from '../../services/analytics.service';
 import { Senior } from '../../models/senior';
 import { LibraryState } from '../../models/state/library.state';
 import { Subscription } from 'rxjs';
@@ -46,6 +47,7 @@ export class LibraryComponent implements OnInit {
     private libraryService: LibraryService,
     private windowService: WindowService,
     private libraryState: LibraryState,
+    private analytics: AnalyticsService,
     private router: Router,
     private formBuilder: FormBuilder) { }
 
@@ -194,6 +196,7 @@ export class LibraryComponent implements OnInit {
       this.paginationStartIndex += this.paginationMaxPerPage;
       this.pof();
       window.scrollTo(0, 0);
+      this.analytics.trackEvent('library_paginate', { year: this.selectedYear.value, order: this.selectedOrder.value });
     }
   }
 

@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core'
-import { ReplaySubject } from 'rxjs'
+import { Injectable } from '@angular/core';
+import { ReplaySubject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -19,9 +19,9 @@ export class WindowService {
     largeBreakpoint = 992;
 
     constructor() { 
-        this._small = new ReplaySubject<boolean>(1)
-        this._medium = new ReplaySubject<boolean>(1)
-        this._large = new ReplaySubject<boolean>(1)
+        this._small = new ReplaySubject<boolean>(1);
+        this._medium = new ReplaySubject<boolean>(1);
+        this._large = new ReplaySubject<boolean>(1);
     }
 
     get small() {
@@ -29,11 +29,11 @@ export class WindowService {
     }
 
     get medium() {
-        return this._medium.asObservable()
+        return this._medium.asObservable();
     }
 
     get large() {
-        return this._large.asObservable()
+        return this._large.asObservable();
     }
 
     // Determine whether window size has passed any breakpoints and notify subscribers if so

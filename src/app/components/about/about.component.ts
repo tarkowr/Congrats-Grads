@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
   selector: 'app-about',
@@ -27,9 +28,14 @@ export class AboutComponent implements OnInit {
     }
   ];
 
-  constructor() { }
+  constructor(private analytics: AnalyticsService) { }
+
+  onClickDonate() {
+    this.analytics.trackEvent('donate_btn');
+  }
 
   ngOnInit() {
+    this.analytics.trackView('about');
   }
 
 }

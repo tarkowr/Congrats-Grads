@@ -7,6 +7,7 @@ import { LibraryState } from '../../models/state/library.state';
 import { Senior } from '../../models/senior';
 import { StorageService } from '../../services/storage.service';
 import { WindowService } from '../../services/window.service';
+import { AnalyticsService } from '../../services/analytics.service';
 import { app, regex, storage } from '../../app.constants';
 
 @Component({
@@ -38,12 +39,15 @@ export class CreateComponent implements OnInit {
   sizeLimit: Boolean = false;
   otherErr: Boolean = false;
 
+  hadSizeError: Boolean = false;
+
   constructor(
     private formBuilder: FormBuilder,
     private windowService: WindowService,
     private libraryService: LibraryService,
     private libraryState: LibraryState,
     private storageService: StorageService,
+    private analytics: AnalyticsService,
     private router: Router) { }
 
   get f() { return this.createForm.controls }
@@ -71,6 +75,10 @@ export class CreateComponent implements OnInit {
     if (this.image) {
       if (this.image.size > maxSize) {
         this.sizeLimit = true;
+        this.hadSizeError = true;
+
+        const user = this.storageService.get(storage.userId);
+        this.analytics.trackError('max_image_size', { user: user, name: this.image.name, size: this.image.size });
       }
     }
   }
@@ -159,6 +167,8 @@ export class CreateComponent implements OnInit {
       return;
     }
 
+    this.hadSizeError = false;
+
     if (this.uploads.length >= app.maxUploads) {
       this.maxUpload = true;
       return;
@@ -187,6 +197,11 @@ export class CreateComponent implements OnInit {
 
   ngOnDestroy() {
     this.windowSubscription.unsubscribe();
+
+    if (this.hadSizeError) {
+      const user = this.storageService.get(storage.userId);
+      this.analytics.trackEvent('abandon_ship', { user: user, hadSizeError: true });
+    }
   }
 
   // OnInit: Initialize the create user form
