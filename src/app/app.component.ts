@@ -33,7 +33,7 @@ export class AppComponent implements OnInit {
     if (!user) {
       user = uuid();
       this.storageService.set(storage.userId, user);
-      this.analytics.trackEvent('new_user');
+      this.analytics.trackEvent('new_user', { route: window.location.pathname });
     }
   }
 }

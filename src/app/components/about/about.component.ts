@@ -34,8 +34,6 @@ export class AboutComponent implements OnInit {
     this.analytics.trackEvent('donate_btn');
   }
 
-  ngOnInit() {
-    this.analytics.trackView('about');
-  }
+  ngOnInit() {}
 
 }

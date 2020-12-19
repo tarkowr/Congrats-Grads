@@ -200,7 +200,7 @@ export class CreateComponent implements OnInit {
 
     if (this.hadSizeError) {
       const user = this.storageService.get(storage.userId);
-      this.analytics.trackEvent('abandon_ship', { user: user, hadSizeError: true });
+      this.analytics.trackEvent('abandon_ship', { user: user });
     }
   }
 

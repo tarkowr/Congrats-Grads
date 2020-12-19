@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AnalyticsService } from '../../../services/analytics.service';
 
 @Component({
   selector: 'app-privacy',
@@ -7,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PrivacyComponent implements OnInit {
 
-  constructor() { }
+  constructor(private analytics: AnalyticsService) { }
 
-  ngOnInit() {
+  ngOnInit() { 
+    this.analytics.trackView('privacy');
   }
 
 }

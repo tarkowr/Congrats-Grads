@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AnalyticsService } from '../../../services/analytics.service';
 
 @Component({
   selector: 'app-page-not-found',
@@ -7,8 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PageNotFoundComponent implements OnInit {
 
-  constructor() { }
+  constructor(private analytics: AnalyticsService) { }
 
-  ngOnInit() { }
+  ngOnInit() { 
+    this.analytics.trackError('404', { route: window.location.pathname });
+  }
 
 }
