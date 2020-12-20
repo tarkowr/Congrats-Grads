@@ -11,7 +11,6 @@ import { AboutComponent } from './components/about/about.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
-    { path: 'home', component: HomeComponent },
     { path: 'about', component: AboutComponent },
     { path: 'create', component: CreateComponent },
     { path: 'library', component: LibraryComponent },

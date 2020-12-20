@@ -95,6 +95,8 @@ export class CreateComponent implements OnInit {
   private handleError(err) {
     if (!err) return;
 
+    this.analytics.trackError('upload_profile', { code: err.error });
+
     switch(err.error) {
       case 1001:
         this.missingImage = true;

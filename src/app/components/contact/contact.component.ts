@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ContactService } from '../../services/contact.service';
+import { AnalyticsService } from '../../services/analytics.service';
 import { regex } from '../../app.constants';
 
 @Component({
@@ -17,7 +18,8 @@ export class ContactComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private contactService: ContactService) { }
+    private contactService: ContactService,
+    private analytics: AnalyticsService) { }
 
   get f() { return this.contactForm.controls }
 
@@ -31,9 +33,14 @@ export class ContactComponent implements OnInit {
 
   // Handle email error
   private onError(err) {
-    console.error('Unable to send email!', err);
-    this.message = 'Unable to Send Message!'
+    console.error('Unable to send email!');
+    this.message = 'Unable to Send Message!';
     this.showSnackbar = true;
+
+    if (!this.contactForm.invalid) {
+      const errorName = err ? err.name : 'Unknown Error';
+      this.analytics.trackError('send_message', { sender: this.f.sender.value, message: this.f.message.value, error: errorName });
+    }
   }
 
   // On complete

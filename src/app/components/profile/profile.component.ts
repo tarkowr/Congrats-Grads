@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { WindowService } from '../../services/window.service';
 import { LibraryService } from '../../services/library.service';
+import { AnalyticsService } from '../../services/analytics.service';
 import { Subscription } from 'rxjs';
 import { Senior } from 'src/app/models/senior';
 
@@ -23,6 +24,7 @@ export class ProfileComponent implements OnInit {
 
   constructor(private libraryService: LibraryService,
     private windowService: WindowService,
+    private analytics: AnalyticsService,
     private activatedRoute: ActivatedRoute) { }
 
   // OnInit: Handle change in the user's viewport size
@@ -48,6 +50,7 @@ export class ProfileComponent implements OnInit {
 
         if (!this.senior) {
           this.error = true;
+          this.analytics.trackError('invalid_profile', { path: window.location.pathname });
         }
       })
     });

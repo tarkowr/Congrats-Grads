@@ -25,9 +25,9 @@ export class LibraryService {
     // Retrieve all senior profiles
     async fetchLibrary() {
         let seniors = await this.http.get(`${environment.apiUrl}/seniors/get/all`).toPromise()
-            .catch(e => {
-                console.error('Unable to fetch senior library!', e);
-                return;
+            .catch(err => {
+                console.error('Unable to fetch senior library!');
+                return null;
             });
 
         if (seniors) {
