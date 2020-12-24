@@ -5,7 +5,8 @@ import { LibraryService } from '../../services/library.service';
 import { regex } from '../../app.constants';
 import { WindowService } from '../../services/window.service';
 import { Senior } from '../../models/senior';
-import { LibraryState } from '../../models/state/library.state';
+import { Library } from '../../models/state/library.state';
+import { app } from '../../app.constants';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -27,8 +28,8 @@ export class LibraryComponent implements OnInit {
   paginationMaxPerPage = this.paginationLimits.desktop;
   paginationStartIndex: number = 0;
 
-  readonly yearOptions: any[] = this.buildYears(2020, 2021);
-  readonly defaultYear = this.yearOptions.find(y => y.value == 2021);
+  readonly yearOptions: any[] = this.buildYears(app.startYear, app.currentYear);
+  readonly defaultYear = this.yearOptions.find(y => y.value == app.currentYear);
   selectedYear = this.defaultYear;
 
   searchForm: FormGroup;
@@ -45,7 +46,6 @@ export class LibraryComponent implements OnInit {
   constructor(
     private libraryService: LibraryService,
     private windowService: WindowService,
-    private libraryState: LibraryState,
     private router: Router,
     private formBuilder: FormBuilder) { }
 
@@ -100,7 +100,7 @@ export class LibraryComponent implements OnInit {
 
   // UI: Go to senior profile page
   getProfile(senior: Senior) {
-    this.libraryState.seniorId = senior.id;
+    this.libraryService.state.seniorId = senior.id;
     this.router.navigate([`profile/${senior.id}`]);
   }
 
@@ -292,49 +292,45 @@ export class LibraryComponent implements OnInit {
 
   // Save page state so page doesn't reset upon navigating away
   private savePageState() {
-    this.libraryState.searchQuery = this.f.search.value ? this.f.search.value.toLowerCase() : undefined;
-    this.libraryState.orderKey = this.selectedOrder.key == this.defaultOrder.key ? undefined : this.selectedOrder.key;
-    this.libraryState.yearKey = this.selectedYear.key == this.defaultYear.key ? undefined : this.selectedYear.key;
-    this.libraryState.pageStartIndex = this.paginationStartIndex;
-    this.libraryState.isMobile = this.mobile;
+    let libraryState: Library = new Library();
+    libraryState.searchQuery = this.f.search.value ? this.f.search.value.toLowerCase() : undefined;
+    libraryState.orderKey = this.selectedOrder.key == this.defaultOrder.key ? undefined : this.selectedOrder.key;
+    libraryState.yearKey = this.selectedYear.key == this.defaultYear.key ? undefined : this.selectedYear.key;
+    libraryState.pageStartIndex = this.paginationStartIndex;
+
+    this.libraryService.state = libraryState;
   }
 
   // Restore page to saved state
   private restorePageState() {
-    const searchQueryState = this.libraryState.searchQuery;
-    const orderKeyState = this.libraryState.orderKey;
-    const yearKeyState = this.libraryState.yearKey;
-    const pageState = this.libraryState.pageStartIndex;
+    let libraryState: Library = this.libraryService.state;
+    let filteredSeniors: Senior[];
 
-    if (yearKeyState) {
-      this.o.year.setValue(yearKeyState);
+    if (libraryState.yearKey) {
+      this.o.year.setValue(libraryState.yearKey);
       this.changeYear(true);
     }
 
-    if (searchQueryState) {
-      this.f.search.setValue(searchQueryState);
+    if (libraryState.orderKey) {
+      this.o.order.setValue(libraryState.orderKey);
+      this.orderBackup();
     }
 
-    if (orderKeyState) {
-      this.o.order.setValue(orderKeyState);
+    if (libraryState.searchQuery) {
+      this.f.search.setValue(libraryState.searchQuery);
+      filteredSeniors = this.getFilteredSeniors();
     }
 
-    this.orderBackup();
-    let filteredSeniors: Senior[] = this.getFilteredSeniors();
-
-    if (pageState) {
-      this.paginationStartIndex = pageState;
+    if (libraryState.pageStartIndex) {
+      this.paginationStartIndex = libraryState.pageStartIndex;
     }
 
-    this.seniors = this.paginate(filteredSeniors);
-  }
+    this.seniors = this.paginate(filteredSeniors || this.yearMaster);
 
-  // Scroll to selected senior on return from profile
-  private scrollToSelectedSenior() {
-    if (this.libraryState.seniorId) {
+    if (libraryState.seniorId) {
       setTimeout(() => {
-        document.getElementById(this.libraryState.seniorId).scrollIntoView({ behavior: "auto", block: "center", inline: "nearest"});
-        this.libraryState.seniorId = undefined;
+        document.getElementById(libraryState.seniorId).scrollIntoView({ behavior: "auto", block: "center", inline: "nearest"});
+        this.libraryService.state.seniorId = undefined;
       });
     }
   }
@@ -400,21 +396,12 @@ export class LibraryComponent implements OnInit {
     });
   }
 
-  // OnInit: Get senior data from firebase
+  // OnInit: Get senior data from server
   private getSeniors() {
     this.librarySubscription = this.libraryService.library.subscribe((library: Senior[]) => {
       this.master = this.parseSeniorsByYear(this.defaultOrder.action(library));
-
       this.totalSeniors = this.yearMaster.length;
-
-      if (this.libraryState.hasState(this.mobile)) {
-        this.restorePageState();
-      }
-      else {
-        this.seniors = this.paginate(this.yearMaster);
-      }
-
-      this.scrollToSelectedSenior();
+      this.restorePageState();
     });
   }
 }

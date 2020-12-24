@@ -1,6 +1,8 @@
 export const app = {
     maxUploads: 3,
-    maxFailedAnalytics: 5
+    maxImageSize: 3 * 1024 * 1024,
+    startYear: 2020,
+    currentYear: 2021
 }
 
 export const regex = {

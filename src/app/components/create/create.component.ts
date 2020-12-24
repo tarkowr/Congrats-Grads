@@ -3,7 +3,6 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { LibraryService } from '../../services/library.service';
-import { LibraryState } from '../../models/state/library.state';
 import { Senior } from '../../models/senior';
 import { StorageService } from '../../services/storage.service';
 import { WindowService } from '../../services/window.service';
@@ -39,13 +38,12 @@ export class CreateComponent implements OnInit {
   sizeLimit: Boolean = false;
   otherErr: Boolean = false;
 
-  hadSizeError: Boolean = false;
+  hadImageSizeError: Boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private windowService: WindowService,
     private libraryService: LibraryService,
-    private libraryState: LibraryState,
     private storageService: StorageService,
     private analytics: AnalyticsService,
     private router: Router) { }
@@ -70,12 +68,10 @@ export class CreateComponent implements OnInit {
 
   // Client-side validation of uploaded image
   private validateImage() {
-    const maxSize = 3 * 1024 * 1024;
-
     if (this.image) {
-      if (this.image.size > maxSize) {
+      if (this.image.size > app.maxImageSize) {
         this.sizeLimit = true;
-        this.hadSizeError = true;
+        this.hadImageSizeError = true;
 
         const user = this.storageService.get(storage.userId);
         this.analytics.trackError('max_image_size', { user: user, name: this.image.name, size: this.image.size });
@@ -169,7 +165,7 @@ export class CreateComponent implements OnInit {
       return;
     }
 
-    this.hadSizeError = false;
+    this.hadImageSizeError = false;
 
     if (this.uploads.length >= app.maxUploads) {
       this.maxUpload = true;
@@ -181,7 +177,7 @@ export class CreateComponent implements OnInit {
     this.libraryService.create(this.f.firstname.value, this.f.lastname.value, this.f.school.value, this.f.comments.value, this.image)
       .then(async (senior: Senior) => {
         await this.libraryService.fetchLibrary();
-        this.libraryState.reset();
+        this.libraryService.resetState();
         this.onSuccess(senior);
       })
       .catch(err => {
@@ -200,7 +196,7 @@ export class CreateComponent implements OnInit {
   ngOnDestroy() {
     this.windowSubscription.unsubscribe();
 
-    if (this.hadSizeError) {
+    if (this.hadImageSizeError) {
       const user = this.storageService.get(storage.userId);
       this.analytics.trackEvent('abandon_ship', { user: user });
     }

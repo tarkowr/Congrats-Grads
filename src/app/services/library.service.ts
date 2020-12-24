@@ -3,15 +3,18 @@ import { HttpClient } from '@angular/common/http';
 import { ReplaySubject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Senior } from '../models/senior';
+import { Library } from '../models/state/library.state';
 
 @Injectable({
     providedIn: 'root'
 })
 export class LibraryService {
     private _library: ReplaySubject<any>;
+    public state: Library;
 
     constructor(private http: HttpClient) { 
         this._library = new ReplaySubject<any>(1);
+        this.state = new Library();
     }
 
     get library() : any {
@@ -20,6 +23,11 @@ export class LibraryService {
 
     set library(lib: any) {
         this._library.next(lib);
+    }
+
+    // Reset the library state to its default values
+    resetState() {
+        this.state = new Library();
     }
 
     // Retrieve all senior profiles
