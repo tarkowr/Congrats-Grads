@@ -1,22 +1,16 @@
-# CongratsGrads
+# Congrats Grads
 
-CongratsGrads is a website to honor 2020 high school graduates.
+Congrats Grads is a web app built with Angular and NodeJS that honors high school graduates.
 
-**[Visit CongratsGrads](https://congratsgrads.web.app)**
+**[Visit Congrats Grads](https://congratsgrads.web.app)**
 
 ## Deployment
 
 1. Create production build of Angular project `ng build --prod`
 2. Deploy to Firebase `firebase deploy`
 
-## What I learned
+## What I Learned
 
-* NodeJS Routing and Request Handling
-* Storing documents in Google Firebase
-* Using Firebase Storage to store Uploaded Images
-* Compressing/Resizing Images
 * Angular 8 web development
 * TypeScript, SCSS, and Bootstrap
-* Server-side data Caching
-* Sending Emails in NodeJS
-* Designing for both Mobile and Desktop
+* Design for Mobile and Desktop
