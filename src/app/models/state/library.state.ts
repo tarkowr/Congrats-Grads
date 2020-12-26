@@ -1,4 +1,4 @@
-export class Library {
+export class LibraryState {
     searchQuery: string;
     orderKey: number;
     yearKey: number;

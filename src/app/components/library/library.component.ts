@@ -5,7 +5,8 @@ import { LibraryService } from '../../services/library.service';
 import { regex } from '../../app.constants';
 import { WindowService } from '../../services/window.service';
 import { Senior } from '../../models/senior';
-import { Library } from '../../models/state/library.state';
+import { Library, OrderOption, YearOption } from '../../models/library';
+import { LibraryState } from '../../models/state/library.state';
 import { app } from '../../app.constants';
 import { Subscription } from 'rxjs';
 
@@ -15,9 +16,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./library.component.scss']
 })
 export class LibraryComponent implements OnInit {
+  library: Library; // Every senior in the library
   seniors: Senior[]; // Seniors that are currently displayed on the page
-  master: Record<string, Senior[]>; // Every senior in the library
-  totalSeniors: number;
 
   librarySubscription: Subscription;
   windowSubscription: Subscription;
@@ -28,9 +28,8 @@ export class LibraryComponent implements OnInit {
   paginationMaxPerPage = this.paginationLimits.desktop;
   paginationStartIndex: number = 0;
 
-  readonly yearOptions: any[] = this.buildYears(app.startYear, app.currentYear);
-  readonly defaultYear = this.yearOptions.find(y => y.value == app.currentYear);
-  selectedYear = this.defaultYear;
+  readonly yearOptions: YearOption[] = this.buildYears(app.startYear, app.currentYear);
+  readonly defaultYear: YearOption = this.yearOptions.find(y => y.value == app.currentYear.toString());
 
   searchForm: FormGroup;
   searchQuery: string = '';
@@ -40,47 +39,39 @@ export class LibraryComponent implements OnInit {
 
   orderForm: FormGroup;
   readonly orderOptions = this.buildOrderOptions();
-  readonly defaultOrder = this.orderOptions.find(o => o.value == 'Newest');
-  selectedOrder = this.defaultOrder;
+  readonly defaultOrder = OrderOption.Newest;
 
   constructor(
     private libraryService: LibraryService,
     private windowService: WindowService,
     private router: Router,
-    private formBuilder: FormBuilder) { }
+    private formBuilder: FormBuilder) { 
+      this.library = new Library();
+      this.library.year = this.defaultYear;
+    }
 
   get f() { return this.searchForm.controls }
 
   get o() { return this.orderForm.controls }
 
-  get yearMaster(): Senior[] {
-    return this.master[this.selectedYear.value];
-  }
-
-  // Return a list of all available order options
   buildOrderOptions() : any[] {
-    return [
-      {
-        key: 1,
-        value: 'Alphabetical',
-        action: this.libraryService.sortByName
-      },
-      {
-        key: 2,
-        value: 'Newest',
-        action: this.libraryService.sortByNewest
-      },
-      {
-        key: 3,
-        value: 'Oldest',
-        action: this.libraryService.sortByOldest
-      }
-    ];
+    let options = [];
+    for (let member in OrderOption) {
+      if (isNaN(parseInt(member))) continue;
+      options.push(
+        {
+          key: member,
+          value: OrderOption[member],
+        }
+      );
+    }
+
+    return options;
   }
 
   // Generate year options by min and max years
-  buildYears(start: number, end: number) : any[] {
-    let options = [];
+  buildYears(start: number, end: number) : YearOption[] {
+    let options: YearOption[] = [];
     for (let i=0; i <= (end - start); i++) {
       options.push(
         {
@@ -109,14 +100,13 @@ export class LibraryComponent implements OnInit {
   //
   
   // Handle change in selected year
-  changeYear(onRestore = false) {
-    this.selectedYear = this.yearOptions.find(y => y.key == this.o.year.value);
-    this.totalSeniors = this.yearMaster.length;
+  changeYear(keepState=false) {
+    this.library.year = this.yearOptions.find(y => y.key == this.o.year.value);
 
-    if (!onRestore) {
-      this.o.order.setValue(this.defaultOrder.key);
-      this.selectedOrder = this.defaultOrder;
-      this.selectedOrder.action(this.yearMaster);
+    if (!keepState) {
+      this.o.order.setValue(this.defaultOrder);
+      this.library.order = this.defaultOrder;
+      this.library.sort();
       this.clearSearch();
     }
   }
@@ -152,11 +142,11 @@ export class LibraryComponent implements OnInit {
 
     // Number of total seniors displayed in the library
     // Example: 20-40 of X
-    let seniorCount = this.searchActive ? this.searchFound : this.totalSeniors;
+    let seniorCount = this.searchActive ? this.searchFound : this.library.totalSeniors;
 
     // Set total page count to senior count or max on this page (whichever is smaller)
-    if (pageMax > this.totalSeniors) {
-      pageMax = this.totalSeniors;
+    if (pageMax > this.library.totalSeniors) {
+      pageMax = this.library.totalSeniors;
     }
 
     // Index of the last senior on the current page when there is a current search filter
@@ -188,7 +178,7 @@ export class LibraryComponent implements OnInit {
  
   // UI: Handle page right click
   pageRight() {
-    let activeSeniors = this.searchActive ? this.searchFound : this.totalSeniors;
+    let activeSeniors = this.searchActive ? this.searchFound : this.library.totalSeniors;
 
     if (this.paginationStartIndex + this.paginationMaxPerPage < activeSeniors) {
       this.paginationStartIndex += this.paginationMaxPerPage;
@@ -201,20 +191,15 @@ export class LibraryComponent implements OnInit {
   /// ORDER
   ///
 
-  // Return the user's selected option
-  private getSelectedOrder() {
-    return this.orderOptions.find(s => s.key == this.o.order.value);
-  }
-
   // Order seniors (backup) if selected order has changed
   // Apply order to backup since seniors will be paginated and may be filtered
-  private orderBackup() {
-    const selected = this.getSelectedOrder();
+  private orderLibrary() {
+    const selected = this.o.order.value;
 
-    if (this.selectedOrder.key != selected.key) {
-      this.selectedOrder = selected;
+    if (this.library.order != selected) {
+      this.library.order = selected;
       this.resetPagination();
-      selected.action(this.yearMaster);
+      this.library.sort();
     }
   }
 
@@ -224,7 +209,7 @@ export class LibraryComponent implements OnInit {
 
   // Return all seniors that match a search query
   private filterSeniors(query: string) : Senior[] {
-    return this.yearMaster.filter(s => this.libraryService.matchesSearch(s.fname, s.lname, query)); 
+    return this.library.yearMaster.filter(s => this.libraryService.matchesSearch(s, query)); 
   }
 
   // Return search input from user
@@ -247,7 +232,7 @@ export class LibraryComponent implements OnInit {
     if (this.searchForm.invalid) {
       this.searchActive = false;
       this.searchFound = 0;
-      return this.yearMaster;
+      return this.library.yearMaster;
     }
 
     this.searchActive = true;
@@ -271,18 +256,18 @@ export class LibraryComponent implements OnInit {
     this.searchQuery = '';
     this.resetPagination();
     this.savePageState();
-    this.seniors = this.paginate(this.yearMaster);
+    this.seniors = this.paginate(this.library.yearMaster);
   }
 
   // UI: Pagination, Order, Filter
   pof() {
-    if (!this.master) {
+    if (!this.library.master) {
       this.searchForm.reset();
-      this.o.order.setValue(this.defaultOrder.key);
+      this.o.order.setValue(this.defaultOrder);
       return;
     }
 
-    this.orderBackup();
+    this.orderLibrary();
     let filteredSeniors: Senior[] = this.getFilteredSeniors();
 
     this.seniors = this.paginate(filteredSeniors);
@@ -292,10 +277,10 @@ export class LibraryComponent implements OnInit {
 
   // Save page state so page doesn't reset upon navigating away
   private savePageState() {
-    let libraryState: Library = new Library();
+    let libraryState: LibraryState = new LibraryState();
     libraryState.searchQuery = this.f.search.value ? this.f.search.value.toLowerCase() : undefined;
-    libraryState.orderKey = this.selectedOrder.key == this.defaultOrder.key ? undefined : this.selectedOrder.key;
-    libraryState.yearKey = this.selectedYear.key == this.defaultYear.key ? undefined : this.selectedYear.key;
+    libraryState.orderKey = this.library.order == this.defaultOrder ? undefined : this.library.order;
+    libraryState.yearKey = this.library.year.key == this.defaultYear.key ? undefined : this.library.year.key;
     libraryState.pageStartIndex = this.paginationStartIndex;
 
     this.libraryService.state = libraryState;
@@ -303,7 +288,7 @@ export class LibraryComponent implements OnInit {
 
   // Restore page to saved state
   private restorePageState() {
-    let libraryState: Library = this.libraryService.state;
+    let libraryState: LibraryState = this.libraryService.state;
     let filteredSeniors: Senior[];
 
     if (libraryState.yearKey) {
@@ -313,7 +298,7 @@ export class LibraryComponent implements OnInit {
 
     if (libraryState.orderKey) {
       this.o.order.setValue(libraryState.orderKey);
-      this.orderBackup();
+      this.orderLibrary();
     }
 
     if (libraryState.searchQuery) {
@@ -325,7 +310,7 @@ export class LibraryComponent implements OnInit {
       this.paginationStartIndex = libraryState.pageStartIndex;
     }
 
-    this.seniors = this.paginate(filteredSeniors || this.yearMaster);
+    this.seniors = this.paginate(filteredSeniors || this.library.yearMaster);
 
     if (libraryState.seniorId) {
       setTimeout(() => {
@@ -371,10 +356,10 @@ export class LibraryComponent implements OnInit {
     });
 
     this.orderForm = this.formBuilder.group({
-      order: [this.selectedOrder.key,  Validators.compose([
+      order: [this.defaultOrder,  Validators.compose([
         Validators.required
       ])],
-      year: [this.selectedYear.key,  Validators.compose([
+      year: [this.defaultYear.key,  Validators.compose([
         Validators.required
       ])]
     });
@@ -389,7 +374,7 @@ export class LibraryComponent implements OnInit {
 
       this.setMaxSeniorsPerPage();
 
-      if (this.master) {
+      if (this.library.master) {
         this.resetPagination();
         this.clearSearch();
       }
@@ -399,8 +384,8 @@ export class LibraryComponent implements OnInit {
   // OnInit: Get senior data from server
   private getSeniors() {
     this.librarySubscription = this.libraryService.library.subscribe((library: Senior[]) => {
-      this.master = this.parseSeniorsByYear(this.defaultOrder.action(library));
-      this.totalSeniors = this.yearMaster.length;
+      this.library.master = this.parseSeniorsByYear(library);
+      this.library.sort();
       this.restorePageState();
     });
   }

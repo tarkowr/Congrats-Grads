@@ -2,19 +2,19 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ReplaySubject } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { LibraryState } from '../models/state/library.state';
 import { Senior } from '../models/senior';
-import { Library } from '../models/state/library.state';
 
 @Injectable({
     providedIn: 'root'
 })
 export class LibraryService {
     private _library: ReplaySubject<any>;
-    public state: Library;
+    public state: LibraryState;
 
     constructor(private http: HttpClient) { 
         this._library = new ReplaySubject<any>(1);
-        this.state = new Library();
+        this.state = new LibraryState();
     }
 
     get library() : any {
@@ -27,7 +27,7 @@ export class LibraryService {
 
     // Reset the library state to its default values
     resetState() {
-        this.state = new Library();
+        this.state = new LibraryState();
     }
 
     // Retrieve all senior profiles
@@ -56,56 +56,13 @@ export class LibraryService {
     }
 
     // Determine whether a search query matches a name
-    matchesSearch(fname: string, lname: string, query: string) : boolean {
+    matchesSearch(senior: Senior, query: string) : boolean {
         let length = query.length;
         query = query.toLowerCase();
-        fname = fname.substring(0, length).toLowerCase();
-        lname = lname.substring(0, length).toLowerCase();
+        let fname = senior.fname.substring(0, length).toLowerCase();
+        let lname = senior.lname.substring(0, length).toLowerCase();
         let name = (fname + ' ' + lname).substring(0, length);
 
         return (fname === query || lname === query || query === name);
-    }
-
-    // Sort Seniors by Full Name
-    sortByName(lib: Senior[]) : Senior[] {
-        return lib.sort((a, b) => {
-            let aFullName = (a.lname + ' ' + a.fname).trim().toLowerCase().replace('  ', ' ');
-            let bFullName = (b.lname + ' ' + b.fname).trim().toLowerCase().replace('  ', ' ');
-
-            if (aFullName < bFullName) { return -1; }
-            else if (aFullName > bFullName) { return 1; }
-
-            return 0;
-        });
-    }
-
-    // Sort Seniors by Latest Date Uploaded
-    sortByNewest(lib: Senior[]) : Senior[] {
-        return lib.sort((a, b) => {
-            if (!a.uploaded || !b.uploaded) { return 0; }
-            
-            let aDate = a.uploaded._seconds;
-            let bDate = b.uploaded._seconds;
-
-            if (aDate < bDate) { return 1; }
-            else if (aDate > bDate) { return -1; }
-
-            return 0;
-        });
-    }
-
-    // Sort Seniors by Oldest Date Uploaded
-    sortByOldest(lib: Senior[]) : Senior[] {
-        return lib.sort((a, b) => {
-            if (!a.uploaded || !b.uploaded) { return 0; }
-
-            let aDate = a.uploaded._seconds;
-            let bDate = b.uploaded._seconds;
-
-            if (aDate < bDate) { return -1; }
-            else if (aDate > bDate) { return 1; }
-            
-            return 0;
-        });
     }
 }
