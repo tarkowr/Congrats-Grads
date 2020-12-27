@@ -5,6 +5,7 @@ export class Library {
 
     year: YearOption;
     order: OrderOption = OrderOption.Newest;
+    query: string = '';
 
     constructor() {}
 
@@ -31,6 +32,22 @@ export class Library {
                 this.sortByNewest();
                 break;
         }
+    }
+
+    // Filter library by a search query
+    filter() : Senior[] {
+        return this.yearMaster.filter(senior => this.matchesSearch(senior, this.query));
+    }
+
+    // Determine whether a search query matches a senior's name
+    private matchesSearch(senior: Senior, query: string) : boolean {
+        let length = query.length;
+        query = query.toLowerCase();
+        let fname = senior.fname.substring(0, length).toLowerCase();
+        let lname = senior.lname.substring(0, length).toLowerCase();
+        let name = (fname + ' ' + lname).substring(0, length);
+
+        return (fname === query || lname === query || query === name);
     }
 
     // Sort seniors by first, last, or full name

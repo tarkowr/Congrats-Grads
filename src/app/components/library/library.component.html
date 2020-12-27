@@ -45,7 +45,7 @@
             <div *ngIf="seniors" class="row equal pt-1" [ngClass]="{'mx-2': !mobile}">
                 <div *ngFor="let senior of seniors" class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                     <div class="bg-white border border-light-gray py-3 h-100 w-100 text-center mx-auto d-flex overflow-hidden senior-card"
-                     (click)="getProfile(senior)" id="{{senior.id}}">
+                     (click)="navigateToProfile(senior)" id="{{senior.id}}">
                         <div class="align-self-center justify-content-center w-100">
                             <div *ngIf="senior.url" class="w-100 text-center">
                                 <div class="picture-wrapper rounded">

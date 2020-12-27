@@ -174,7 +174,7 @@ export class CreateComponent implements OnInit {
 
     this.loading = true;
 
-    this.libraryService.create(this.f.firstname.value, this.f.lastname.value, this.f.school.value, this.f.comments.value, this.image)
+    this.libraryService.upload(this.f.firstname.value, this.f.lastname.value, this.f.school.value, this.f.comments.value, this.image)
       .then(async (senior: Senior) => {
         await this.libraryService.fetchLibrary();
         this.libraryService.resetState();

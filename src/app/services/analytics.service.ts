@@ -13,18 +13,21 @@ export class AnalyticsService {
         return this.http.post(`${environment.analyticsUrl}/track/${path}`, body).toPromise();
     }
 
+    // On analytics call failure
+    private onError = () => console.log('Unable to log app event');
+
     // Track page visits
     trackView(view: string, data: any = {}) : Promise<any> {
-        return this.track('view', { view: view, data: data }).catch(() => {});
+        return this.track('view', { view: view, data: data }).catch(this.onError);
     }
 
     // Track various events in the app
     trackEvent(name: string, data: any = {}) : Promise<any> {
-        return this.track('event', { name: name, data: data }).catch(() => {});
+        return this.track('event', { name: name, data: data }).catch(this.onError);
     }
 
     // Track errors in the app
     trackError(description: string, data: any = {}) : Promise<any> {
-        return this.track('error', { description: description, data: data }).catch(() => {});
+        return this.track('error', { description: description, data: data }).catch(this.onError);
     }
 }

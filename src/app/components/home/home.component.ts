@@ -30,11 +30,11 @@ export class HomeComponent implements OnInit {
     private analytics: AnalyticsService) { }
 
   onInstaClick() {
-    this.analytics.trackEvent('insta_btn')
+    this.analytics.trackEvent('insta_btn');
   }
 
   onFbClick() {
-    this.analytics.trackEvent('fb_btn')
+    this.analytics.trackEvent('fb_btn');
   }
 
   // Reset typed to a new typed object

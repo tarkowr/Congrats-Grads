@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -24,15 +24,15 @@ export class WindowService {
         this._large = new ReplaySubject<boolean>(1);
     }
 
-    get small() {
+    get small() : Observable<boolean> {
         return this._small.asObservable();
     }
 
-    get medium() {
+    get medium() : Observable<boolean> {
         return this._medium.asObservable();
     }
 
-    get large() {
+    get large() : Observable<boolean> {
         return this._large.asObservable();
     }
 

@@ -32,7 +32,6 @@ export class LibraryComponent implements OnInit {
   readonly defaultYear: YearOption = this.yearOptions.find(y => y.value == app.currentYear.toString());
 
   searchForm: FormGroup;
-  searchQuery: string = '';
   noSearchResults: Boolean = false;
   searchActive: Boolean = false;
   searchFound: number = 0;
@@ -54,6 +53,7 @@ export class LibraryComponent implements OnInit {
 
   get o() { return this.orderForm.controls }
 
+  // Build the order options for the select list
   buildOrderOptions() : any[] {
     let options = [];
     for (let member in OrderOption) {
@@ -90,7 +90,7 @@ export class LibraryComponent implements OnInit {
   }
 
   // UI: Go to senior profile page
-  getProfile(senior: Senior) {
+  navigateToProfile(senior: Senior) {
     this.libraryService.state.seniorId = senior.id;
     this.router.navigate([`profile/${senior.id}`]);
   }
@@ -132,35 +132,24 @@ export class LibraryComponent implements OnInit {
 
   // UI: Format current pagination state
   getPageState() : string {
-
-    // Current page range in the format of X or X-X
+    // Current page range
+    // Example: X-X of 120 or X of 120
     let pageRange: string;
     
     // Index of the last senior on the current page
     // Example: 20-X of 120
-    let pageMax = this.paginationMaxPerPage + this.paginationStartIndex;
+    let pageMax = this.paginationStartIndex + this.seniors.length;
 
     // Number of total seniors displayed in the library
     // Example: 20-40 of X
     let seniorCount = this.searchActive ? this.searchFound : this.library.totalSeniors;
 
-    // Set total page count to senior count or max on this page (whichever is smaller)
-    if (pageMax > this.library.totalSeniors) {
-      pageMax = this.library.totalSeniors;
-    }
-
-    // Index of the last senior on the current page when there is a current search filter
-    // Example: 20-X of 120
-    if (this.searchActive) {
-      pageMax = this.paginationStartIndex + this.seniors.length;
-    }
-
     // Condense if start index and max on page are the same
     // Example: 40-40 of 40 -> 40 of 40
     if ((this.paginationStartIndex + 1) == pageMax || pageMax == 0) {
-      pageRange = pageMax.toString();
+      pageRange = `${pageMax}`;
     }
-    else{
+    else {
       pageRange = `${this.paginationStartIndex + 1}-${pageMax}`;
     }
 
@@ -191,8 +180,7 @@ export class LibraryComponent implements OnInit {
   /// ORDER
   ///
 
-  // Order seniors (backup) if selected order has changed
-  // Apply order to backup since seniors will be paginated and may be filtered
+  // Sort seniors if selected order has changed
   private orderLibrary() {
     const selected = this.o.order.value;
 
@@ -207,11 +195,6 @@ export class LibraryComponent implements OnInit {
   // FILTER
   //
 
-  // Return all seniors that match a search query
-  private filterSeniors(query: string) : Senior[] {
-    return this.library.yearMaster.filter(s => this.libraryService.matchesSearch(s, query)); 
-  }
-
   // Return search input from user
   private getSearchQuery(): string {
     return this.f.search.value ? this.f.search.value.toLowerCase() : '';
@@ -223,8 +206,8 @@ export class LibraryComponent implements OnInit {
     this.noSearchResults = false;
 
     // Reset pagination on new query 
-    if (this.searchQuery != query) { 
-      this.searchQuery = query;
+    if (this.library.query != query) { 
+      this.library.query = query;
       this.resetPagination();
     }
 
@@ -237,7 +220,7 @@ export class LibraryComponent implements OnInit {
 
     this.searchActive = true;
 
-    let filteredSeniors: Senior[] = this.filterSeniors(query);
+    let filteredSeniors: Senior[] = this.library.filter();
     this.searchFound = filteredSeniors.length;
      
     if (this.searchFound <= 0) {
@@ -253,7 +236,7 @@ export class LibraryComponent implements OnInit {
     this.searchActive = false;
     this.searchFound = 0;
     this.searchForm.reset();
-    this.searchQuery = '';
+    this.library.query = '';
     this.resetPagination();
     this.savePageState();
     this.seniors = this.paginate(this.library.yearMaster);

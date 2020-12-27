@@ -9,11 +9,11 @@ import { Senior } from '../models/senior';
     providedIn: 'root'
 })
 export class LibraryService {
-    private _library: ReplaySubject<any>;
+    private _library: ReplaySubject<Senior[]>;
     public state: LibraryState;
 
     constructor(private http: HttpClient) { 
-        this._library = new ReplaySubject<any>(1);
+        this._library = new ReplaySubject<Senior[]>(1);
         this.state = new LibraryState();
     }
 
@@ -32,8 +32,8 @@ export class LibraryService {
 
     // Retrieve all senior profiles
     async fetchLibrary() {
-        let seniors = await this.http.get(`${environment.apiUrl}/seniors/get/all`).toPromise()
-            .catch(err => {
+        let seniors: Senior[] = await this.http.get(`${environment.apiUrl}/seniors/get/all`).toPromise()
+            .catch(() => {
                 console.error('Unable to fetch senior library!');
                 return null;
             });
@@ -43,8 +43,8 @@ export class LibraryService {
         }
     }
 
-    // Create new senior profile
-    create(fname: string, lname: string, highSchool: string, comments: string, profile: any) {
+    // Upload a new senior profile
+    upload(fname: string, lname: string, highSchool: string, comments: string, profile: any) : Promise<any> {
         let formData = new FormData();
         formData.append('fname', fname);
         formData.append('lname', lname);
@@ -53,16 +53,5 @@ export class LibraryService {
         formData.append('profile', profile);
 
         return this.http.post(`${environment.apiUrl}/create`, formData).toPromise();
-    }
-
-    // Determine whether a search query matches a name
-    matchesSearch(senior: Senior, query: string) : boolean {
-        let length = query.length;
-        query = query.toLowerCase();
-        let fname = senior.fname.substring(0, length).toLowerCase();
-        let lname = senior.lname.substring(0, length).toLowerCase();
-        let name = (fname + ' ' + lname).substring(0, length);
-
-        return (fname === query || lname === query || query === name);
     }
 }
