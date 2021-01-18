@@ -54,7 +54,7 @@ export class LibraryComponent implements OnInit {
   get o() { return this.orderForm.controls }
 
   // Build the order options for the select list
-  buildOrderOptions() : any[] {
+  private buildOrderOptions() : any[] {
     let options = [];
     for (let member in OrderOption) {
       if (isNaN(parseInt(member))) continue;
@@ -70,7 +70,7 @@ export class LibraryComponent implements OnInit {
   }
 
   // Generate year options by min and max years
-  buildYears(start: number, end: number) : YearOption[] {
+  private buildYears(start: number, end: number) : YearOption[] {
     let options: YearOption[] = [];
     for (let i=0; i <= (end - start); i++) {
       options.push(
@@ -85,7 +85,7 @@ export class LibraryComponent implements OnInit {
   }
 
   // Copy array of objects w/o reference to properties
-  copyArrayOfObj(arr: any[]) {
+  private copyArrayOfObj(arr: any[]) {
     return arr.map(obj => ({ ...obj }));
   }
 
@@ -101,14 +101,19 @@ export class LibraryComponent implements OnInit {
   
   // Handle change in selected year
   changeYear(keepState=false) {
+    if (!this.library.master) {
+      this.o.year.setValue(this.defaultYear.key);
+      return;
+    }
+
     this.library.year = this.yearOptions.find(y => y.key == this.o.year.value);
 
-    if (!keepState) {
-      this.o.order.setValue(this.defaultOrder);
-      this.library.order = this.defaultOrder;
-      this.library.sort();
-      this.clearSearch();
-    }
+    if (keepState) return;
+
+    this.o.order.setValue(this.defaultOrder);
+    this.library.order = this.defaultOrder;
+    this.library.sort();
+    this.clearSearch();
   }
 
   //
@@ -181,7 +186,7 @@ export class LibraryComponent implements OnInit {
   ///
 
   // Sort seniors if selected order has changed
-  private orderLibrary() {
+  private sortLibrary() {
     const selected = this.o.order.value;
 
     if (this.library.order != selected) {
@@ -250,7 +255,7 @@ export class LibraryComponent implements OnInit {
       return;
     }
 
-    this.orderLibrary();
+    this.sortLibrary();
     let filteredSeniors: Senior[] = this.getFilteredSeniors();
 
     this.seniors = this.paginate(filteredSeniors);
@@ -281,7 +286,7 @@ export class LibraryComponent implements OnInit {
 
     if (libraryState.orderKey) {
       this.o.order.setValue(libraryState.orderKey);
-      this.orderLibrary();
+      this.sortLibrary();
     }
 
     if (libraryState.searchQuery) {
