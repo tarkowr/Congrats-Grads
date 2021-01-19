@@ -162,6 +162,8 @@ export class CreateComponent implements OnInit {
     this.validateImage();
 
     if (this.missingImage || this.wrongType || this.sizeLimit) {
+      this.btnWait = true;
+      setTimeout(() => this.btnWait = false, 1500);
       return;
     }
 

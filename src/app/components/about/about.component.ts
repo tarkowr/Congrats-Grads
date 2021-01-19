@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from '../../services/analytics.service';
+import { StorageService } from '../../services/storage.service';
+import { storage } from '../../app.constants';
 
 @Component({
   selector: 'app-about',
@@ -28,14 +30,22 @@ export class AboutComponent implements OnInit {
     }
   ];
 
-  constructor(private analytics: AnalyticsService) { }
+  constructor(private analytics: AnalyticsService,
+    private storage: StorageService) { }
 
   onClickDonate() {
     this.analytics.trackEvent('donate_btn');
   }
 
   ngOnInit() {
-    this.analytics.trackView('about');
+    const aboutKey = 'about';
+    let visited: any [] = this.storage.get(storage.visits) || [];
+
+    if (!visited.includes(aboutKey)) {
+      visited.push(aboutKey);
+      this.storage.set(storage.visits, visited);
+      this.analytics.trackView(aboutKey);
+    }
   }
 
 }

@@ -16,5 +16,6 @@ export const regex = {
 
 export const storage = {
     userId: 'user_id',
-    uploads: 'uploaded'
+    uploads: 'uploaded',
+    visits: 'visited_pages',
 }
