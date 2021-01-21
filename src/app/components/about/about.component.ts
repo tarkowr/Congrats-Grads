@@ -37,6 +37,14 @@ export class AboutComponent implements OnInit {
     this.analytics.trackEvent('donate_btn');
   }
 
+  onInstaClick() {
+    this.analytics.trackEvent('insta_btn');
+  }
+
+  onFbClick() {
+    this.analytics.trackEvent('fb_btn');
+  }
+
   ngOnInit() {
     const aboutKey = 'about';
     let visited: any [] = this.storage.get(storage.visits) || [];
