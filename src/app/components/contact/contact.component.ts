@@ -59,7 +59,10 @@ export class ContactComponent implements OnInit {
 
     this.loading = true;
 
-    this.contactService.sendMessage(this.f.sender.value, this.f.message.value)
+    let message: string = this.f.message.value;
+    message = message.replace(/\s\s+/g, ' ');
+
+    this.contactService.sendMessage(this.f.sender.value, message)
       .then(() => {
         this.onSuccess();
       })
@@ -82,7 +85,7 @@ export class ContactComponent implements OnInit {
         Validators.required, Validators.pattern(regex.email)
       ])],
       message: ['',  Validators.compose([
-        Validators.required, Validators.pattern(regex.email_message)
+        Validators.required, Validators.maxLength(1000)
       ])]
     });
   }

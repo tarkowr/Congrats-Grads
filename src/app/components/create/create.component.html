@@ -106,7 +106,7 @@
 
                             <div *ngIf="submitted && f.comments.errors" class="invalid-feedback">
                                 <div *ngIf="f.comments.errors.required">Please tell us about yourself.</div>
-                                <div *ngIf="f.comments.errors.pattern">Max limit is 500 characters.</div>
+                                <div *ngIf="f.comments.errors.maxlength">Max limit is 500 characters.</div>
                             </div>
                         </div>
 

@@ -176,7 +176,10 @@ export class CreateComponent implements OnInit {
 
     this.loading = true;
 
-    this.libraryService.upload(this.f.firstname.value, this.f.lastname.value, this.f.school.value, this.f.comments.value, this.image)
+    let comments: string = this.f.comments.value;
+    comments = comments.replace(/\s\s+/g, ' ');
+
+    this.libraryService.upload(this.f.firstname.value, this.f.lastname.value, this.f.school.value, comments, this.image)
       .then(async (senior: Senior) => {
         await this.libraryService.fetchLibrary();
         this.libraryService.resetState();
@@ -218,7 +221,7 @@ export class CreateComponent implements OnInit {
       ])],
       profileImg: [''],
       comments: ['',  Validators.compose([
-        Validators.required, Validators.pattern(regex.comments)
+        Validators.required, Validators.maxLength(500)
       ])]
     });
   }

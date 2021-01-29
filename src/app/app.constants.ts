@@ -8,9 +8,7 @@ export const app = {
 export const regex = {
     name: /^[.a-zA-Z0-9 \-]{1,20}$/,
     school: /^[.a-zA-Z0-9 \-]{1,40}$/,
-    comments: /^.{1,500}$/,
     email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}/,
-    email_message: /^.{1,1000}$/,
     search: /^[a-zA-Z0-9 \-]{1,50}$/
 }
 
