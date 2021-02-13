@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ContactService } from '../../services/contact.service';
 import { AnalyticsService } from '../../services/analytics.service';
-import { regex } from '../../app.constants';
+import { regex, analytics } from '../../app.constants';
 
 @Component({
   selector: 'app-contact',
@@ -22,6 +22,14 @@ export class ContactComponent implements OnInit {
     private analytics: AnalyticsService) { }
 
   get f() { return this.contactForm.controls }
+
+  onInstaClick() {
+    this.analytics.trackEvent(analytics.insta);
+  }
+
+  onFbClick() {
+    this.analytics.trackEvent(analytics.facebook);
+  }
 
   // Handle successful sent email
   private onSuccess() {

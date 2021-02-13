@@ -3,6 +3,7 @@ import Typed from 'typed.js';
 import { WindowService } from '../../services/window.service';
 import { Subscription } from 'rxjs';
 import { AnalyticsService } from '../../services/analytics.service';
+import { analytics } from '../../app.constants';
 
 @Component({
   selector: 'app-home',
@@ -30,11 +31,11 @@ export class HomeComponent implements OnInit {
     private analytics: AnalyticsService) { }
 
   onInstaClick() {
-    this.analytics.trackEvent('insta_btn');
+    this.analytics.trackEvent(analytics.insta);
   }
 
   onFbClick() {
-    this.analytics.trackEvent('fb_btn');
+    this.analytics.trackEvent(analytics.facebook);
   }
 
   // Reset typed to a new typed object

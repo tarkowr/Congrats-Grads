@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from '../../services/analytics.service';
 import { StorageService } from '../../services/storage.service';
-import { storage } from '../../app.constants';
+import { analytics, storage } from '../../app.constants';
 
 @Component({
   selector: 'app-about',
@@ -38,11 +38,11 @@ export class AboutComponent implements OnInit {
   }
 
   onInstaClick() {
-    this.analytics.trackEvent('insta_btn');
+    this.analytics.trackEvent(analytics.insta);
   }
 
   onFbClick() {
-    this.analytics.trackEvent('fb_btn');
+    this.analytics.trackEvent(analytics.facebook);
   }
 
   ngOnInit() {

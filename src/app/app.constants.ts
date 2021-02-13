@@ -17,3 +17,8 @@ export const storage = {
     uploads: 'uploaded',
     visits: 'visited_pages',
 }
+
+export const analytics = {
+    insta: 'insta_btn',
+    facebook: 'fb_btn'
+}
