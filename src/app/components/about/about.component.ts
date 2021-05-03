@@ -9,6 +9,7 @@ import { analytics, storage } from '../../app.constants';
   styleUrls: ['./about.component.scss']
 })
 export class AboutComponent implements OnInit {
+  readMore: boolean;
   team: any [] = [
     {
       name: 'Richie Tarkowski',
@@ -43,6 +44,10 @@ export class AboutComponent implements OnInit {
 
   onFbClick() {
     this.analytics.trackEvent(analytics.facebook);
+  }
+
+  onReadMoreClick() {
+    this.readMore = !this.readMore;
   }
 
   ngOnInit() {

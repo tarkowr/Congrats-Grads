@@ -64,6 +64,12 @@ html, body {
 .b-shadow {
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
 }
+.action {
+    cursor: pointer;
+}
+.action:hover {
+    text-decoration: underline;
+}
 
 /*Font Styles*/
 .jost {

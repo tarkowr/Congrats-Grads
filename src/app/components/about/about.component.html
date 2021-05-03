@@ -16,10 +16,15 @@
                         Facebook
                     </a> page that has daily senior shoutouts, contests, and giveaways. <br /> <br />
 
-                    Congrats Grads all started back in April 2020 when COVID-19 struck the US. Alyssa, a high school senior, had to forego the last three months of her senior year and miss out on prom, her senior trip, and a "normal" graduation. Since many other seniors were struggling as well, Richie and Alyssa decided to create this website to honor the class of 2020. Congrats Grads showcased over 200 seniors in the first year and hopes to continue spreading this joy to seniors for many years to come. 
+                    <div *ngIf="!readMore">
+                        Congrats Grads all started back in April 2020 when COVID-19... 
+                        <div class="d-inline-block ml-2 text-primary action f4" (click)="onReadMoreClick()">
+                            Read More
+                        </div>
+                    </div>
 
-                    <div class="row mt-5">
-                        <div class="col-6 offset-3 border-top border-grey"> </div>
+                    <div *ngIf="readMore">
+                        Congrats Grads all started back in April 2020 when COVID-19 struck the US. Alyssa, a high school senior, had to forego the last three months of her senior year and miss out on prom, her senior trip, and a "normal" graduation. Since many other seniors were struggling as well, Richie and Alyssa decided to create this website to honor the class of 2020. Congrats Grads showcased over 200 seniors in the first year and hopes to continue spreading this joy to seniors for many years to come. 
                     </div>
 
                     <div class="donate-card card bg-white p-3 mt-5 text-center primary-border">
@@ -27,7 +32,7 @@
                         <div class="mt-2 mb-3">
                             <span class="bg-lighter px-4 py-1 rounded">Consider Donating!</span>
                         </div>
-                        <div>All donations will go towards funding the care packages and gifts that we send to seniors in our giveaways!</div>
+                        <div>All donations will go towards funding our giveaways!</div>
                         <div class="my-3 pt-2 text-center">
                             <a href="https://www.gofundme.com/f/congrats-grads" target="_blank" class="text-white">
                                 <button class="btn btn-primary px-5 py-2" (click)="onClickDonate()">{{ 'Donate' | uppercase }}</button>
