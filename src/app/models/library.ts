@@ -3,8 +3,8 @@ import { Senior } from './senior';
 export class Library {
     master: Record<string, Senior[]>;
 
-    year: YearOption;
-    order: OrderOption = OrderOption.Newest;
+    year: Option;
+    order: OrderOptions = OrderOptions.Newest;
     query: string = '';
 
     constructor() {}
@@ -22,10 +22,10 @@ export class Library {
     // Sort library by the selected order
     sort() {
         switch (parseInt(this.order.toString())) {
-            case OrderOption.Alphabetical:
+            case OrderOptions.Alphabetical:
                 this.sortByName();
                 break;
-            case OrderOption.Oldest:
+            case OrderOptions.Oldest:
                 this.sortByOldest();
                 break;
             default:
@@ -95,14 +95,13 @@ export class Library {
 }
 
 // Options for sorting the library
-export enum OrderOption {
+export enum OrderOptions {
     Alphabetical, 
     Newest, 
     Oldest,
 }
 
-// Each supported year in the library
-export interface YearOption {
+export interface Option {
     key: number;
     value: string;
 }

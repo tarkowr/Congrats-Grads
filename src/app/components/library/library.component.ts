@@ -5,10 +5,10 @@ import { LibraryService } from '../../services/library.service';
 import { regex } from '../../app.constants';
 import { WindowService } from '../../services/window.service';
 import { Senior } from '../../models/senior';
-import { Library, OrderOption, YearOption } from '../../models/library';
+import { Library, OrderOptions, Option } from '../../models/library';
 import { LibraryState } from '../../models/state/library.state';
-import { app } from '../../app.constants';
 import { Subscription } from 'rxjs';
+import { buildEnumOptions, copyArrayOfObj, getSupportedYears } from 'src/app/app.utils';
 
 @Component({
   selector: 'app-library',
@@ -18,9 +18,10 @@ import { Subscription } from 'rxjs';
 export class LibraryComponent implements OnInit {
   library: Library; // Every senior in the library
   seniors: Senior[]; // Seniors that are currently displayed on the page
+  libraryFetchError: boolean = false;
 
-  librarySubscription: Subscription;
-  windowSubscription: Subscription;
+  private librarySubscription: Subscription;
+  private windowSubscription: Subscription;
 
   mobile: Boolean = true;
 
@@ -28,8 +29,8 @@ export class LibraryComponent implements OnInit {
   paginationMaxPerPage = this.paginationLimits.desktop;
   paginationStartIndex: number = 0;
 
-  readonly yearOptions: YearOption[] = this.buildYears(app.startYear, app.currentYear);
-  readonly defaultYear: YearOption = this.yearOptions.find(y => y.value == app.currentYear.toString());
+  readonly yearOptions: Option[] = getSupportedYears();
+  readonly defaultYear: Option = this.yearOptions[this.yearOptions.length-1];
 
   searchForm: FormGroup;
   noSearchResults: Boolean = false;
@@ -37,14 +38,15 @@ export class LibraryComponent implements OnInit {
   searchFound: number = 0;
 
   orderForm: FormGroup;
-  readonly orderOptions = this.buildOrderOptions();
-  readonly defaultOrder = OrderOption.Newest;
+  readonly orderOptions = buildEnumOptions(OrderOptions);
+  readonly defaultOrder = OrderOptions.Newest;
 
   constructor(
     private libraryService: LibraryService,
     private windowService: WindowService,
     private router: Router,
-    private formBuilder: FormBuilder) { 
+    private formBuilder: FormBuilder,
+    ) { 
       this.library = new Library();
       this.library.year = this.defaultYear;
     }
@@ -53,46 +55,15 @@ export class LibraryComponent implements OnInit {
 
   get o() { return this.orderForm.controls }
 
-  // Build the order options for the select list
-  private buildOrderOptions() : any[] {
-    let options = [];
-    for (let member in OrderOption) {
-      if (isNaN(parseInt(member))) continue;
-      options.push(
-        {
-          key: member,
-          value: OrderOption[member],
-        }
-      );
-    }
-
-    return options;
-  }
-
-  // Generate year options by min and max years
-  private buildYears(start: number, end: number) : YearOption[] {
-    let options: YearOption[] = [];
-    for (let i=0; i <= (end - start); i++) {
-      options.push(
-        {
-          key: i + 1,
-          value: (start + i).toString()
-        }
-      );
-    }
-
-    return options;
-  }
-
-  // Copy array of objects w/o reference to properties
-  private copyArrayOfObj(arr: any[]) {
-    return arr.map(obj => ({ ...obj }));
-  }
-
   // UI: Go to senior profile page
   navigateToProfile(senior: Senior) {
     this.libraryService.state.seniorId = senior.id;
     this.router.navigate([`profile/${senior.id}`]);
+  }
+
+  // OnClick: Reload page on error
+  refreshPage() {
+    window.location.reload();
   }
 
   //
@@ -127,7 +98,7 @@ export class LibraryComponent implements OnInit {
 
   // Reduce senior list to current page
   private paginate(seniorsList: Senior[]) : Senior[] {
-    return this.copyArrayOfObj(seniorsList).splice(this.paginationStartIndex, this.paginationMaxPerPage);
+    return copyArrayOfObj(seniorsList).splice(this.paginationStartIndex, this.paginationMaxPerPage);
   }
 
   // Reset pagination to the first page
@@ -309,7 +280,7 @@ export class LibraryComponent implements OnInit {
   }
 
   // Separate seniors by year
-  private parseSeniorsByYear(library: Senior[]) {
+  private parseSeniorsByYear(library: Senior[]) : Record<string, Senior[]> {
     let parsed: Record<string, Senior[]> = {}
 
     library.forEach((senior) => {
@@ -371,10 +342,13 @@ export class LibraryComponent implements OnInit {
 
   // OnInit: Get senior data from server
   private getSeniors() {
-    this.librarySubscription = this.libraryService.library.subscribe((library: Senior[]) => {
-      this.library.master = this.parseSeniorsByYear(library);
-      this.library.sort();
-      this.restorePageState();
-    });
+    this.librarySubscription = this.libraryService.library.subscribe(
+      (library: Senior[]) => {
+        this.library.master = this.parseSeniorsByYear(library);
+        this.library.sort();
+        this.restorePageState();
+      },
+      (err) => this.libraryFetchError = true,
+    );
   }
 }

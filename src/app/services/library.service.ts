@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { LibraryState } from '../models/state/library.state';
 import { Senior } from '../models/senior';
@@ -17,12 +17,8 @@ export class LibraryService {
         this.state = new LibraryState();
     }
 
-    get library() : any {
+    get library() : Observable<Senior[]> {
         return this._library.asObservable();
-    }
-
-    set library(lib: any) {
-        this._library.next(lib);
     }
 
     // Reset the library state to its default values
@@ -31,16 +27,11 @@ export class LibraryService {
     }
 
     // Retrieve all senior profiles
-    async fetchLibrary() {
-        let seniors: Senior[] = await this.http.get(`${environment.apiUrl}/seniors/get/all`).toPromise()
-            .catch(() => {
-                console.error('Unable to fetch senior library!');
-                return null;
-            });
-
-        if (seniors) {
-            this.library = seniors;
-        }
+    fetchLibrary() : Promise<void> {
+        return this.http.get(`${environment.apiUrl}/seniors/get/all`)
+            .toPromise()
+            .then((seniors: Senior[]) => this._library.next(seniors))
+            .catch((err) => this._library.error(err));
     }
 
     // Upload a new senior profile

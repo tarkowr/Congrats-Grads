@@ -2,7 +2,8 @@ export const app = {
     maxUploads: 3,
     maxImageSize: 3 * 1024 * 1024,
     startYear: 2020,
-    currentYear: 2021
+    currentYear: 2021,
+    snackbarTimeout: 3000,
 }
 
 export const regex = {

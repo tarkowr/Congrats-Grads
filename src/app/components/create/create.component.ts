@@ -8,6 +8,7 @@ import { StorageService } from '../../services/storage.service';
 import { WindowService } from '../../services/window.service';
 import { AnalyticsService } from '../../services/analytics.service';
 import { app, regex, storage } from '../../app.constants';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 
 @Component({
   selector: 'app-create',
@@ -17,7 +18,7 @@ import { app, regex, storage } from '../../app.constants';
 export class CreateComponent implements OnInit {
   mobile: Boolean = true;
 
-  windowSubscription: Subscription;
+  private windowSubscription: Subscription;
 
   createForm: FormGroup;
   submitted: Boolean = false;
@@ -25,30 +26,50 @@ export class CreateComponent implements OnInit {
 
   image: any;
   fileMessage: string = "No file chosen";
+  previewImg: string;
   
   btnWait: Boolean = false;
-
-  showSnackbar: Boolean = false;
-  message: string;
   
   error: Boolean = false;
   maxUpload: Boolean = false;
   missingImage: Boolean = true;
   wrongType: Boolean = false;
   sizeLimit: Boolean = false;
-  otherErr: Boolean = false;
+  serverError: Boolean = false;
 
   hadImageSizeError: Boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private windowService: WindowService,
+    private snackbar: SnackbarService,
     private libraryService: LibraryService,
     private storageService: StorageService,
     private analytics: AnalyticsService,
-    private router: Router) { }
+    private router: Router,
+  ) { }
 
   get f() { return this.createForm.controls }
+
+  get firstname() : string {
+    return this.f.firstname.value;
+  }
+
+  get lastname() : string {
+    return this.f.lastname.value;
+  }
+
+  get school() : string {
+    return this.f.school.value;
+  }
+
+  get comments() : string {
+    return this.f.comments.value.replace(/\s\s+/g, ' ');
+  }
+
+  get year() : number {
+    return app.currentYear;
+  }
 
   get uploads() : any[] {
     return this.storageService.get(storage.uploads) || [];
@@ -63,6 +84,11 @@ export class CreateComponent implements OnInit {
       this.missingImage = false;
       this.sizeLimit = false;
       this.wrongType = false;
+
+      const reader = new FileReader();
+      reader.onload = (e) => this.previewImg = reader.result.toString();
+
+      reader.readAsDataURL(file);
     }
   }
 
@@ -100,45 +126,38 @@ export class CreateComponent implements OnInit {
       case 1002: 
         this.wrongType = true;
         break;
-      case 1003:
-        this.otherErr = true;
-        break;
       default:
-        this.sizeLimit = true;
+        this.serverError = true;
         break;
     }
   }
 
   // Successful profile upload
   private onSuccess(senior: Senior) {
+    const SNACKBAR_TIMEOUT = 2000;
+
     this.submitted = false;
     this.createForm.reset();
-    this.message = 'Successfully Uploaded!';
-    this.showSnackbar = true;
+    this.snackbar.show('Successfully Uploaded!', SNACKBAR_TIMEOUT);
     this.error = false;
     this.setUploaded(senior.id);
+
+    setTimeout(() => this.router.navigate(['library']), SNACKBAR_TIMEOUT);
   }
 
   // Error on profile upload
   private onError(err) {
-    this.message = 'Unable to Create Profile';
-    this.showSnackbar = true;
+    this.snackbar.show('Unable to Create Profile');
     this.error = true;
     this.handleError(err);
     this.btnWait = true;
+
+    setTimeout(() => this.btnWait = false, app.snackbarTimeout);
   }
 
   // After handling profile upload response
   private onComplete() {
     this.loading = false;
-
-    setTimeout(() => {
-      this.showSnackbar = false;
-      this.btnWait = false;
-      if (!this.error) {
-        this.router.navigate(['library']);
-      }
-    }, (this.error) ? 3000 : 2000);
   }
 
   // Reset all client-side error indicators
@@ -146,7 +165,7 @@ export class CreateComponent implements OnInit {
     this.maxUpload = false;
     this.wrongType = false;
     this.sizeLimit = false;
-    this.otherErr = false;
+    this.serverError = false;
   }
 
   // UI: Handle upload form on submission
@@ -176,21 +195,14 @@ export class CreateComponent implements OnInit {
 
     this.loading = true;
 
-    let comments: string = this.f.comments.value;
-    comments = comments.replace(/\s\s+/g, ' ');
-
-    this.libraryService.upload(this.f.firstname.value, this.f.lastname.value, this.f.school.value, comments, this.image)
+    this.libraryService.upload(this.firstname, this.lastname, this.school, this.comments, this.image)
       .then(async (senior: Senior) => {
         await this.libraryService.fetchLibrary();
         this.libraryService.resetState();
         this.onSuccess(senior);
       })
-      .catch(err => {
-        this.onError(err);
-      })
-      .finally(() => {
-        this.onComplete();
-      });
+      .catch(err => this.onError(err))
+      .finally(() => this.onComplete());
   }
 
   ngOnInit() {
@@ -228,8 +240,8 @@ export class CreateComponent implements OnInit {
 
   // OnInit: Handle a change in the user's viewport
   private handleScreenResize() {
-    this.windowSubscription = this.windowService.large.subscribe(isMobile => {
-      this.mobile = isMobile;
-    });
+    this.windowSubscription = this.windowService.large.subscribe(
+      (isMobile) => this.mobile = isMobile
+    );
   }
 }

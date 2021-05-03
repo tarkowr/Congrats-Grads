@@ -10,6 +10,7 @@ $breakpoint: 992px;
 /*Variable Overrides*/
 $theme-colors: (
   "primary": #26B1FF,
+  "primary-light": rgba(38, 177, 255, 0.35),
   "secondary":#0E425F,
   "secondary-light": #186fa0,
   "light":#96B7C9,
@@ -99,6 +100,9 @@ label{
 }
 .invalid-feedback {
     font-weight: 500;
+}
+.b-shadow {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
 }
 
 .page-margin-top {

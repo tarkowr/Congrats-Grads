@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ContactService } from '../../services/contact.service';
 import { AnalyticsService } from '../../services/analytics.service';
 import { regex, analytics } from '../../app.constants';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 
 @Component({
   selector: 'app-contact',
@@ -13,13 +14,13 @@ export class ContactComponent implements OnInit {
   contactForm: FormGroup;
   submitted: Boolean = false;
   loading: Boolean = false;
-  showSnackbar: Boolean = false;
-  message: string;
 
   constructor(
     private formBuilder: FormBuilder,
     private contactService: ContactService,
-    private analytics: AnalyticsService) { }
+    private analytics: AnalyticsService,
+    private snackbar: SnackbarService,
+  ) { }
 
   get f() { return this.contactForm.controls }
 
@@ -35,15 +36,12 @@ export class ContactComponent implements OnInit {
   private onSuccess() {
     this.contactForm.reset();
     this.submitted = false;
-    this.message = 'Message Sent!'
-    this.showSnackbar = true;
+    this.snackbar.show('Message Sent!');
   }
 
   // Handle email error
   private onError(err) {
-    console.error('Unable to send email!');
-    this.message = 'Unable to Send Message!';
-    this.showSnackbar = true;
+    this.snackbar.show('Unable to Send Message')
 
     if (!this.contactForm.invalid) {
       const errorName = err ? err.name : 'Unknown Error';
@@ -54,7 +52,6 @@ export class ContactComponent implements OnInit {
   // On complete
   private onComplete() {
     this.loading = false;
-    setTimeout(() => this.showSnackbar = false, 3000);
   }
 
   // UI: Contact form on submit
@@ -71,15 +68,9 @@ export class ContactComponent implements OnInit {
     message = message.replace(/\s\s+/g, ' ');
 
     this.contactService.sendMessage(this.f.sender.value, message)
-      .then(() => {
-        this.onSuccess();
-      })
-      .catch(err => {
-        this.onError(err);
-      })
-      .finally(() => {
-        this.onComplete();
-      });
+      .then(() => this.onSuccess())
+      .catch((err) => this.onError(err))
+      .finally(() => this.onComplete());
   }
 
   ngOnInit() {

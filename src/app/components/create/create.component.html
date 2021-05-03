@@ -1,142 +1,154 @@
 <app-navbar></app-navbar>
 
-<div class="container-fluid page-margin-top">
-
-    <div *ngIf="showSnackbar">
-        <app-snackbar [message]="message"></app-snackbar>
-    </div>
-
+<div class="container-fluid page-margin-top bg-lightest">
     <div class="row">
-        <div class="col col-12 col-lg-8 justify-content-center text-center px-0">
-
-            <div class="bg-lightest" [ngClass]="{ 'form-padding': mobile }">
-                <div class="pt-4"></div>
-
-                <div class="create-card">
-                    <h2 class="text-center">Upload Profile</h2>
-
-                    <!--Create Profile Form-->
-                    <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="text-left mt-4">
-
-                        <!--Form Errors-->
-                        <div *ngIf="submitted">
-                            <div *ngIf="missingImage" class="alert alert-danger" role="alert">
-                                Please upload an image.
-                            </div>
-                            <div *ngIf="wrongType" class="alert alert-danger" role="alert">
-                                Invalid image type.
-                            </div>
-                            <div *ngIf="sizeLimit" class="alert alert-danger" role="alert">
-                                Maximum file size is 3MB.
-                            </div>
-                            <div *ngIf="maxUpload" class="alert alert-danger" role="alert">
-                                You've reached the maximum number of uploads!
-                            </div>
-                            <div *ngIf="otherErr" class="alert alert-danger" role="alert">
-                                Unexpected Error.
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-12 col-sm-6 col-md-6">
-                
-                            <!--First Name-->
-                            <div class="form-group mb-3">
-                                <label for="firstname" class="text-secondary">First Name <span class="text-danger">*</span></label>
-                                <input type="text" required class="form-control primary-border" id="firstname" name="firstname" 
-                                formControlName="firstname" maxlength="30"
-                                [ngClass]="{ 'is-invalid': submitted && f.firstname.errors, 'danger-border': submitted && f.firstname.errors }">
-
-                                <div *ngIf="submitted && f.firstname.errors" class="invalid-feedback">
-                                    <div *ngIf="f.firstname.errors.required">Please provide your first name.</div>
-                                    <div *ngIf="f.firstname.errors.pattern">Invalid input.</div>
-                                </div>
-                                </div>
-                            </div>
-                
-                            <!--Last Name-->
-                            <div class="col-12 col-sm-6 col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="lastname" class="text-secondary">Last Name <span class="text-danger">*</span></label>
-                                    <input type="text" required class="form-control primary-border" id="lastname" name="lastname" 
-                                    formControlName="lastname" maxlength="30"
-                                    [ngClass]="{ 'is-invalid': submitted && f.lastname.errors, 'danger-border': submitted && f.lastname.errors }">
-
-                                    <div *ngIf="submitted && f.lastname.errors" class="invalid-feedback">
-                                        <div *ngIf="f.lastname.errors.required">Please provide your last name.</div>
-                                        <div *ngIf="f.lastname.errors.pattern">Invalid input.</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!--School-->
-                        <div class="form-group mb-3">
-                            <label for="school" class="text-secondary">High School <span class="text-danger">*</span></label>
-                            <input type="text" name="school" required formControlName="school" class="form-control primary-border"
-                                [ngClass]="{ 'is-invalid': submitted && f.school.errors, 'danger-border': submitted && f.school.errors }">
-
-                            <div *ngIf="submitted && f.school.errors" class="invalid-feedback">
-                                <div *ngIf="f.school.errors.required">Please provide your high school.</div>
-                                <div *ngIf="f.school.errors.pattern">Invalid input.</div>
-                            </div>
-                        </div>
-
-                        <!--Image Upload-->
-                        <div class="form-group mb-3">
-                            <label for="profileImg" class="text-secondary">Upload Image <span class="text-danger">*</span></label>
-                            <br>
-                            <label class="btn btn-secondary-light">
-                                Browse <input type="file" name="profileImg" hidden accept="image/x-png,image/jpeg" formControlName="profileImg"
-                                (change)="selectImage($event)">
-                            </label>
-                            <span class="ml-2 f4">
-                                {{ fileMessage }}
-                            </span>
-                            <div class="text-primary" *ngIf="!submitted || !f.profileImg.errors">
-                                <small class="text-uppercase"><span class="text-danger">*</span> Please upload a vertical profile picture </small>
-                            </div>
-                        </div>
-
-                        <!--Comments-->
-                        <div class="form-group mb-3">
-                            <label for="comments" class="text-secondary">Tell us about Yourself <span class="text-danger">*</span></label>
-                            <textarea name="comments" rows="3" required formControlName="comments" class="form-control primary-border"
-                                [ngClass]="{ 'is-invalid': submitted && f.comments.errors, 'danger-border': submitted && f.comments.errors }"></textarea>
-
-                            <div *ngIf="submitted && f.comments.errors" class="invalid-feedback">
-                                <div *ngIf="f.comments.errors.required">Please tell us about yourself.</div>
-                                <div *ngIf="f.comments.errors.maxlength">Max limit is 500 characters.</div>
-                            </div>
-                        </div>
-
-                        <!--Submit-->
-                        <div class="form-group mb-2">
-                            <button [disabled]="loading || btnWait" class="btn btn-primary btn-block mt-4 py-3"><span *ngIf="!loading">UPLOAD PROFILE</span>
-                            <div *ngIf="loading" class="spinner-border text-white" role="status">
-                                <span class="sr-only">Loading...</span>
-                            </div>
-                            </button>
-                        </div>
-                        <div class="text-center small">By clicking this button, you agree to our <a [routerLink]="['/terms']" target="_blank" class="text-primary"><span class="f4">Terms and Conditions</span></a></div>
-                    </form>
+        <div class="col-12 col-lg-7 justify-content-center text-center">
+            <div class="pt-4"></div>
+    
+            <div class="create-card">
+    
+                <!--Header-->
+                <div class="create-header bg-white border border-primary-light pt-3 pb-2">
+                    <div class="d-inline-block">
+                        <img src="../../../assets/logos/icon-square.png" height="28" class="float-left"> 
+                    </div>
+                    <div class="d-inline-block">
+                        <div class="h4 text-secondary float-left pl-3 mb-0">Create a Profile!</div>
+                    </div>
+                    <div style="clear: both"></div>
                 </div>
-
-                <div class="py-4"></div>
-
+    
+                <!--Create Profile Form-->
+                <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="text-left mt-4">
+    
+                    <!--Form Errors-->
+                    <div *ngIf="submitted">
+                        <div *ngIf="missingImage" class="alert alert-danger" role="alert">
+                            Please upload an image.
+                        </div>
+                        <div *ngIf="wrongType" class="alert alert-danger" role="alert">
+                            Invalid image type.
+                        </div>
+                        <div *ngIf="sizeLimit" class="alert alert-danger" role="alert">
+                            Maximum file size is 3MB.
+                        </div>
+                        <div *ngIf="maxUpload" class="alert alert-danger" role="alert">
+                            You've reached the maximum number of uploads!
+                        </div>
+                        <div *ngIf="serverError" class="alert alert-danger" role="alert">
+                            Unexpected Server Error.
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <div class="col-12 col-sm-6 col-md-6">
+            
+                        <!--First Name-->
+                        <div class="form-group mb-3">
+                            <label for="firstname" class="text-secondary">First Name <span class="text-danger">*</span></label>
+                            <input type="text" required class="form-control primary-border" id="firstname" name="firstname" 
+                            formControlName="firstname" maxlength="30"
+                            [ngClass]="{ 'is-invalid': submitted && f.firstname.errors, 'danger-border': submitted && f.firstname.errors }">
+    
+                            <div *ngIf="submitted && f.firstname.errors" class="invalid-feedback">
+                                <div *ngIf="f.firstname.errors.required">Please provide your first name.</div>
+                                <div *ngIf="f.firstname.errors.pattern">Invalid input.</div>
+                            </div>
+                            </div>
+                        </div>
+            
+                        <!--Last Name-->
+                        <div class="col-12 col-sm-6 col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="lastname" class="text-secondary">Last Name <span class="text-danger">*</span></label>
+                                <input type="text" required class="form-control primary-border" id="lastname" name="lastname" 
+                                formControlName="lastname" maxlength="30"
+                                [ngClass]="{ 'is-invalid': submitted && f.lastname.errors, 'danger-border': submitted && f.lastname.errors }">
+    
+                                <div *ngIf="submitted && f.lastname.errors" class="invalid-feedback">
+                                    <div *ngIf="f.lastname.errors.required">Please provide your last name.</div>
+                                    <div *ngIf="f.lastname.errors.pattern">Invalid input.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!--School-->
+                    <div class="form-group mb-3">
+                        <label for="school" class="text-secondary">High School <span class="text-danger">*</span></label>
+                        <input type="text" name="school" required formControlName="school" class="form-control primary-border"
+                            [ngClass]="{ 'is-invalid': submitted && f.school.errors, 'danger-border': submitted && f.school.errors }">
+    
+                        <div *ngIf="submitted && f.school.errors" class="invalid-feedback">
+                            <div *ngIf="f.school.errors.required">Please provide your high school.</div>
+                            <div *ngIf="f.school.errors.pattern">Invalid input.</div>
+                        </div>
+                    </div>
+    
+                    <!--Image Upload-->
+                    <div class="form-group mb-3">
+                        <label for="profileImg" class="text-secondary">Upload Image <span class="text-danger">*</span></label>
+                        <br>
+                        <label class="btn btn-secondary-light">
+                            Browse <input type="file" name="profileImg" hidden accept="image/x-png,image/jpeg" formControlName="profileImg"
+                            (change)="selectImage($event)">
+                        </label>
+                        <span class="ml-2 f4">
+                            {{ fileMessage }}
+                        </span>
+                        <div class="text-primary" *ngIf="!submitted || !f.profileImg.errors">
+                            <small class="text-uppercase"><span class="text-danger">*</span> Please upload a vertical profile picture </small>
+                        </div>
+                    </div>
+    
+                    <!--Comments-->
+                    <div class="form-group mb-3">
+                        <label for="comments" class="text-secondary">Tell us about Yourself <span class="text-danger">*</span></label>
+                        <textarea name="comments" rows="3" required formControlName="comments" class="form-control primary-border"
+                            [ngClass]="{ 'is-invalid': submitted && f.comments.errors, 'danger-border': submitted && f.comments.errors }"></textarea>
+    
+                        <div *ngIf="submitted && f.comments.errors" class="invalid-feedback">
+                            <div *ngIf="f.comments.errors.required">Please tell us about yourself.</div>
+                            <div *ngIf="f.comments.errors.maxlength">Max limit is 500 characters.</div>
+                        </div>
+                    </div>
+    
+                    <!--Submit-->
+                    <div class="form-group mb-2">
+                        <button [disabled]="loading || btnWait" class="btn btn-primary btn-block mt-4 py-3"><span *ngIf="!loading">UPLOAD PROFILE</span>
+                        <div *ngIf="loading" class="spinner-border text-white" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                        </button>
+                    </div>
+                    <div class="text-center small">By clicking this button, you agree to our 
+                        <a [routerLink]="['/terms']" target="_blank" class="text-primary">
+                            <span class="f4">Terms and Conditions</span>
+                        </a>
+                    </div>
+                </form>
             </div>
-
-            <div class="bg-white">
-                <app-footer></app-footer>
-            </div>
+    
+            <div class="py-4"></div>
         </div>
 
-        <!--Page Image-->
-        <div class="col col-0 col-lg-4 w-100 p-0 pic-wrapper">
-            <div class="position-fixed w-100 bg-lightest pic-border pic-top"></div>
-            <div class="pic d-none d-lg-block d-xl-block"></div>
+        <!--Preview Profile Card-->
+        <div *ngIf="!mobile" class="col-0 col-lg-5 py-4">
+
+            <div class="preview-card b-shadow m-auto bg-white p-3">
+                <div class="pt-3"></div>
+                <div class="preview-pic-wrapper m-auto text-center rounded">
+                    <img class="preview-img" [src]="previewImg || '../../../assets/images/placeholder.png'"/>
+                </div>
+                <h6 class="text-center py-0 my-2 jost f4"><strong>── CLASS OF {{ year }} ──</strong></h6>
+                <h2 *ngIf="firstname" class="jost text-dark my-0 f6">{{ firstname | uppercase }}</h2>
+                <h2 *ngIf="lastname" class="jost text-dark my-0 f6">{{ lastname | uppercase }}</h2>
+                <div *ngIf="school" class="mb-0 mt-2 oswald inc-font f6 text-gray">{{ school | uppercase }}</div>
+                <div *ngIf="comments" class="mt-2 f3">{{ comments }}</div>
+            </div>
         </div>
 
     </div>
 </div>
 
+<app-footer></app-footer>

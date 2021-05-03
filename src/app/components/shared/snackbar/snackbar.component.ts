@@ -1,4 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 
 @Component({
   selector: 'app-snackbar',
@@ -7,20 +8,21 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class SnackbarComponent implements OnInit {
 
-  @Input() message: String;
+  show: boolean = false;
+  message: string;
 
-  msg: String;
-  show: Boolean;
-
-  constructor() { }
+  constructor(
+    private snackbarService: SnackbarService
+  ) { }
 
   ngOnInit() {
-    this.msg = this.message;
-    this.show = true;
+    this.snackbarService.message.subscribe((msg: string) => {
+      if (this.show) return;
 
-    setTimeout(() => {
-      this.show = false;
-    }, 3000);
+      this.message = msg;
+      this.show = true;
+      setTimeout(() => this.show = false, this.snackbarService.timeout);
+    });
   }
 
 }

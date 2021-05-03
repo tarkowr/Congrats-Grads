@@ -1,29 +1,20 @@
-.pic-wrapper {
-    margin-top: calc(var(--navHeight) * -1);
-}
-.pic-border {
-    height: 1.5px;
-    z-index: 100;
-}
-.pic-top {
-    top: var(--navHeight);
-}
-.pic {
-    background: url('../../../assets/images/create.jpg'); 	
-    background-size: cover;	
-    height: 100vh;	
-    background-repeat: no-repeat;	
-    position: sticky;	
-    top: 0;	
-    z-index: 10;	
-}
-.form-padding {
-    padding-right: 15px;
-    padding-left: 15px;
-}
 .create-card {
     max-width: 600px;
     margin: 0 auto;
 }
-
-
+.create-header {
+    border-radius: 8px;
+}
+.preview-card {
+    border-radius: 8px;
+    max-width: 350px;
+}
+.preview-pic-wrapper {
+    max-width: 275px;
+    height: auto;
+    max-height: 458px;
+    overflow: hidden;
+}
+.preview-img {
+    max-width: 275px;
+}

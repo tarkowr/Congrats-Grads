@@ -10,6 +10,7 @@ export class ContactService {
 
     // Send message to congratsgrads email 
     sendMessage(sender: string, message: string) : Promise<any> { 
-        return this.http.post(`${environment.apiUrl}/contact/send`, { sender:sender, message:message }).toPromise();
+        return this.http.post(`${environment.apiUrl}/contact/send`, { sender:sender, message:message })
+            .toPromise();
     }
 }

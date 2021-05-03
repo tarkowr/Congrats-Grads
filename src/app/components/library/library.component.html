@@ -42,51 +42,63 @@
                 </div>
             </div>
 
-            <div *ngIf="seniors" class="row equal pt-1" [ngClass]="{'mx-2': !mobile}">
-                <div *ngFor="let senior of seniors" class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
-                    <div class="bg-white border border-light-gray py-3 h-100 w-100 text-center mx-auto d-flex overflow-hidden senior-card"
-                     (click)="navigateToProfile(senior)" id="{{senior.id}}">
-                        <div class="align-self-center justify-content-center w-100">
-                            <div *ngIf="senior.url" class="w-100 text-center">
-                                <div class="picture-wrapper rounded">
-                                    <img src="{{senior.url}}" class="profile-pic">
+            <!--Error-->
+            <div *ngIf="libraryFetchError" class="text-center my-5">
+                <div class="h6">Oops! This is awkward... <br /> but something went wrong 😬</div>
+                <div class="btn btn-primary mt-3" (click)="refreshPage()">Refresh Page</div>
+            </div>
+
+            <div *ngIf="!libraryFetchError">
+
+                <!--Success-->
+                <div *ngIf="seniors" class="row equal pt-1" [ngClass]="{'mx-2': !mobile}">
+                    <div *ngFor="let senior of seniors" class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+                        <div class="bg-white border border-light-gray py-3 h-100 w-100 text-center mx-auto d-flex overflow-hidden senior-card"
+                        (click)="navigateToProfile(senior)" id="{{senior.id}}">
+                            <div class="align-self-center justify-content-center w-100">
+                                <div *ngIf="senior.url" class="w-100 text-center">
+                                    <div class="picture-wrapper rounded">
+                                        <img src="{{senior.url}}" class="profile-pic">
+                                    </div>
+                                </div>
+                                <div class="w-100 text-center mt-2 px-3 f4 inc-font">
+                                    {{ senior.fname }} {{ senior.lname }}
+                                </div>
+                                <div class="w-100 text-center mb-2 px-3 text-secondary">
+                                    {{ senior.school }}
                                 </div>
                             </div>
-                            <div class="w-100 text-center mt-2 px-3 f4 inc-font">
-                                {{ senior.fname }} {{ senior.lname }}
-                            </div>
-                            <div class="w-100 text-center mb-2 px-3 text-secondary">
-                                {{ senior.school }}
-                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="!noSearchResults" class="my-3 text-center mx-auto col-12">
+                        <div class="inc-font rounded-circle border bg-white page-btn d-inline-block text-center" (click)="pageLeft()">
+                            <i class="fa fa-angle-left page-btn-left"></i>
+                        </div>
+                        <div class="d-inline-block mx-2 not-selectable">{{ getPageState() }}</div>
+                        <div class="inc-font rounded-circle border bg-white page-btn d-inline-block text-center" (click)="pageRight()">
+                            <i class="fa fa-angle-right page-btn-right"></i>
                         </div>
                     </div>
                 </div>
 
-                <div *ngIf="!noSearchResults" class="my-3 text-center mx-auto col-12">
-                    <div class="inc-font rounded-circle border bg-white page-btn d-inline-block text-center" (click)="pageLeft()">
-                        <i class="fa fa-angle-left page-btn-left"></i>
-                    </div>
-                    <div class="d-inline-block mx-2 not-selectable">{{ getPageState() }}</div>
-                    <div class="inc-font rounded-circle border bg-white page-btn d-inline-block text-center" (click)="pageRight()">
-                        <i class="fa fa-angle-right page-btn-right"></i>
+                <!--Loading-->
+                <div *ngIf="!seniors && !noSearchResults && !libraryFetchError" class="row text-center mt-5 justify-content-center">
+                    <div class="spinner-border text-primary text-center" role="status">
+                    <span class="sr-only">Loading...</span>
                     </div>
                 </div>
-            </div>
 
-            <div *ngIf="!seniors && !noSearchResults" class="row text-center mt-5 justify-content-center">
-                <div class="spinner-border text-primary text-center" role="status">
-                  <span class="sr-only">Loading...</span>
-                </div>
-            </div>
-
-            <div *ngIf="noSearchResults" class="text-center my-3">
-                <div class="inc-font text-gray">
-                    No Results!
-                </div>
-                <div>
-                    <button class="btn btn-primary my-3 px-4 py-2" (click)="clearSearch()">
-                        Clear Search
-                    </button>
+                <!--No Results-->
+                <div *ngIf="noSearchResults" class="text-center my-3">
+                    <div class="inc-font text-gray">
+                        No Results!
+                    </div>
+                    <div>
+                        <button class="btn btn-primary my-3 px-4 py-2" (click)="clearSearch()">
+                            Clear Search
+                        </button>
+                    </div>
                 </div>
             </div>
 
