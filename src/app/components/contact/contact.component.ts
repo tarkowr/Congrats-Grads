@@ -14,6 +14,7 @@ export class ContactComponent implements OnInit {
   contactForm: FormGroup;
   submitted: Boolean = false;
   loading: Boolean = false;
+  contactFormWorks: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,

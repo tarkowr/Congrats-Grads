@@ -9,6 +9,7 @@ $image-max-width: 275px;
 :root 
 {
     --navHeight: 60px;
+    --footerHeight: 65px;
 }
 
 /*Variable Overrides*/
@@ -125,6 +126,9 @@ label{
 }
 .page-min-height {
     min-height: calc(100vh - var(--navHeight)) !important;
+}
+.rest-page-height {
+    min-height: calc(100vh - var(--navHeight) - var(--footerHeight)) !important;
 }
 .height-100 {
     min-height: 100vh !important;
