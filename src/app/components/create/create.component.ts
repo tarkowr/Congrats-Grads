@@ -88,6 +88,10 @@ export class CreateComponent implements OnInit {
     }
   }
 
+  trackPreview() {
+    this.analytics.trackEvent('preview');
+  }
+
   // UI: Handle selected image
   selectImage(event) {
     if (event.target.files.length > 0) {
