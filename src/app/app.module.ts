@@ -17,6 +17,8 @@ import { ContactComponent } from './components/contact/contact.component';
 import { FooterComponent } from './components/Shared/footer/footer.component';
 import { TermsComponent } from './components/Static/terms/terms.component';
 import { AboutComponent } from './components/about/about.component';
+import { ProfileDetailComponent } from './components/Shared/profile-detail/profile-detail.component';
+import { ProfileDetailSmallComponent } from './components/Shared/profile-detail-small/profile-detail-small.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,8 @@ import { AboutComponent } from './components/about/about.component';
     FooterComponent,
     TermsComponent,
     AboutComponent,
+    ProfileDetailComponent,
+    ProfileDetailSmallComponent,
   ],
   imports: [
     BrowserModule,

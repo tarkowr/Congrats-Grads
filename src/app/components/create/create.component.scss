@@ -8,13 +8,8 @@
 .preview-card {
     border-radius: 8px;
     max-width: 350px;
-}
-.preview-pic-wrapper {
-    max-width: 275px;
-    height: auto;
-    max-height: 458px;
     overflow: hidden;
 }
-.preview-img {
-    max-width: 275px;
+.preview-prompt {
+    cursor: pointer;
 }

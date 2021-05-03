@@ -1,14 +1,10 @@
-$image-width: 100%;
-$image-min-width: 200px;
-$image-max-width: 275px;
-
-#background {
-    background: linear-gradient(to right, #00b7ff, #aeecff, #00b7ff);
+.background-gradient {
+    background: linear-gradient(to right, #00b7ff, #baefff, #00b7ff);
 	background-size: 200% 200%;
-	animation: gradient 6s ease 1;
+	animation: gradient-animation 4s ease 2;
     overflow-y: visible;
 }
-@keyframes gradient {
+@keyframes gradient-animation {
     0% {
 		background-position: 0%;
 	}
@@ -19,27 +15,9 @@ $image-max-width: 275px;
 		background-position: 0%;
 	}
 }
-
-#profile{
+.profile-card {
     border-radius: 10px;
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
-}
-.display-5{
-    font-size: 3.2rem;
-}
-.profile-wrapper {
-    width: $image-width;
-    min-width: $image-min-width;
-    max-width: $image-max-width;
-    height: auto;
-    max-height: 458px;
-    overflow: hidden;
-}
-.profile-pic {
-    width: $image-width;
-    min-width: $image-min-width;
-    max-width: $image-max-width;
-    height: auto;
 }
 .back-btn {
     position: fixed;

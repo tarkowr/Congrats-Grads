@@ -75,6 +75,19 @@ export class CreateComponent implements OnInit {
     return this.storageService.get(storage.uploads) || [];
   }
 
+  get senior() : Senior {
+    return {
+      fname: this.firstname,
+      lname: this.lastname,
+      school: this.school,
+      comments: this.comments,
+      year: this.year,
+      url: this.previewImg,
+      id: '',
+      uploaded: null,
+    }
+  }
+
   // UI: Handle selected image
   selectImage(event) {
     if (event.target.files.length > 0) {

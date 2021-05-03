@@ -8,7 +8,7 @@
             <div class="create-card">
     
                 <!--Header-->
-                <div class="create-header bg-white border border-primary-light pt-3 pb-2">
+                <div class="create-header bg-white primary-border pt-3 pb-2">
                     <div class="d-inline-block">
                         <img src="../../../assets/logos/icon-square.png" height="28" class="float-left"> 
                     </div>
@@ -103,13 +103,20 @@
     
                     <!--Comments-->
                     <div class="form-group mb-3">
-                        <label for="comments" class="text-secondary">Tell us about Yourself <span class="text-danger">*</span></label>
+                        <label for="comments" class="text-secondary">Tell us about yourself <span class="text-danger">*</span></label>
                         <textarea name="comments" rows="3" required formControlName="comments" class="form-control primary-border"
                             [ngClass]="{ 'is-invalid': submitted && f.comments.errors, 'danger-border': submitted && f.comments.errors }"></textarea>
     
                         <div *ngIf="submitted && f.comments.errors" class="invalid-feedback">
                             <div *ngIf="f.comments.errors.required">Please tell us about yourself.</div>
                             <div *ngIf="f.comments.errors.maxlength">Max limit is 500 characters.</div>
+                        </div>
+                    </div>
+
+                    <!--Mobile Profile Preview-->
+                    <div *ngIf="mobile" class="text-center mt-4">
+                        <div class="preview-prompt d-inline-block px-3 text-primary f4" data-toggle="modal" data-target="#profilePreviewModal">
+                            Preview Profile
                         </div>
                     </div>
     
@@ -134,20 +141,28 @@
 
         <!--Preview Profile Card-->
         <div *ngIf="!mobile" class="col-0 col-lg-5 py-4">
-
-            <div class="preview-card b-shadow m-auto bg-white p-3">
-                <div class="pt-3"></div>
-                <div class="preview-pic-wrapper m-auto text-center rounded">
-                    <img class="preview-img" [src]="previewImg || '../../../assets/images/placeholder.png'"/>
+            <div class="preview-card b-shadow m-auto bg-white">
+                <div class="m-3 px-3 pt-3">
+                    <app-profile-detail-small [senior]="senior"></app-profile-detail-small>
                 </div>
-                <h6 class="text-center py-0 my-2 jost f4"><strong>── CLASS OF {{ year }} ──</strong></h6>
-                <h2 *ngIf="firstname" class="jost text-dark my-0 f6">{{ firstname | uppercase }}</h2>
-                <h2 *ngIf="lastname" class="jost text-dark my-0 f6">{{ lastname | uppercase }}</h2>
-                <div *ngIf="school" class="mb-0 mt-2 oswald inc-font f6 text-gray">{{ school | uppercase }}</div>
-                <div *ngIf="comments" class="mt-2 f3">{{ comments }}</div>
             </div>
         </div>
+    </div>
+</div>
 
+<!--Profile Preview Modal-->
+<div class="modal fade" id="profilePreviewModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+
+        <div class="modal-body mx-3 mt-3">
+            <app-profile-detail-small [senior]="senior"></app-profile-detail-small>
+        </div>
+
+        <div class="m-3">
+            <div class="btn btn-primary float-right px-4" data-dismiss="modal">Close</div>
+        </div>
+      </div>
     </div>
 </div>
 

@@ -1,5 +1,6 @@
 <app-navbar></app-navbar>
 
+<!--Desktop back button-->
 <a *ngIf="showBackButton" [routerLink]="['/library']">
     <button class="btn btn-secondary back-btn inc-font py-2 px-3">
         <i class="fa fa-arrow-circle-left"></i>
@@ -7,31 +8,12 @@
 </a>
 
 <div class="page-margin-top">
-    <div id="background" class="text-center w-100 page-min-height">
-        <div class="w-100 row m-0" [ngClass]="mobile ? 'pt-4':'pt-5'">
-            <div id="profile" class="col-10 offset-1 col-lg-8 offset-lg-2 bg-white mb-5">
-                <div class="px-3 content-container overflow-hidden" [ngClass]="mobile ? 'py-4':'py-5'">
-                    <div *ngIf="!senior && !error" class="w-100 text-center my-5 py-5">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
+    <div [ngClass]="{'background-gradient': !mobile}" class="text-center w-100 page-min-height">
+        <div class="w-100 row m-0" [ngClass]="{'pt-5': !mobile}">
+            <div [ngClass]="{'profile-card mb-5': !mobile}" class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 bg-white">
+                <div class="px-3 overflow-hidden" [ngClass]="mobile ? 'py-4':'py-5'">
 
-                    <div *ngIf="senior && !error" class="row">
-                        <div *ngIf="senior.url" class="col-12 col-md-6 overflow-hidden d-flex text-center">
-                            <div class="profile-wrapper align-self-center mx-auto justify-content-center rounded ">
-                                <img src="{{senior.url}}" class="profile-pic">
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 text-left overflow-hidden px-0" [ngClass]="mobile ? 'pt-2':'pt-0'">
-                            <h6 class="py-0 mb-2 jost f4" [ngClass]="mobile ? 'text-center':'text-left'"><strong>── CLASS OF {{ senior.year }} ──</strong></h6>
-                            <h2 class="text-left jost text-dark my-0 f6" [ngClass]="{'display-5': !mobile}">{{ senior.fname | uppercase }}</h2>
-                            <h2 class="text-left jost text-dark my-0 f6" [ngClass]="{'display-5': !mobile}">{{ senior.lname | uppercase }}</h2>
-                            <div class="mb-0 mt-2 oswald inc-font f6 text-gray">{{ senior.school | uppercase }}</div>
-                            <div class="mt-2 f2">{{ senior.comments }}</div>
-                        </div>
-                    </div>
-
+                    <!--Error-->
                     <div *ngIf="error" class="my-5">
                         <div class="h5">
                             We can't find that profile!
@@ -42,6 +24,27 @@
                         <div class="mt-2">
                             <a routerLink="/library" class="text-primary mt-2 f4">View Library</a>
                         </div> 
+                    </div>
+
+                    <div *ngIf="!error">
+
+                        <!--Loading-->
+                        <div *ngIf="!senior" class="w-100 text-center my-5 py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+
+                        <!--Success-->
+                        <div *ngIf="senior">
+                            <div *ngIf="mobile">
+                                <app-profile-detail-small [senior]="senior"></app-profile-detail-small>
+                            </div>
+
+                            <div *ngIf="!mobile">
+                                <app-profile-detail [senior]="senior"></app-profile-detail>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

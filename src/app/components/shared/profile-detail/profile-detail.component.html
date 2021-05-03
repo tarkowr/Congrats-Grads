@@ -1,0 +1,19 @@
+<!--Profile Detail-->
+<div *ngIf="senior" class="row">
+
+    <!--Profile Picture-->
+    <div class="col-6 overflow-hidden d-flex text-center">
+        <div class="profile-pic-wrapper align-self-center mx-auto rounded">
+            <img src="{{senior.url || '../../../../assets/images/placeholder.png'}}" class="profile-pic">
+        </div>
+    </div>
+
+    <!--Profile Data-->
+    <div class="col-6 overflow-hidden px-0 text-left">
+        <h6 class="mb-2 jost f4"><strong>── CLASS OF {{ senior.year }} ──</strong></h6>
+        <h2 class="jost text-dark my-0 f6 display-5">{{ senior.fname | uppercase }}</h2>
+        <h2 class="jost text-dark my-0 f6 display-5">{{ senior.lname | uppercase }}</h2>
+        <div class="mb-0 mt-2 oswald inc-font f6 text-gray">{{ senior.school | uppercase }}</div>
+        <div class="mt-2 f3 text-left">{{ senior.comments }}</div>
+    </div>
+</div>

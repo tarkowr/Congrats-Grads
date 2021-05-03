@@ -1,6 +1,10 @@
 $font: 'Muli', sans-serif;
 $breakpoint: 992px;
 
+/*Profile Pic Variables*/
+$image-min-width: 200px;
+$image-max-width: 275px;
+
 // Global SCSS variables
 :root 
 {
@@ -47,6 +51,7 @@ html, body {
     }
 }
 
+/*Custom Styles*/
 .not-selectable{
     user-select: none;
 }
@@ -56,14 +61,17 @@ html, body {
 .social-link:hover {
     color: #26B1FF !important;
 }
+.b-shadow {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+}
 
+/*Font Styles*/
 .jost {
     font-family: 'Jost', sans-serif;
 }
 .oswald {
     font-family: 'Oswald', sans-serif;
 }
-
 .inc-font {
     font-size: 1.2em;
 }
@@ -82,16 +90,13 @@ html, body {
 .f1 {
     font-weight: 100 !important;
 }
-
 .default-font {
     font-family: sans-serif;
     font-weight: 600;
 }
-
 h1, h2, h3, h4, h5, h6 {
     font-weight: 300;
 }
-
 .form-control {
     font-weight: 300 !important;
 }
@@ -101,10 +106,14 @@ label{
 .invalid-feedback {
     font-weight: 500;
 }
-.b-shadow {
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+
+/*Modals*/
+.modal-dialog {
+    margin-top: 4rem !important;
+    margin-bottom: 4rem !important;
 }
 
+/*Page Styles*/
 .page-margin-top {
     margin-top: var(--navHeight) !important;
 }
@@ -113,4 +122,20 @@ label{
 }
 .height-100 {
     min-height: 100vh !important;
+}
+
+/*Profile Picture Styles*/
+.profile-pic-wrapper {
+    width: 100%;
+    min-width: $image-min-width;
+    max-width: $image-max-width;
+    height: auto;
+    max-height: 458px;
+    overflow: hidden;
+}
+.profile-pic {
+    width: 100%;
+    min-width: $image-min-width;
+    max-width: $image-max-width;
+    height: auto;
 }
