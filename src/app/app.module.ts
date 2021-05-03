@@ -19,6 +19,7 @@ import { TermsComponent } from './components/Static/terms/terms.component';
 import { AboutComponent } from './components/about/about.component';
 import { ProfileDetailComponent } from './components/Shared/profile-detail/profile-detail.component';
 import { ProfileDetailSmallComponent } from './components/Shared/profile-detail-small/profile-detail-small.component';
+import { TitlePipe } from './pipes/title.pipe';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { ProfileDetailSmallComponent } from './components/Shared/profile-detail-
     AboutComponent,
     ProfileDetailComponent,
     ProfileDetailSmallComponent,
+    TitlePipe,
   ],
   imports: [
     BrowserModule,
