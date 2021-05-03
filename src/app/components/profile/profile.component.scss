@@ -1,13 +1,25 @@
-$background: linear-gradient(to right, #00b7ff, #aeecff);
-
 $image-width: 100%;
 $image-min-width: 200px;
 $image-max-width: 275px;
 
 #background {
-    background: $background;
+    background: linear-gradient(to right, #00b7ff, #aeecff, #00b7ff);
+	background-size: 200% 200%;
+	animation: gradient 6s ease 1;
     overflow-y: visible;
 }
+@keyframes gradient {
+    0% {
+		background-position: 0%;
+	}
+	50% {
+		background-position: 100%;
+	}
+	100% {
+		background-position: 0%;
+	}
+}
+
 #profile{
     border-radius: 10px;
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
