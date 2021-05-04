@@ -14,7 +14,7 @@ export class ContactComponent implements OnInit {
   contactForm: FormGroup;
   submitted: Boolean = false;
   loading: Boolean = false;
-  contactFormWorks: boolean = false;
+  contactFormWorks: boolean = true;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -42,7 +42,8 @@ export class ContactComponent implements OnInit {
 
   // Handle email error
   private onError(err) {
-    this.snackbar.show('Unable to Send Message')
+    this.snackbar.show('Unable to Send Message');
+    this.contactFormWorks = false;
 
     if (!this.contactForm.invalid) {
       const errorName = err ? err.name : 'Unknown Error';
@@ -50,28 +51,22 @@ export class ContactComponent implements OnInit {
     }
   }
 
-  // On complete
-  private onComplete() {
-    this.loading = false;
-  }
-
   // UI: Contact form on submit
-  onSubmit() {
+  async onSubmit() {
     this.submitted = true;
 
-    if (this.contactForm.invalid) {
-      return;
-    }
+    if (this.contactForm.invalid) return;
 
     this.loading = true;
 
     let message: string = this.f.message.value;
     message = message.replace(/\s\s+/g, ' ');
 
-    this.contactService.sendMessage(this.f.sender.value, message)
+    await this.contactService.sendMessage(this.f.sender.value, message)
       .then(() => this.onSuccess())
-      .catch((err) => this.onError(err))
-      .finally(() => this.onComplete());
+      .catch((err) => this.onError(err));
+
+    this.loading = false;
   }
 
   ngOnInit() {
