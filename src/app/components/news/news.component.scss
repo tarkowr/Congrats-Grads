@@ -1,0 +1,20 @@
+.newsfeed {
+    max-width: 800px;
+}
+.rounded-border {
+    border-radius: 8px;
+}
+.news-card {
+    border: 1px solid rgba(38, 177, 255, .35);
+    padding: 1rem !important;
+    background-color: white;
+    border-radius: 8px;
+    margin-bottom: 1rem !important;
+    transition: box-shadow .5s;
+}
+.news-card:hover {    
+    box-shadow: 0 0 8px rgba(38, 177, 255, 0.25);
+}
+.card-image {
+    width: 100%;
+}

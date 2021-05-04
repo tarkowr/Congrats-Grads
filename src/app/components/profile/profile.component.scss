@@ -1,7 +1,7 @@
 .background-gradient {
     background: linear-gradient(to right, #00b7ff, #baefff, #00b7ff);
 	background-size: 200% 200%;
-	animation: gradient-animation 4s ease 2;
+	animation: gradient-animation 6s ease 1;
     overflow-y: visible;
 }
 @keyframes gradient-animation {

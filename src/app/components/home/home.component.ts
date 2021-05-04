@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import Typed from 'typed.js';
 import { WindowService } from '../../services/window.service';
 import { Subscription } from 'rxjs';
-import { AnalyticsService } from '../../services/analytics.service';
-import { analytics } from '../../app.constants';
 
 @Component({
   selector: 'app-home',
@@ -25,18 +23,11 @@ export class HomeComponent implements OnInit {
   }
   typed: Typed;
 
-  windowSubscription: Subscription;
+  private windowSubscription: Subscription;
 
-  constructor(private windowService: WindowService,
-    private analytics: AnalyticsService) { }
-
-  onInstaClick() {
-    this.analytics.trackEvent(analytics.insta);
-  }
-
-  onFbClick() {
-    this.analytics.trackEvent(analytics.facebook);
-  }
+  constructor(
+    private windowService: WindowService,
+  ) { }
 
   // Reset typed to a new typed object
   private resetTyped(newTyped: Typed) {

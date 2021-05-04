@@ -1,12 +1,8 @@
 $len: 175px;
 
 .donate-card {
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.06);
     border-radius: 12px;
-    transition: box-shadow 0.5s;
-}
-.donate-card:hover {
-    box-shadow: 0 0 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 0 8px rgba(38, 177, 255, 0.25);
 }
 .donate-btn {
     font-size: 18px;

@@ -1,5 +1,7 @@
-import { app } from "./app.constants";
+import { app, storage } from "./app.constants";
 import { Option } from "./models/library";
+import { AnalyticsService } from "./services/analytics.service";
+import { StorageService } from "./services/storage.service";
 
 // Generate list of supported years
 export function getSupportedYears() : Option[] {
@@ -35,4 +37,19 @@ export function buildEnumOptions<Type>(e: Type) : Option[] {
 // Copy array of objects w/o reference to properties
 export function copyArrayOfObj(arr: any[]) {
     return arr.map(obj => ({ ...obj }));
+}
+
+// Track when the user visits a page
+export function trackPageVisit(
+  pageKey: string, 
+  storageService: StorageService, 
+  analytics: AnalyticsService,
+) {
+  let visited: string[] = storageService.get(storage.visits) || [];
+
+  if (visited.includes(pageKey)) return;
+
+  visited.push(pageKey);
+  storageService.set(storage.visits, visited);
+  analytics.trackView(pageKey);
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from '../../services/analytics.service';
 import { StorageService } from '../../services/storage.service';
-import { analytics, storage } from '../../app.constants';
+import { trackPageVisit } from 'src/app/app.utils';
 
 @Component({
   selector: 'app-about',
@@ -31,19 +31,13 @@ export class AboutComponent implements OnInit {
     }
   ];
 
-  constructor(private analytics: AnalyticsService,
-    private storage: StorageService) { }
+  constructor(
+    private analytics: AnalyticsService,
+    private storage: StorageService,
+  ) { }
 
   onClickDonate() {
     this.analytics.trackEvent('donate_btn');
-  }
-
-  onInstaClick() {
-    this.analytics.trackEvent(analytics.insta);
-  }
-
-  onFbClick() {
-    this.analytics.trackEvent(analytics.facebook);
   }
 
   onReadMoreClick() {
@@ -51,14 +45,7 @@ export class AboutComponent implements OnInit {
   }
 
   ngOnInit() {
-    const aboutKey = 'about';
-    let visited: any [] = this.storage.get(storage.visits) || [];
-
-    if (!visited.includes(aboutKey)) {
-      visited.push(aboutKey);
-      this.storage.set(storage.visits, visited);
-      this.analytics.trackView(aboutKey);
-    }
+    trackPageVisit('about', this.storage, this.analytics);
   }
 
 }

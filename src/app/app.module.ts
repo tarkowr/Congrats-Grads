@@ -20,6 +20,8 @@ import { AboutComponent } from './components/about/about.component';
 import { ProfileDetailComponent } from './components/Shared/profile-detail/profile-detail.component';
 import { ProfileDetailSmallComponent } from './components/Shared/profile-detail-small/profile-detail-small.component';
 import { TitlePipe } from './pipes/title.pipe';
+import { NewsComponent } from './components/news/news.component';
+import { SocialMediaComponent } from './components/Shared/social-media/social-media.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +41,8 @@ import { TitlePipe } from './pipes/title.pipe';
     ProfileDetailComponent,
     ProfileDetailSmallComponent,
     TitlePipe,
+    NewsComponent,
+    SocialMediaComponent,
   ],
   imports: [
     BrowserModule,
