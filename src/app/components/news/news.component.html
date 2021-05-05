@@ -3,6 +3,58 @@
 <div class="page-margin-top container-fluid bg-lightest">
     <div class="newsfeed m-auto py-4">
 
+        <!--Raed Post-->
+        <div class="news-card text-center" style="padding: 0 !important;">
+            <div class="p-3">
+                <h4 class="text-secondary">Congrats, Raed!</h4>
+                <div class="text-gray">Congrats to our first adopt-a-senior, Raed! Be on the lookout for another giveaway coming soon!</div>
+            </div>
+            <div *ngIf="raed" class="mb-4 mt-2">
+                <div *ngIf="mobile" class="px-5">
+                    <app-profile-detail-small [senior]="raed"></app-profile-detail-small>
+                </div>
+                <div *ngIf="!mobile" class="pl-3 pr-5">
+                    <app-profile-detail [senior]="raed"></app-profile-detail>
+                </div>
+            </div>
+            <div *ngIf="!raed" class="mb-4 mt-2">
+                <app-spinner></app-spinner>
+            </div>
+        </div>
+
+        <!--Adopt a Senior-->
+        <div class="news-card fade-up text-center">
+            <div class="h2 jost f6">
+                <div>ADOPT A</div>
+                <div class="bg-dark d-inline-block text-white px-3">SENIOR</div>
+            </div>
+
+            <div class="my-3">
+                Congrats Grads is excited to announce our first giveaway starting today! 
+                Upload your profile before 1/31/2021 to be entered!
+            </div>
+
+            <a routerLink="/create">
+                <div class="btn btn-primary">Enter Giveaway</div>
+            </a>
+
+            <div class="pt-2"></div>
+        </div>
+
+        <!--New Years-->
+        <div class="news-card text-left overflow-hidden" style="padding: 0px !important;">
+            <div class="p-3">
+                <div class="f5">Happy New Year 🎉🎉🎉</div>
+            </div>
+            <div class="text-center bg-lighter border-top border-bottom border-primary-light">
+                <img class="new-year-img card-image mx-auto p-0"
+                    src="../../../assets/images/new-years.png" alt="New Year Card">
+            </div>
+            <div class="p-3">
+                Featuring over 20 seniors from our site!
+            </div>
+        </div>
+
         <!--Social Media Promo-->
         <div class="news-card text-center">
             <h4 class="text-secondary">Did you know?</h4>

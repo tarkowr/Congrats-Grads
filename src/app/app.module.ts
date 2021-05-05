@@ -22,6 +22,7 @@ import { ProfileDetailSmallComponent } from './components/Shared/profile-detail-
 import { TitlePipe } from './pipes/title.pipe';
 import { NewsComponent } from './components/news/news.component';
 import { SocialMediaComponent } from './components/Shared/social-media/social-media.component';
+import { SpinnerComponent } from './components/Shared/spinner/spinner.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { SocialMediaComponent } from './components/Shared/social-media/social-me
     TitlePipe,
     NewsComponent,
     SocialMediaComponent,
+    SpinnerComponent,
   ],
   imports: [
     BrowserModule,
