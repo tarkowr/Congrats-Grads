@@ -3,6 +3,48 @@
 <div class="page-margin-top container-fluid bg-lightest">
     <div class="newsfeed m-auto py-4">
 
+        <!--Donation Card-->
+        <div class="news-card fade-up text-center">
+            <h4 class="text-secondary pb-1">Love Congrats Grads?</h4>
+            <div class="mt-2 mb-3">
+                <span class="bg-dark text-white px-4 py-1 rounded">Consider Donating!</span>
+            </div>
+            <div>All donations will go towards funding our giveaways!</div>
+            <div class="my-3 pt-2 text-center">
+                <a href="https://www.gofundme.com/f/congrats-grads" target="_blank" class="text-white">
+                    <button class="btn btn-primary px-5 py-2" (click)="onClickDonate()">{{ 'Donate' | uppercase }}</button>
+                </a>
+            </div>
+        </div>
+
+        <!--Amazon Giveaway-->
+        <div class="news-card text-center">
+            <div class="h4 f3 text-secondary">New Giveaway!</div>
+            <div>
+                Congrats Grads is excited to announce our second giveaway of <span class="f5">10 Amazon giftcards!</span>
+            </div>
+            <img class="amazon-card-img mt-3 w-100" src="../../../assets/images/amazon-card.png">
+            <div class="my-3">
+                Enter before 5/1/2021 for a chance to win <span class="f5">1 of 10</span> cards: (1) $50, (3) $25, and (6) $10!
+            </div>
+            <a routerLink="/create">
+                <div class="btn btn-primary">Enter Giveaway</div>
+            </a>
+        </div>
+
+        <!--500 Post-->
+        <div class="news-card">
+            <div class="f5 d-inline-block">500 seniors on Congrats Grads <span class="text-info f5">♡</span> </div>
+            <div class="progress mt-3">
+                <div class="progress-bar progress-bar-striped" role="progressbar" [ngStyle]="{'width': counter + '%'}"></div>
+            </div>
+            <div>
+                <div class="d-inline-block f6 float-left">0</div>
+                <div class="d-inline-block f6 float-right">500</div>
+                <div style="clear: both;"></div>
+            </div>
+        </div>
+
         <!--Raed Post-->
         <div class="news-card text-center" style="padding: 0 !important;">
             <div class="p-3">

@@ -16,6 +16,8 @@ export class NewsComponent implements OnInit {
   seniorCount: number;
   raed: Senior;
 
+  counter: number = 0;
+
   private librarySubscription: Subscription;
   private windowSubscription: Subscription;
 
@@ -27,6 +29,10 @@ export class NewsComponent implements OnInit {
     private analytics: AnalyticsService,
     private storage: StorageService,
   ) { }
+
+  onClickDonate() {
+    this.analytics.trackEvent('donate_btn');
+  }
 
   ngOnInit() {
     trackPageVisit('news', this.storage, this.analytics);
@@ -41,6 +47,26 @@ export class NewsComponent implements OnInit {
         this.raed = library.find(senior => senior.id == '70518f3a-ed9f-47ee-8144-641eb4a2eff8');
       },
     );
+
+    this.loopCounter();
+  }
+
+  // Loop 500 senior counter
+  loopCounter() {
+    const maxValue = 100;
+    const updateInterval = 800;
+    const resetTimeout = 1500;
+
+    let timer = setInterval(() => {
+      if (this.counter >= maxValue) return;
+
+      this.counter = this.counter + 20;
+      if (this.counter >= maxValue) {
+        clearInterval(timer);
+        setTimeout(() => this.counter = 0, resetTimeout);
+        setTimeout(() => this.loopCounter(), resetTimeout + 1000);
+      }
+    }, updateInterval);
   }
 
   ngOnDestroy() {
