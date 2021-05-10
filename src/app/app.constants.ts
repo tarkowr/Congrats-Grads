@@ -4,6 +4,7 @@ export const app = {
     startYear: 2020,
     currentYear: 2021,
     snackbarTimeout: 3000,
+    newsUpdates: 11,
 }
 
 export const regex = {
@@ -17,6 +18,7 @@ export const storage = {
     userId: 'user_id',
     uploads: 'uploaded',
     visits: 'visited_pages',
+    seenNewsUpdates: 'seen_news_updates',
 }
 
 export const analytics = {

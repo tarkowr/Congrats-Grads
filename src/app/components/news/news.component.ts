@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { app, storage } from 'src/app/app.constants';
 import { trackPageVisit } from 'src/app/app.utils';
 import { Senior } from 'src/app/models/senior';
 import { AnalyticsService } from 'src/app/services/analytics.service';
@@ -15,6 +16,7 @@ import { WindowService } from 'src/app/services/window.service';
 export class NewsComponent implements OnInit {
   seniorCount: number;
   raed: Senior;
+  dakota: Senior;
 
   counter: number = 0;
 
@@ -37,6 +39,8 @@ export class NewsComponent implements OnInit {
   ngOnInit() {
     trackPageVisit('news', this.storage, this.analytics);
 
+    this.storage.set(storage.seenNewsUpdates, app.newsUpdates);
+
     this.windowSubscription = this.windowService.small.subscribe(
       (isMobile: boolean) => this.mobile = isMobile,
     );
@@ -44,6 +48,7 @@ export class NewsComponent implements OnInit {
     this.librarySubscription = this.libraryService.library.subscribe(
       (library) => {
         this.seniorCount = library.length;
+        this.dakota = library.find(senior => senior.id == 'b8cba7d9-1e84-4ffc-9a4d-dc6c472414f1');
         this.raed = library.find(senior => senior.id == '70518f3a-ed9f-47ee-8144-641eb4a2eff8');
       },
     );

@@ -1,9 +1,6 @@
 .newsfeed {
     max-width: 800px;
 }
-.rounded-border {
-    border-radius: 8px;
-}
 .news-card {
     border: 1px solid rgba(38, 177, 255, .35);
     padding: 1rem !important;
@@ -12,6 +9,7 @@
     margin-bottom: 1rem !important;
     transition: box-shadow .5s;
     overflow: hidden;
+    width: 100%;
 }
 .news-card:hover {    
     box-shadow: 0 0 8px rgba(38, 177, 255, 0.25);
@@ -19,17 +17,20 @@
 .card-image {
     width: 100%;
 }
+.fade-up {
+    background: linear-gradient(to top, #cff4ff, 3%, white);
+}
 .new-year-img {
     max-width: 500px;
     margin-top: -1px;
     margin-bottom: -1px;
-}
-.fade-up {
-    background: linear-gradient(to top, #cff4ff, 3%, white);
 }
 .amazon-card-img {
     max-width: 400px;
 }
 .progress-bar {
     transition: width 0.8s linear !important;
+}
+.giveaway-header {
+    max-width: 325px;
 }
